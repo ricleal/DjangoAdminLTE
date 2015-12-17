@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+
+<!-- Content Header (Page header) -->
+<section class="content-header">
+  <h1>
+    Instruments
+    <small>SNS Instrument list</small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="#"><i class="fa fa-dashboard"></i> Catalog</a></li>
+    <li class="active">Instruments</li>
+  </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+  <!-- Your Page Content Here -->
+
+  <div class="btn-group" role="group" aria-label="Instrument Buttons">
+      {% for instrument in instruments %}
+      <button type="button" class="btn btn-default"><a href="{% url 'catalog:list_iptss' instrument %}">{{instrument}}</a></button>
+      {% endfor %}
+  </div>
+</section>
+<!-- /.content -->
+{% endblock %}
