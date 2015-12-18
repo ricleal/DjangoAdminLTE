@@ -20,7 +20,6 @@ def list_iptss(request, instrument):
     dumper = icat.DjangoDumper(request)
     iCat = icat.ICat(dumper)
     iptss = iCat.get_experiments_meta(instrument)
-    pprint(iptss['proposal'])
     return render_to_response('catalog/list_iptss.html',
                               {'iptss' : iptss['proposal']},
                               context_instance=RequestContext(request))

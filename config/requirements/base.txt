@@ -1,0 +1,17 @@
+# Django
+Django>=1.9
+
+# Django Packages
+django-auth-ldap>=1.2.6
+psycopg2>=2.6.1
+django-environ
+
+#uwsgi
+uwsgi>=2.0
+
+# other
+# numpy
+simplejson>=3.3.1
+# For h5py: cython needs to be first for h5py in RHEL7
+# cython
+# h5py

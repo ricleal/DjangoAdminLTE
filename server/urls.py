@@ -19,5 +19,5 @@ from django.contrib import admin
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^catalog/', include('catalog.urls', namespace='catalog')),
+    url(r'^catalog/', include('server.catalog.urls', namespace='catalog')),
 ]
