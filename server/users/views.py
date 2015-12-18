@@ -7,9 +7,6 @@ from django.contrib.auth import login, logout, authenticate
 from django.template import RequestContext
 from django.contrib import messages
 
-# Application-specific imports
-from django.conf import settings
-from .view_util import fill_template_values
 
 def perform_login(request):
     """

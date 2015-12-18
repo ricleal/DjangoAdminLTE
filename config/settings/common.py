@@ -180,6 +180,7 @@ TEMPLATES = [
                 'django.template.context_processors.tz',
                 'django.contrib.messages.context_processors.messages',
                 # Your stuff: custom template context processors go here
+                "server.users.context_processor.user",
             ],
         },
     },
@@ -321,10 +322,6 @@ LOGGING = {
     }
 }
 
-TEMPLATE_CONTEXT_PROCESSORS = (
-    "server.users.context_processor.user",
-)
-
 # Location of root django.contrib.admin URL, use {% url 'admin:index' %}
 ADMIN_URL = r'^admin/'
 
@@ -348,6 +345,13 @@ AUTH_LDAP_USER_FLAGS_BY_GROUP = {
     "is_active": "cn=SNS_Neutron_dev,ou=Groups,dc=sns,dc=ornl,dc=gov",
     "is_staff": "cn=SNS_Neutron_dev,ou=Groups,dc=sns,dc=ornl,dc=gov",
     "is_superuser": "cn=SNS_Neutron_dev,ou=Groups,dc=sns,dc=ornl,dc=gov"
+}
+
+# Populate the Django user from the LDAP directory.
+AUTH_LDAP_USER_ATTR_MAP = { 
+   "first_name": "cn",
+   "email":  "description",
+   "last_name":      "gecos"
 }
 
 LOGIN_URL = 'users:login'
