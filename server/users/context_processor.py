@@ -17,5 +17,4 @@ def build_avatar_link(request):
 def user(request):
     out = {}
     out.update(build_avatar_link(request))
-    print out
     return out
