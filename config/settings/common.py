@@ -48,8 +48,7 @@ THIRD_PARTY_APPS = (
 
 # Apps specific for this project go here.
 LOCAL_APPS = (
-    #'server.users',  # custom users app
-    # Your stuff: custom apps go here
+    'server.users',
     'server.catalog',
 )
 
@@ -295,7 +294,7 @@ LOGGING = {
         # Mine:
         'django': {
             'handlers':['console'],
-            'level':'DEBUG',
+            'level':'INFO',
             'propagate': True,
         },
         'django.db.backends': {
@@ -313,7 +312,7 @@ LOGGING = {
         },
         'catalog.icat': {
             'handlers': ['console'],
-            'level': 'DEBUG',
+            'level': 'INFO',
         },
         'main': {
             'handlers': ['console'],
@@ -339,3 +338,11 @@ AUTH_LDAP_GROUP_SEARCH = LDAPSearch( 'ou=Groups,dc=sns,dc=ornl,dc=gov',
 AUTH_LDAP_GROUP_TYPE = PosixGroupType()
 AUTH_LDAP_GLOBAL_OPTIONS = { ldap.OPT_X_TLS_REQUIRE_CERT : ldap.OPT_X_TLS_NEVER,}
 AUTH_LDAP_ALWAYS_UPDATE_USER = True
+
+LOGIN_URL = 'users:login'
+
+#   ICAT server settings
+ICAT_DOMAIN = 'icat.sns.gov'
+ICAT_PORT = 2080
+
+GRAVATAR_URL = "http://www.gravatar.com/avatar/"

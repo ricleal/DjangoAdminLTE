@@ -34,7 +34,11 @@ class IDumper():
     __metaclass__ = ABCMeta
 
     @abstractmethod
-    def dump_error(self, exception, message):
+    def dump_exception(self, exception, message):
+        raise NotImplementedError
+
+    @abstractmethod
+    def dump_error(self, message):
         raise NotImplementedError
 
 class DjangoDumper(IDumper):
@@ -49,7 +53,7 @@ class DjangoDumper(IDumper):
     def __init__(self, django_request):
         self.django_request = django_request
 
-    def dump_error(self, exception, message):
+    def dump_exception(self, exception, message):
         """
         @param exception: Must be a valid python exception
         @param message: Must be a string
@@ -58,6 +62,13 @@ class DjangoDumper(IDumper):
         logger.error(message)
         messages.error(self.django_request, message)
         messages.error(self.django_request, str(exception))
+
+    def dump_error(self, message):
+        """
+        @param message: Must be a string
+        """
+        logger.error(message)
+        messages.error(self.django_request, message)
 
 class GeneralDumper(IDumper):
     """
@@ -73,12 +84,19 @@ class GeneralDumper(IDumper):
         logging.basicConfig(level=logging.DEBUG)
         logger = logging.getLogger(__name__)
 
-    def dump_error(self, exception, message):
+    def dump_exception(self, exception, message):
         """
         @param exception: Must be a valid python exception
         @param message: Must be a string
         """
         logger.exception(exception)
+        logger.error(message)
+
+    def dump_error(self,message):
+        """
+        @param exception: Must be a valid python exception
+        @param message: Must be a string
+        """
         logger.error(message)
 
 class ICat(object):
@@ -125,7 +143,7 @@ class ICat(object):
             logger.debug("Parsed JSON:\n%s" % pformat(json_as_dic))
             return json_as_dic
         except Exception as e:
-            self.dumper.dump_error(e, "It looks like ICAT did not return a valid JSON:\n%s" % json_as_string)
+            self.dumper.dump_exception(e, "It looks like ICAT did not return a valid JSON:\n%s" % json_as_string)
             return None
 
     @staticmethod
@@ -187,9 +205,14 @@ class ICat(object):
                               request_str,
                               headers=HEADERS)
             response = self.conn.getresponse()
-            return self._parse_json(response.read())
+            data_json = self._parse_json(response.read())
+            if data_json.has_key('instrument'):
+                return data_json['instrument']
+            else:
+                self.dumper.dump_error("ICAT did not return the expected result....")
+                return None
         except Exception as e:
-            self.dumper.dump_error(e, "Communication with ICAT server failed.")
+            self.dumper.dump_exception(e, "Communication with ICAT server failed.")
             return None
 
     def get_experiments(self, instrument):
@@ -217,7 +240,7 @@ class ICat(object):
             response = self.conn.getresponse()
             return self._parse_json(response.read())
         except Exception as e:
-            self.dumper.dump_error(e, "Communication with ICAT server failed.")
+            self.dumper.dump_exception(e, "Communication with ICAT server failed.")
             return None
 
     def get_experiments_meta(self, instrument):
@@ -247,11 +270,16 @@ class ICat(object):
                               headers=HEADERS)
             response = self.conn.getresponse()
             json_data = self._parse_json(response.read())
-            self._substitute_keys_in_dictionary(json_data['proposal'],'@id','id')
-            self._convert_to_datetime(json_data['proposal'],'createTime')
+            if json_data is not None and json_data.has_key('proposal'):
+                json_data = json_data['proposal']
+            else:
+                self.dumper.dump_error("ICAT did not return the expected result. Is the instrument valid?")
+                return None
+            self._substitute_keys_in_dictionary(json_data,'@id','id')
+            self._convert_to_datetime(json_data,'createTime')
             return json_data;
         except Exception as e:
-            self.dumper.dump_error(e, "Communication with ICAT server failed.")
+            self.dumper.dump_exception(e, "Communication with ICAT server failed.")
             return None
 
     def get_user_experiments(self, ucams_uid):
@@ -284,7 +312,7 @@ class ICat(object):
             response = self.conn.getresponse()
             return self._parse_json(response.read())
         except Exception as e:
-            self.dumper.dump_error(e, "Communication with ICAT server failed.")
+            self.dumper.dump_exception(e, "Communication with ICAT server failed.")
             return None
 
     def get_run_ranges(self, instrument, experiment):
@@ -306,7 +334,7 @@ class ICat(object):
             response = self.conn.getresponse()
             return self._parse_json(response.read())
         except Exception as e:
-            self.dumper.dump_error(e, "Communication with ICAT server failed.")
+            self.dumper.dump_exception(e, "Communication with ICAT server failed.")
             return None
 
 
@@ -360,7 +388,7 @@ class ICat(object):
             response = self.conn.getresponse()
             return self._parse_json(response.read())
         except Exception as e:
-            self.dumper.dump_error(e, "Communication with ICAT server failed.")
+            self.dumper.dump_exception(e, "Communication with ICAT server failed.")
             return None
 
     def get_runs_meta(self, instrument, experiment):
@@ -434,7 +462,7 @@ class ICat(object):
             response = self.conn.getresponse()
             return self._parse_json(response.read())
         except Exception as e:
-            self.dumper.dump_error(e, "Communication with ICAT server failed.")
+            self.dumper.dump_exception(e, "Communication with ICAT server failed.")
             return None
 
     def get_run_info(self, instrument, run_number):
@@ -467,7 +495,7 @@ class ICat(object):
             response = self.conn.getresponse()
             return self._parse_json(response.read())
         except Exception as e:
-            self.dumper.dump_error(e, "Communication with ICAT server failed.")
+            self.dumper.dump_exception(e, "Communication with ICAT server failed.")
             return None
 
     def get_run_info_meta_only(self, instrument, run_number):
@@ -495,7 +523,7 @@ class ICat(object):
             response = self.conn.getresponse()
             return self._parse_json(response.read())
         except Exception as e:
-            self.dumper.dump_error(e, "Communication with ICAT server failed.")
+            self.dumper.dump_exception(e, "Communication with ICAT server failed.")
             return None
 
     def get_run_info_lite(self, instrument, run_number):
@@ -528,7 +556,7 @@ class ICat(object):
             response = self.conn.getresponse()
             return self._parse_json(response.read())
         except Exception as e:
-            self.dumper.dump_error(e, "Communication with ICAT server failed.")
+            self.dumper.dump_exception(e, "Communication with ICAT server failed.")
             return None
 
     def get_last_run(self, instrument):
@@ -548,7 +576,7 @@ class ICat(object):
             response = self.conn.getresponse()
             return self._parse_json(response.read())
         except Exception as e:
-            self.dumper.dump_error(e, "Communication with ICAT server failed.")
+            self.dumper.dump_exception(e, "Communication with ICAT server failed.")
             return None
 
     def get_run_files(self, instrument, run_number):
@@ -574,7 +602,7 @@ class ICat(object):
             response = self.conn.getresponse()
             return self._parse_json(response.read())
         except Exception as e:
-            self.dumper.dump_error(e, "Communication with ICAT server failed.")
+            self.dumper.dump_exception(e, "Communication with ICAT server failed.")
             return None
 
 
