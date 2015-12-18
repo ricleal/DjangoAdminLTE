@@ -321,6 +321,9 @@ LOGGING = {
     }
 }
 
+TEMPLATE_CONTEXT_PROCESSORS = (
+    "server.users.context_processor.user",
+)
 
 # Location of root django.contrib.admin URL, use {% url 'admin:index' %}
 ADMIN_URL = r'^admin/'
@@ -336,13 +339,19 @@ AUTH_LDAP_USER_DN_TEMPLATE = 'uid=%(user)s,ou=Users,dc=sns,dc=ornl,dc=gov'
 AUTH_LDAP_GROUP_SEARCH = LDAPSearch( 'ou=Groups,dc=sns,dc=ornl,dc=gov',
                                      ldap.SCOPE_SUBTREE, '(objectClass=posixGroup)')
 AUTH_LDAP_GROUP_TYPE = PosixGroupType()
+
 AUTH_LDAP_GLOBAL_OPTIONS = { ldap.OPT_X_TLS_REQUIRE_CERT : ldap.OPT_X_TLS_NEVER,}
 AUTH_LDAP_ALWAYS_UPDATE_USER = True
+
+# TODO
+AUTH_LDAP_USER_FLAGS_BY_GROUP = {
+    "is_active": "cn=SNS_Neutron_dev,ou=Groups,dc=sns,dc=ornl,dc=gov",
+    "is_staff": "cn=SNS_Neutron_dev,ou=Groups,dc=sns,dc=ornl,dc=gov",
+    "is_superuser": "cn=SNS_Neutron_dev,ou=Groups,dc=sns,dc=ornl,dc=gov"
+}
 
 LOGIN_URL = 'users:login'
 
 #   ICAT server settings
 ICAT_DOMAIN = 'icat.sns.gov'
 ICAT_PORT = 2080
-
-GRAVATAR_URL = "http://www.gravatar.com/avatar/"
