@@ -16,9 +16,6 @@ https://docs.djangoproject.com/en/dev/ref/settings/
 """
 
 from __future__ import absolute_import, unicode_literals
-from django_auth_ldap.config import LDAPSearch, PosixGroupType
-import ldap
-
 import environ
 
 ROOT_DIR = environ.Path(__file__) - 3  # (/a/b/myfile.py - 3 = /)
@@ -322,41 +319,13 @@ LOGGING = {
     }
 }
 
+from .common_ldap import *
+
 # Location of root django.contrib.admin URL, use {% url 'admin:index' %}
 ADMIN_URL = r'^admin/'
 
 # Your common stuff: Below this line define 3rd party library settings
 GRAVATAR_URL = "http://www.gravatar.com/avatar/"
-
-# Authentication settings
-AUTH_LDAP_SERVER_URI = "ldaps://data.sns.gov/"
-AUTH_LDAP_BIND_DN = ''
-AUTH_LDAP_BIND_PASSWORD = ''
-AUTH_LDAP_USER_DN_TEMPLATE = 'uid=%(user)s,ou=Users,dc=sns,dc=ornl,dc=gov'
-
-AUTH_LDAP_GROUP_SEARCH = LDAPSearch( 'ou=Groups,dc=sns,dc=ornl,dc=gov',
-                                     ldap.SCOPE_SUBTREE, '(objectClass=posixGroup)')
-#AUTH_LDAP_GROUP_TYPE = PosixGroupType()
-AUTH_LDAP_GROUP_TYPE = PosixGroupType(name_attr='cn')
-
-AUTH_LDAP_GLOBAL_OPTIONS = { ldap.OPT_X_TLS_REQUIRE_CERT : ldap.OPT_X_TLS_NEVER,}
-AUTH_LDAP_ALWAYS_UPDATE_USER = True
-
-# TODO : Those are permission for the admin interface! Need to understand the types of users
-AUTH_LDAP_USER_FLAGS_BY_GROUP = {
-    "is_active": "cn=SNS_Neutron,ou=Groups,dc=sns,dc=ornl,dc=gov",
-    "is_staff": "cn=SNS_Neutron,ou=Groups,dc=sns,dc=ornl,dc=gov",
-    "is_superuser": "cn=SNS_Neutron_dev,ou=Groups,dc=sns,dc=ornl,dc=gov"
-}
-
-# Populate the Django user from the LDAP directory.
-AUTH_LDAP_USER_ATTR_MAP = {
-   "first_name": "cn",
-   "email":  "description",
-   "last_name":      "gecos"
-}
-
-LOGIN_URL = 'users:login'
 
 #   ICAT server settings
 ICAT_DOMAIN = 'icat.sns.gov'

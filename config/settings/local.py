@@ -54,15 +54,18 @@ DEBUG_TOOLBAR_CONFIG = {
 # django-extensions
 # ------------------------------------------------------------------------------
 INSTALLED_APPS += (
-                   
+
 )
+
+# LDAP extra debug
+#AUTH_LDAP_GLOBAL_OPTIONS.update({ldap.OPT_DEBUG_LEVEL : 255})
 
 # Your local stuff: Below this line define 3rd party library settings
 
-## Developer nodes excluded from stats
-DEVELOPER_NODES = ['160.91.238.94', '160.91.238.61', '160.91.238.242']
-
-## Developer usernames excluded from stats
-DEVELOPER_IDS = ['m2d', '3qr', 'rhf']
-
-HIDE_RUN_DETAILS = False
+# ## Developer nodes excluded from stats
+# DEVELOPER_NODES = ['160.91.238.94', '160.91.238.61', '160.91.238.242']
+#
+# ## Developer usernames excluded from stats
+# DEVELOPER_IDS = ['m2d', '3qr', 'rhf']
+#
+# HIDE_RUN_DETAILS = False
