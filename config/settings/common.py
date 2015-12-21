@@ -41,6 +41,7 @@ DJANGO_APPS = (
     'django.contrib.staticfiles',
 )
 THIRD_PARTY_APPS = (
+    'django.contrib.humanize',
 )
 
 # Apps specific for this project go here.

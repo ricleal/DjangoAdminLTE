@@ -10,12 +10,13 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
     <h1>
-        {{request.session.instrument}}
-        <small>List of experiments</small>
+        {{runs.proposal.id}}
+        <small>{{runs.proposal.title}}</small>
     </h1>
     <ol class="breadcrumb">
         <li><a href="{% url 'catalog:list_instruments'%}"><i class="fa fa-dashboard"></i> Catalog</a></li>
-        <li class="active">{{request.session.instrument}}</li>
+        <li><a href="{% url 'catalog:list_iptss' request.session.instrument %}">{{request.session.instrument}}</a></li>
+        <li class="active">{{request.session.ipts}}</li>
     </ol>
 </section>
 
@@ -30,32 +31,37 @@
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body">
-                    <table id="tableipts" class="table table-bordered table-striped">
+                    <table id="tableruns" class="table table-bordered table-striped">
                         <thead>
                             <tr>
-                                <th>IPTS</th>
+                                <th>Run</th>
                                 <th>Title</th>
-                                <th>Date</th>
-                                <th>Collection</th>
+                                <th>Proton Charge</th>
+                                <th>Start Time</th>
+                                <th>End Time</th>
+                                <th>Duration (s)</th>
+                                <th>Total Counts</th>
                                 <th></th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for ipts in iptss %}
+                            {% for run in runs.proposal.runs.run %}
                             <tr>
-                                <td><a href="{% url 'catalog:list_runs' request.session.instrument ipts.id %}" data-toggle="tooltip" data-placement="right" title="Click to see the runs for this experiment...">{{ipts.id}}</a></td>
-                                <td>{{ipts.title}}</td>
-                                <td>{{ipts.createTime | date}}</td>
-                                <td>{{ipts.collection}}</td>
-                                <td>
-                  <div class="btn-group">
-                  <button type="button" class="btn btn-default"><a href="{% url 'catalog:list_runs' request.session.instrument ipts.id %}">Runs...</a></button>
+                                <td>{{run.id}}</td>
+                                <td>{{run.title}}</td>
+                                <td class="text-right">{{run.protonCharge  }}</td>
+                                <td>{{run.startTime |  date}}</td>
+                                <td>{{run.endTime |  date}}</td>
+                                <td class="text-right">{{run.duration | floatformat }}</td>
+                                <td class="text-right">{{run.totalCounts }}</td>
+                                <td><div class="btn-group">
+                  <button type="button" class="btn btn-default"><a href="#">Reduce...</a></button>
                   <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                     <span class="caret"></span>
                     <span class="sr-only">Toggle Dropdown</span>
                   </button>
                   <ul class="dropdown-menu" role="menu">
-                    <li><a href="#">See Runs...</a></li>
+                    <li><a href="#">Set as...</a></li>
                     <li><a href="#">Create Configuration</a></li>
                     <li><a href="#">Something else here</a></li>
                     <li class="divider"></li>
@@ -67,10 +73,13 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th>IPTS</th>
+                                <th>Run</th>
                                 <th>Title</th>
-                                <th>Date</th>
-                                <th>Collection</th>
+                                <th>Proton Charge</th>
+                                <th>Start Time</th>
+                                <th>End Time</th>
+                                <th>Duration</th>
+                                <th>Total Counts</th>
                                 <th></th>
                             </tr>
                         </tfoot>
@@ -94,9 +103,9 @@
   <!-- page script -->
   <script>
     $(function () {
-      $("#tableipts").DataTable({
+      $("#tableruns").DataTable({
         "lengthMenu": [[20, 50, 100, -1], [20, 50, 100, "All"]],
-        "order": [[ 2, 'desc' ]],
+        //"order": [[ 3, 'desc' ]],
         "paging": true,
         "lengthChange": true,
         "searching": true,

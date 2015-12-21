@@ -9,7 +9,6 @@ import json
 import logging
 
 from django.conf import settings
-from django.contrib import messages
 from abc import ABCMeta, abstractmethod
 from pprint import pformat, pprint
 

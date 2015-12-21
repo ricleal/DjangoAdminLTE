@@ -23,3 +23,11 @@ def list_iptss(request, instrument):
     iptss = icat.get_experiments_meta(instrument)
     request.session['instrument'] = instrument
     return render(request, 'catalog/list_iptss.html', {'iptss' : iptss})
+
+@login_required
+def list_runs(request, instrument, ipts):
+    icat = Catalog(request)
+    runs = icat.get_runs_all(instrument, ipts)
+    request.session['instrument'] = instrument
+    request.session['ipts'] = ipts
+    return render(request, 'catalog/list_runs.html', {'runs' : runs})
