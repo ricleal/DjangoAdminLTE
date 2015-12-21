@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 
 import logging
 
-from . import icat
+from .icat.facade import Catalog
 
 logger = logging.getLogger('catalog')
 
@@ -12,16 +12,14 @@ def list_instruments(request):
     """
 
     """
-    dumper = icat.DjangoDumper(request)
-    iCat = icat.ICat(dumper)
-    instruments = iCat.get_instruments()
+    icat = Catalog(request)
+    instruments = icat.get_instruments()
     return render(request, 'catalog/list_instruments.html',
         {'instruments' : instruments})
 
 @login_required
 def list_iptss(request, instrument):
-    dumper = icat.DjangoDumper(request)
-    iCat = icat.ICat(dumper)
-    iptss = iCat.get_experiments_meta(instrument)
+    icat = Catalog(request)
+    iptss = icat.get_experiments_meta(instrument)
     request.session['instrument'] = instrument
     return render(request, 'catalog/list_iptss.html', {'iptss' : iptss})

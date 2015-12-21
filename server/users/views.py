@@ -6,7 +6,12 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth import login, logout, authenticate
 from django.template import RequestContext
 from django.contrib import messages
+from django.contrib.auth.signals import user_logged_in
 
+import hashlib
+
+# 
+GRAVATAR_URL = "http://www.gravatar.com/avatar/"
 
 def perform_login(request):
     """
@@ -40,13 +45,6 @@ def perform_logout(request):
     """
     logout(request)
     return redirect(reverse("index"))
-
-from django.contrib.auth.signals import user_logged_in
-
-import hashlib
-
-# Your common stuff: Below this line define 3rd party library settings
-GRAVATAR_URL = "http://www.gravatar.com/avatar/"
 
 def build_avatar_link(sender, user, request, **kwargs):
     '''

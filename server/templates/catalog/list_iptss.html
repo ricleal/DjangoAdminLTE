@@ -1,10 +1,8 @@
 {% extends "base.html" %}
 {% load staticfiles %}
 {% block head %}
-
 <!-- DataTables -->
 <link rel="stylesheet" href="{% static 'AdminLTE_plugins/datatables/dataTables.bootstrap.css' %}">
-
 {% endblock head %}
 {% block content %}
 
@@ -88,13 +86,9 @@
 {% endblock %}
 
 {% block body_end %}
-
-
   <!-- DataTables -->
   <script src="{% static 'AdminLTE_plugins/datatables/jquery.dataTables.min.js' %}"></script>
   <script src="{% static 'AdminLTE_plugins/datatables/dataTables.bootstrap.min.js' %}"></script>
-
-
   <!-- page script -->
   <script>
     $(function () {
@@ -103,7 +97,5 @@
     });
     });
   </script>
-
 </script>
-
 {% endblock body_end %}

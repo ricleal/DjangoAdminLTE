@@ -12,16 +12,18 @@ from django.conf import settings
 from django.contrib import messages
 from abc import ABCMeta, abstractmethod
 from pprint import pformat, pprint
-from django.utils import dateparse
+
+logger = logging.getLogger('catalog.icat')
 
 """
 
 ICAT Json interface
 
+This just communicate with ICAT
+
+Do not implement here any filtering to the output json!!!
+
 """
-
-
-logger = logging.getLogger('catalog.icat')
 
 # Defaults:
 DEFAULT_ICAT_DOMAIN = "icat.sns.gov"
@@ -41,35 +43,6 @@ class IDumper():
     def dump_error(self, message):
         raise NotImplementedError
 
-class DjangoDumper(IDumper):
-    """
-    For Django
-    If using django, instantiatiate this class first with:
-    dumper = DjangoDumper(request)
-    Then instantiate ICat
-    icat = ICat(dumper)
-    This will allow passing messages to the interface
-    """
-    def __init__(self, django_request):
-        self.django_request = django_request
-
-    def dump_exception(self, exception, message):
-        """
-        @param exception: Must be a valid python exception
-        @param message: Must be a string
-        """
-        logger.exception(exception)
-        logger.error(message)
-        messages.error(self.django_request, message)
-        messages.error(self.django_request, str(exception))
-
-    def dump_error(self, message):
-        """
-        @param message: Must be a string
-        """
-        logger.error(message)
-        messages.error(self.django_request, message)
-
 class GeneralDumper(IDumper):
     """
     For Command Line Testing.
@@ -79,25 +52,23 @@ class GeneralDumper(IDumper):
     icat = ICat(dumper)
     """
     def __init__(self):
-        # overrides logger
-        global logger
-        logging.basicConfig(level=logging.DEBUG)
-        logger = logging.getLogger(__name__)
+        #
+        pass
 
     def dump_exception(self, exception, message):
         """
         @param exception: Must be a valid python exception
         @param message: Must be a string
         """
-        logger.exception(exception)
-        logger.error(message)
+        pprint(exception)
+        pprint(message)
 
     def dump_error(self,message):
         """
         @param exception: Must be a valid python exception
         @param message: Must be a string
         """
-        logger.error(message)
+        pprint(message)
 
 class ICat(object):
     '''
@@ -128,7 +99,6 @@ class ICat(object):
         Just makes sure the HTTP connection will be closed
         '''
         if self.conn is not None:
-            logger.debug("Closing ICAT HTTP connection...")
             self.conn.close()
 
 
@@ -145,33 +115,6 @@ class ICat(object):
         except Exception as e:
             self.dumper.dump_exception(e, "It looks like ICAT did not return a valid JSON:\n%s" % json_as_string)
             return None
-
-    @staticmethod
-    def _hyphen_range(s):
-        """ Takes a range in form of "a-b" and generate a list of numbers between a and b inclusive.
-        Also accepts comma separated ranges like "a-b,c-d,f" will build a list which will include
-        Numbers from a to b, a to d and f"""
-        s = "".join(s.split())  # removes white space
-        r = set()
-        for x in s.split(','):
-            t = x.split('-')
-            if len(t) not in [1, 2]:
-                logger.error("hash_range is given its arguement as " + s + " which seems not correctly formated.")
-            r.add(int(t[0])) if len(t) == 1 else r.update(set(range(int(t[0]), int(t[1]) + 1)))
-        l = list(r)
-        l.sort()
-        l_in_str = ','.join(str(x) for x in l)
-        return l_in_str
-
-    @staticmethod
-    def _substitute_keys_in_dictionary(list_of_dicts,old_key,new_key):
-        for d in list_of_dicts:
-            d[new_key]=d.pop(old_key)
-
-    @staticmethod
-    def _convert_to_datetime(list_of_dicts,key):
-        for d in list_of_dicts:
-            d[key] = dateparse.parse_datetime(d[key])
 
     def get_instruments(self):
         '''
@@ -206,11 +149,7 @@ class ICat(object):
                               headers=HEADERS)
             response = self.conn.getresponse()
             data_json = self._parse_json(response.read())
-            if data_json.has_key('instrument'):
-                return data_json['instrument']
-            else:
-                self.dumper.dump_error("ICAT did not return the expected result....")
-                return None
+            return data_json
         except Exception as e:
             self.dumper.dump_exception(e, "Communication with ICAT server failed.")
             return None
@@ -270,13 +209,6 @@ class ICat(object):
                               headers=HEADERS)
             response = self.conn.getresponse()
             json_data = self._parse_json(response.read())
-            if json_data is not None and json_data.has_key('proposal'):
-                json_data = json_data['proposal']
-            else:
-                self.dumper.dump_error("ICAT did not return the expected result. Is the instrument valid?")
-                return None
-            self._substitute_keys_in_dictionary(json_data,'@id','id')
-            self._convert_to_datetime(json_data,'createTime')
             return json_data;
         except Exception as e:
             self.dumper.dump_exception(e, "Communication with ICAT server failed.")
@@ -337,30 +269,6 @@ class ICat(object):
             self.dumper.dump_exception(e, "Communication with ICAT server failed.")
             return None
 
-
-
-    def get_runs(self, instrument, experiment):
-        """
-        Similar to get_run_ranges
-        But returns:
-        @return:
-        {u'runRange': [40136,
-               40137,
-               (.........................)
-               42396,
-               42397,
-               42398,
-               42399,
-               42400,
-               42401,
-               42402,
-               42403]}
-        """
-        raw_ranges = self.get_run_ranges(instrument, experiment)
-        ranges = self._hyphen_range(raw_ranges["runRange"])
-        raw_ranges["runRange"] = self._parse_json("[" + ranges + "]")
-        return raw_ranges
-
     def get_run_ranges_meta(self, instrument, experiment):
         '''
         @param instrument: Valid instrument as string
@@ -390,28 +298,6 @@ class ICat(object):
         except Exception as e:
             self.dumper.dump_exception(e, "Communication with ICAT server failed.")
             return None
-
-    def get_runs_meta(self, instrument, experiment):
-        """
-        Similar to get_run_ranges_meta but with runs as list
-        But returns:
-        @return:
-        {u'proposal': {u'@id': u'IPTS-9868',
-                       u'createTime': u'2013-08-19T18:58:56.688-04:00',
-                       u'runRange': [40136,
-                                     40137,
-                                     40138,
-                                     (..................)
-                                     42400,
-                                     42401,
-                                     42402,
-                                     42403],
-                       u'title': u'Vanadium 5x5 White beam><E=110meV, T0=150Hz, Att1\n slitPacks: FC1=SEQ-700-3.5-AST FC2=SEQ-100-2.0-AST'}}
-        """
-        raw_ranges = self.get_run_ranges_meta(instrument, experiment)
-        ranges = self._hyphen_range(raw_ranges["proposal"]["runRange"])
-        raw_ranges["proposal"]["runRange"] = self._parse_json("[" + ranges + "]")
-        return raw_ranges
 
     def get_runs_all(self, instrument, experiment):
         '''
@@ -615,9 +501,7 @@ if __name__ == "__main__":
     pprint(icat.get_experiments("SEQ"))
     pprint(icat.get_experiments_meta("SEQ"))
     pprint(icat.get_run_ranges("SEQ", 'IPTS-9868'))
-    pprint(icat.get_runs("SEQ", 'IPTS-9868'))
     pprint(icat.get_run_ranges_meta("SEQ", 'IPTS-9868'))
-    pprint(icat.get_runs_meta("SEQ", 'IPTS-9868'))
     pprint(icat.get_runs_all("SEQ", 'IPTS-9868'))
     pprint(icat.get_run_info("SEQ", '42401'))
     pprint(icat.get_run_info_meta_only("SEQ", '42401'))
