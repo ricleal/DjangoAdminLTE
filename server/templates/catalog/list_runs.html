@@ -4,6 +4,8 @@
 {% block head %}
 <!-- DataTables -->
 <link rel="stylesheet" href="{% static 'AdminLTE_plugins/datatables/dataTables.bootstrap.css' %}">
+<!-- Our internal functions -->
+<script src="{% static 'js/sns.js' %}"></script>
 {% endblock head %}
 {% block content %}
 
@@ -49,7 +51,7 @@
                             <tr>
                                 <td>{{run.id}}</td>
                                 <td>{{run.title}}</td>
-                                <td class="text-right">{{run.protonCharge  }}</td>
+                                <td class="text-right">{{ run.protonCharge }}</td>
                                 <td>{{run.startTime |  date}}</td>
                                 <td>{{run.endTime |  date}}</td>
                                 <td class="text-right">{{run.duration | floatformat }}</td>

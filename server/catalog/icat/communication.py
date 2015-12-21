@@ -28,7 +28,7 @@ Do not implement here any filtering to the output json!!!
 DEFAULT_ICAT_DOMAIN = "icat.sns.gov"
 DEFAULT_ICAT_PORT = 2080
 
-TIMEOUT = 3
+TIMEOUT = 5
 HEADERS = {"Accept": "application/json"}
 
 class IDumper():
