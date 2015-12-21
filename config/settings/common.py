@@ -169,6 +169,7 @@ TEMPLATES = [
             # See: https://docs.djangoproject.com/en/dev/ref/settings/#template-context-processors
             'context_processors': [
                 'django.template.context_processors.debug',
+                # for sessions: {{ request.session.key }}
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.template.context_processors.i18n',
@@ -177,7 +178,6 @@ TEMPLATES = [
                 'django.template.context_processors.tz',
                 'django.contrib.messages.context_processors.messages',
                 # Your stuff: custom template context processors go here
-                "server.users.context_processor.user",
             ],
         },
     },
@@ -324,8 +324,6 @@ from .common_ldap import *
 # Location of root django.contrib.admin URL, use {% url 'admin:index' %}
 ADMIN_URL = r'^admin/'
 
-# Your common stuff: Below this line define 3rd party library settings
-GRAVATAR_URL = "http://www.gravatar.com/avatar/"
 
 #   ICAT server settings
 ICAT_DOMAIN = 'icat.sns.gov'

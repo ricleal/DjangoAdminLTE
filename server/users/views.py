@@ -13,7 +13,7 @@ def perform_login(request):
         Perform user authentication
     """
     user = None
-    
+
     if request.method == 'POST':
         username = request.POST["username"]
         password = request.POST["password"]
@@ -40,3 +40,20 @@ def perform_logout(request):
     """
     logout(request)
     return redirect(reverse("index"))
+
+from django.contrib.auth.signals import user_logged_in
+
+import hashlib
+
+# Your common stuff: Below this line define 3rd party library settings
+GRAVATAR_URL = "http://www.gravatar.com/avatar/"
+
+def build_avatar_link(sender, user, request, **kwargs):
+    '''
+    Adds  a gravatar key,value to the session object
+    '''
+    if request.user.is_authenticated():
+        gravatar_url = GRAVATAR_URL+hashlib.md5(request.user.email).hexdigest()+'?d=identicon'
+        request.session['gravatar_url'] = gravatar_url
+
+user_logged_in.connect(build_avatar_link)
