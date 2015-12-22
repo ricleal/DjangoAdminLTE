@@ -1,5 +1,13 @@
 # Production
 
+
+## RHEL7 Pre-setup
+```
+sudo yum install nginx uwsgi
+sudo yum install python-pip
+sudo yum install python-virtualenv
+```
+
 ## Clone:
 ```
 shh -X reduction.sns.gov

@@ -33,6 +33,12 @@ This file must saved as ```config/settings/.env```.
 
 See [docs/database.md](docs/database.md).
 
+## webserber
+
+nginx : Only for production or Development!
+
+See [docs/nginx.md](docs/nginx.md).
+
 ## Setup the the virtual environment:
 ```
 virtualenv env
