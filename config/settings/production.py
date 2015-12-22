@@ -107,7 +107,7 @@ LOGGING = {
 ADMIN_URL = env('ADMIN_URL')
 
 # Your production stuff: Below this line define 3rd party library settings
-STATIC_ROOT = '/var/nginx/reduction_service/static'
+STATIC_ROOT = '/var/nginx/reduction_service/DjangoAdminLTE/static'
 
 # For NGINX
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')

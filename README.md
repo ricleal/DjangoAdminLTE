@@ -98,8 +98,15 @@ Clone of projects:
 AdminLTE:
 https://github.com/almasaeed2010/AdminLTE
 
+```
+git clone  git@github.com:almasaeed2010/AdminLTE.git
+```
 bootstrap:
 https://github.com/twbs/bootstrap
+
+```
+git clone git@github.com:twbs/bootstrap.git
+```
 
 - static has links to:
 
