@@ -9,6 +9,14 @@ sudo yum install python-virtualenv
 ```
 
 ## start the service:
-```
+
+``` bash
+# Configure Postgres to start when the server boots:
+# Ubuntu
 sudo service nginx start
+# redHat
+sudo systemctl start nginx
+sudo systemctl enable nginx # enable at startup
+
+
 ```
