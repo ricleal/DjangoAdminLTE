@@ -151,3 +151,12 @@ sudo service nginx restart
 
 nohup sudo -E uwsgi --ini nginx/reduction_uwsgi.ini &
 ```
+
+## Open ports if needed (REHL7)
+
+```
+sudo firewall-cmd  --zone=public --add-port=80/tcp --permanent
+sudo firewall-cmd  --zone=public --add-port=443/tcp --permanent
+sudo firewall-cmd  --reload
+
+```
