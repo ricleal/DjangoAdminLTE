@@ -21,7 +21,7 @@ sudo systemctl enable postgresql-9.4
 # Init db
 ## Ubuntu
 sudo postgresql-setup initdb
-## REHL7
+## RHEL7
 sudo /usr/pgsql-9.4/bin/postgresql94-setup initdb
 
 # start service
@@ -55,6 +55,10 @@ local   all             all                                     ident
 # IPv4 local connections:
 host    all             all             127.0.0.1/32            md5
 ```
+
+Note:
+To access the database through the command line (i.e. `psql`) we need to use `ident`.
+From django we need `md5`. **Need to confirm this!**.
 
 Restart postgres:
 ```

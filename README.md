@@ -1,4 +1,7 @@
-# Start
+# New Reduction server
+
+Based on: [AdminLTE Control Panel Template](https://almsaeedstudio.com/).
+
 
 ## Assumptions
 
@@ -33,12 +36,6 @@ This file must saved as ```config/settings/.env```.
 
 See [docs/database.md](docs/database.md).
 
-## webserber
-
-nginx : Only for production or Development!
-
-See [docs/nginx.md](docs/nginx.md).
-
 ## Setup the the virtual environment:
 ```
 virtualenv env
@@ -46,58 +43,23 @@ source env/bin/activate
 pip install -r config/requirements/local.txt
 ```
 
-## Run server:
+## Run Django embebed server (only for local testing/development!):
 
 ```
 ./manage.py makemigrations
-```
-```
-Migrations for 'admin':
-  0001_initial.py:
-    - Create model LogEntry
-Migrations for 'contenttypes':
-  0001_initial.py:
-    - Create model ContentType
-    - Alter unique_together for contenttype (1 constraint(s))
-Migrations for 'auth':
-  0001_initial.py:
-    - Create model User
-    - Create model Group
-    - Create model Permission
-    - Add field permissions to group
-    - Add field groups to user
-    - Add field user_permissions to user
-    - Alter unique_together for permission (1 constraint(s))
-Migrations for 'sessions':
-  0001_initial.py:
-    - Create model Session
-```
-
-```
 ./manage.py migrate
-```
-```
-Operations to perform:
-  Apply all migrations: admin, contenttypes, auth, sessions
-Running migrations:
-  Rendering model states... DONE
-  Applying contenttypes.0001_initial... OK
-  Applying auth.0001_initial... OK
-  Applying admin.0001_initial... OK
-  Applying sessions.0001_initial... OK
-```
-
-```
 ./manage.py runserver
 ```
-### Folders
 
-- env
+## Folders
 
-Where the virstula environment is created
+Explanation of the folders:
 
+**`env`**:
 
-- contrib
+Where the virtual environment is created
+
+**`contrib`**:
 
 Clone of projects:
 
@@ -114,8 +76,21 @@ https://github.com/twbs/bootstrap
 git clone git@github.com:twbs/bootstrap.git
 ```
 
-- static has links to:
-
+Note that `server/static` has links to the `contrib` folder:
+```
 AdminLTE -> ../contrib/AdminLTE/dist/
 AdminLTE_plugins -> ../contrib/AdminLTE/plugins/
 bootstrap -> ../contrib/bootstrap/dist/
+```
+
+## Web Server (Mainly Production)
+
+NGINX : Only for production or Development!
+
+uWSGI: Standalone for Development and will communicate with NGINX for production.
+
+See [docs/nginx.md](docs/nginx.md).
+
+TODO: Not finished yet!
+
+## TODO: Deployment script!

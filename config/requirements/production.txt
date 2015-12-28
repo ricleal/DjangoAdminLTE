@@ -2,4 +2,4 @@
 -r base.txt
 
 #
-django-secure
+django-secure>=1.0.1
