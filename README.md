@@ -67,13 +67,18 @@ AdminLTE:
 https://github.com/almasaeed2010/AdminLTE
 
 ```
-git clone  git@github.com:almasaeed2010/AdminLTE.git
+git clone git@github.com:almasaeed2010/AdminLTE.git
+# or
+git clone https://github.com/almasaeed2010/AdminLTE.git
 ```
-bootstrap:
+
+Bootstrap:
 https://github.com/twbs/bootstrap
 
 ```
 git clone git@github.com:twbs/bootstrap.git
+# or
+git clone https://github.com/twbs/bootstrap.git
 ```
 
 Note that `server/static` has links to the `contrib` folder:

@@ -32,7 +32,21 @@ python manage.py collectstatic
 
 Open a browser: `http://localhost:8001/`.
 
-## Start the service:
+## uWSGI as service:
+
+Copy file `config/deploy/nginx/uwsgi.conf` to `/etc/init/uwsgi.conf`.
+
+This is the configuration for service: `/etc/init.d/uwsgi`.
+
+Start the service:
+```
+# Ubuntu:
+sudo service uwsgi start
+
+
+```
+
+## Start the web server:
 
 ``` bash
 # Configure Postgres to start when the server boots:
