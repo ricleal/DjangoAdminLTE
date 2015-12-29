@@ -118,7 +118,7 @@ class Catalog(object):
         '''
 
         data_json = self.icat.get_instruments()
-        if data_json.has_key('instrument'):
+        if data_json is not None and data_json.has_key('instrument'):
             return data_json['instrument']
         else:
             self.dumper.dump_error("ICAT did not return the expected result....")
@@ -215,7 +215,7 @@ class Catalog(object):
                    42403]}
             """
             raw_ranges = self.icat.get_run_ranges(instrument, experiment)
-            if raw_ranges.has_key('runRange'):
+            if raw_ranges is not None and raw_ranges.has_key('runRange'):
                 ranges = self._hyphen_range(raw_ranges["runRange"])
             else:
                 self.dumper.dump_error("ICAT did not return the expected result....")
