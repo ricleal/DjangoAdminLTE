@@ -57,8 +57,11 @@ docs/_build/
 target/
 
 #Ricardo
-/contrib
+/static
 /env_*
 /config/settings/.env
 *.*~
-/static
+/contrib/AdminLTE/*
+/contrib/bootstrap/*
+/.settings/
+

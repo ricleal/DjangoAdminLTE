@@ -100,7 +100,7 @@ MANAGERS = ADMINS
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#databases
 DATABASES = {
     'default': env.db(), # Raises ImproperlyConfigured exception if DATABASE_URL not in os.environ
-    'extra': env.db('POSTGRES_URL', default='postgres:///reduction')
+    #'extra': env.db('POSTGRES_URL', default='postgres:///reduction')
 }
 
 DATABASES['default']['ATOMIC_REQUESTS'] = True

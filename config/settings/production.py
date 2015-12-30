@@ -21,7 +21,7 @@ from .common import *  # noqa
 SECRET_KEY = env("SECRET_KEY")
 
 # This ensures that Django will be able to detect a secure connection
-# properly on Heroku.
+# properly on Heroku and NGINX
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # django-secure
@@ -108,6 +108,3 @@ ADMIN_URL = env('ADMIN_URL')
 
 # Your production stuff: Below this line define 3rd party library settings
 STATIC_ROOT = '/var/nginx/reduction_service/static'
-
-# For NGINX
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
