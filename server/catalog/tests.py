@@ -51,4 +51,4 @@ class TestCatalogCalls(TestCase):
         self.handle_session_and_messages(request)
         response = list_iptss(request,instrument = 'MANDI')
         self.assertEqual(response.status_code, 200)
-        
+    

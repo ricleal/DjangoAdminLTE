@@ -3,6 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
 import logging
+import json
+import os.path
 
 from .icat.facade import Catalog
 from .permissions import user_has_permission_to_see_this_ipts
@@ -14,8 +16,8 @@ def list_instruments(request):
     """
 
     """
-    icat = Catalog(request)
-    instruments = icat.get_instruments()
+    instrument = Instruments()
+    instruments = instrument.get_instruments()
     return render(request, 'catalog/list_instruments.html',
         {'instruments' : instruments})
 
@@ -37,3 +39,24 @@ def list_runs(request, instrument, ipts):
     request.session['instrument'] = instrument
     request.session['ipts'] = ipts
     return render(request, 'catalog/list_runs.html', {'runs' : runs})
+
+
+#### Aux FUNCTIONS
+class Instruments():
+    def __init__(self,filename="instruments.json"):
+        self._filename = os.path.join(os.path.dirname(os.path.realpath(__file__)), 
+                                      filename)
+        self._instruments = None
+        logger.debug("Getting instruments from %s"%self._filename)
+             
+    def _parse_instruments(self):
+        with open(self._filename) as data_file:    
+            self._instruments = json.load(data_file)
+    
+    def get_instruments(self):
+        if self._instruments is None:
+            self._parse_instruments()
+        return self._instruments
+            
+    
+            
