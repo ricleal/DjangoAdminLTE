@@ -1,4 +1,4 @@
-[
+INSTRUMENT_DESCRIPTIONS = [
   {
     "id":"BL-1A",
     "name":"USANS",
@@ -100,3 +100,12 @@
     "description":"Wide Angular-Range Chopper Spectrometer"
   }
 ]
+
+INSTRUMENT_MODULES = { 
+    "BIOSANS" : { 
+      "model_common" : "server.configuration.models.BioSANSCommon",
+      "model_scan" : "server.configuration.models.BioSANSScan",
+      "form_common" : "server.configuration.forms.BioSANSCommon",
+      "form_scan" : "server.configuration.forms.BioSANSScan",
+    }
+}

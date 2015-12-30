@@ -48,6 +48,7 @@ THIRD_PARTY_APPS = (
 LOCAL_APPS = (
     'server.users',
     'server.catalog',
+    'server.configuration',
 )
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -329,3 +330,5 @@ ADMIN_URL = r'^admin/'
 #   ICAT server settings
 ICAT_DOMAIN = 'icat.sns.gov'
 ICAT_PORT = 2080
+
+from .instruments import *
