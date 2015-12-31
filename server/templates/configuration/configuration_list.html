@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load humanize %}
+{% block head %}
+<!-- DataTables -->
+<link rel="stylesheet" href="{% static 'AdminLTE_plugins/datatables/dataTables.bootstrap.css' %}">
+<!-- Our internal functions -->
+<script src="{% static 'js/sns.js' %}"></script>
+{% endblock head %}
+{% block content %}
+
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <h1>
+        Configurations
+        <small>{{request.session.instrument}}</small>
+    </h1>
+    <ol class="breadcrumb">
+        <li><a href="{% url 'catalog:list_iptss' request.session.instrument %}">{{request.session.instrument}}</a></li>
+        <li class="active">Configurations</li>
+    </ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+    <!-- Your Page Content Here -->
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">Experiment list</h3>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <table id="tableruns" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Run</th>
+                                <th>Title</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for object in object_list %}
+                            <tr>
+                                <td>{{object.id}}</td>
+                                <td>{{object.title}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>Run</th>
+                                <th>Title</th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <!-- /.box -->
+        </div>
+        <!-- /.col -->
+    </div>
+    <!-- /.row -->
+</section>
+<!-- /.content -->
+{% endblock %}
+
+{% block body_end %}
+  <!-- DataTables -->
+  <script src="{% static 'AdminLTE_plugins/datatables/jquery.dataTables.min.js' %}"></script>
+  <script src="{% static 'AdminLTE_plugins/datatables/dataTables.bootstrap.min.js' %}"></script>
+  <!-- page script -->
+  <script>
+    $(function () {
+      $("#tableruns").DataTable({
+        "lengthMenu": [[20, 50, 100, -1], [20, 50, 100, "All"]],
+        //"order": [[ 3, 'desc' ]],
+        "paging": true,
+        "lengthChange": true,
+        "searching": true,
+        "ordering": true,
+        "info": true,
+        "autoWidth": true
+    });
+    });
+  </script>
+</script>
+{% endblock body_end %}

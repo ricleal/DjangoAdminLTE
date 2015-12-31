@@ -14,8 +14,8 @@
 <!-- Main content -->
 <section class="content">
 	<!-- Your Page Content Here -->
-	
-	
+
+
 	<div class="row">
         <div class="col-xs-12">
           <div class="box">
@@ -30,8 +30,8 @@
                   href="{% url 'catalog:list_iptss' instrument=instrument.name|upper %}"> {{instrument.id}}</a></td>
                   <td><strong>{{instrument.name}}</strong></td>
                   <td>{{instrument.description}}</td>
-                  <td><a class="btn btn-primary"  data-toggle="tooltip" data-placement="bottom" title="Click to see all configurations for {{instrument.name}}."> Configurations</a></td>
-				  <td><a class="btn btn-primary"  data-toggle="tooltip" data-placement="bottom" title="Click to see all jobs for {{instrument.name}}."> Jobs</a></td>
+                  <td><a class="btn btn-primary"  data-toggle="tooltip" data-placement="bottom" title="Click to see all configurations for {{instrument.name}}." href="{% url 'configuration:configuration_list' %}"> Configurations</a></td>
+				  				<td><a class="btn btn-primary"  data-toggle="tooltip" data-placement="bottom" title="Click to see all jobs for {{instrument.name}}."> Jobs</a></td>
                 </tr>
                 {% endfor %}
               </table>
@@ -41,7 +41,7 @@
           <!-- /.box -->
         </div>
       </div>
-	
+
 
 </section>
 <!-- /.content -->
