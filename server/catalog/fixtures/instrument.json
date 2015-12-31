@@ -1,0 +1,181 @@
+[{
+  "model": "catalog.instrument",
+  "pk": 1,
+  "fields": {
+    "beamline": "BL-1A",
+    "name": "USANS",
+    "description": "Ultra-Small-Angle Neutron Scattering Instrument",
+    "visible": true
+  }
+}, {
+  "model": "catalog.instrument",
+  "pk": 2,
+  "fields": {
+    "beamline": "BL-1B",
+    "name": "NOMAD",
+    "description": "Nanoscale-Ordered Materials Diffractometer",
+    "visible": true
+  }
+}, {
+  "model": "catalog.instrument",
+  "pk": 3,
+  "fields": {
+    "beamline": "BL-2",
+    "name": "BASIS",
+    "description": "Backscattering Spectrometer",
+    "visible": true
+  }
+}, {
+  "model": "catalog.instrument",
+  "pk": 4,
+  "fields": {
+    "beamline": "BL-3",
+    "name": "SNAP",
+    "description": "Spallation Neutrons and Pressure Diffractometer",
+    "visible": true
+  }
+}, {
+  "model": "catalog.instrument",
+  "pk": 5,
+  "fields": {
+    "beamline": "BL-4A",
+    "name": "MR",
+    "description": "Magnetism Reflectometer",
+    "visible": true
+  }
+}, {
+  "model": "catalog.instrument",
+  "pk": 6,
+  "fields": {
+    "beamline": "BL-4B",
+    "name": "LR",
+    "description": "Liquids Reflectometer",
+    "visible": true
+  }
+}, {
+  "model": "catalog.instrument",
+  "pk": 7,
+  "fields": {
+    "beamline": "BL-5",
+    "name": "CNCS",
+    "description": "Cold Neutron Chopper Spectrometer",
+    "visible": true
+  }
+}, {
+  "model": "catalog.instrument",
+  "pk": 8,
+  "fields": {
+    "beamline": "BL-6",
+    "name": "EQ-SANS",
+    "description": "Extended Q-Range Small-Angle Neutron Scattering Diffractometer",
+    "visible": true
+  }
+}, {
+  "model": "catalog.instrument",
+  "pk": 9,
+  "fields": {
+    "beamline": "BL-7",
+    "name": "VULCAN",
+    "description": "Engineering Materials Diffractometer",
+    "visible": true
+  }
+}, {
+  "model": "catalog.instrument",
+  "pk": 10,
+  "fields": {
+    "beamline": "BL-9",
+    "name": "CORELLI",
+    "description": "Elastic Diffuse Scattering Spectrometer",
+    "visible": true
+  }
+}, {
+  "model": "catalog.instrument",
+  "pk": 11,
+  "fields": {
+    "beamline": "BL-10",
+    "name": "VENUS",
+    "description": "Versatile Neutron Imaging Instrument",
+    "visible": true
+  }
+}, {
+  "model": "catalog.instrument",
+  "pk": 12,
+  "fields": {
+    "beamline": "BL-11A",
+    "name": "POWGEN",
+    "description": "Powder Diffractometer",
+    "visible": true
+  }
+}, {
+  "model": "catalog.instrument",
+  "pk": 13,
+  "fields": {
+    "beamline": "BL-11B",
+    "name": "MANDI",
+    "description": "Macromolecular Neutron Diffractometer",
+    "visible": true
+  }
+}, {
+  "model": "catalog.instrument",
+  "pk": 14,
+  "fields": {
+    "beamline": "BL-12",
+    "name": "TOPAZ",
+    "description": "Single-Crystal Diffractometer",
+    "visible": true
+  }
+}, {
+  "model": "catalog.instrument",
+  "pk": 15,
+  "fields": {
+    "beamline": "BL-13",
+    "name": "FNPB",
+    "description": "Fundamental Neutron Physics Beam Line",
+    "visible": true
+  }
+}, {
+  "model": "catalog.instrument",
+  "pk": 16,
+  "fields": {
+    "beamline": "BL-14B",
+    "name": "HYSPEC",
+    "description": "Hybrid Spectrometer",
+    "visible": true
+  }
+}, {
+  "model": "catalog.instrument",
+  "pk": 17,
+  "fields": {
+    "beamline": "BL-15",
+    "name": "NSE",
+    "description": "Neutron Spin Echo Spectrometer",
+    "visible": true
+  }
+}, {
+  "model": "catalog.instrument",
+  "pk": 18,
+  "fields": {
+    "beamline": "BL-16B",
+    "name": "VISION",
+    "description": "Vibrational Spectrometer",
+    "visible": true
+  }
+}, {
+  "model": "catalog.instrument",
+  "pk": 19,
+  "fields": {
+    "beamline": "BL-17",
+    "name": "SEQUOIA",
+    "description": "Fine-Resolution Fermi Chopper Spectrometer",
+    "visible": true
+  }
+}, {
+  "model": "catalog.instrument",
+  "pk": 20,
+  "fields": {
+    "beamline": "BL-18",
+    "name": "ARCS",
+    "description": "Wide Angular-Range Chopper Spectrometer",
+    "visible": true
+  }
+}]

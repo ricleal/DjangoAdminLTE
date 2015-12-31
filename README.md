@@ -48,6 +48,8 @@ pip install -r config/requirements/local.txt
 ```
 ./manage.py makemigrations
 ./manage.py migrate
+# Load instrument data!!
+./manage.py loaddata instrument
 ./manage.py runserver
 ```
 
