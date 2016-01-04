@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -9,15 +11,16 @@ import os.path
 
 from .icat.facade import Catalog
 from .permissions import user_has_permission_to_see_this_ipts
+from .models import Instrument
 
 logger = logging.getLogger('catalog')
 
 @login_required
 def list_instruments(request):
     """
-
+    Get instrument list + descriptions from the database
     """
-    instruments = settings.INSTRUMENT_DESCRIPTIONS
+    instruments = Instrument.objects.visible_instruments()
     return render(request, 'catalog/list_instruments.html',
         {'instruments' : instruments})
 

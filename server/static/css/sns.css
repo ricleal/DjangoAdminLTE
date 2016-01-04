@@ -1,0 +1,6 @@
+/*Overwrites AdminLTE definitions!*/
+
+.layout-boxed {
+  background: none;
+  background-color: white;
+}

@@ -331,4 +331,4 @@ ADMIN_URL = r'^admin/'
 ICAT_DOMAIN = 'icat.sns.gov'
 ICAT_PORT = 2080
 
-from .instruments import *
+from config.settings.common_instruments import *

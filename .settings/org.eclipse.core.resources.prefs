@@ -2,3 +2,5 @@ eclipse.preferences.version=1
 encoding//config/settings/common.py=utf-8
 encoding//config/settings/local.py=utf-8
 encoding//config/settings/production.py=utf-8
+encoding//server/catalog/models.py=utf-8
+encoding//server/catalog/views.py=utf-8
