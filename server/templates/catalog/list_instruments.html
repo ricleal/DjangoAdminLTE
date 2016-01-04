@@ -38,7 +38,7 @@
 							<td><a class="btn btn-primary" data-toggle="tooltip"
 								data-placement="bottom"
 								title="Click to see all configurations for {{instrument.name}}."
-								href="{% url 'configuration:configuration_list' %}">
+								href="{% url 'configuration:configuration_list' instrument=instrument.name|upper %}">
 									Configurations</a></td>
 							<td><a class="btn btn-primary" data-toggle="tooltip"
 								data-placement="bottom"

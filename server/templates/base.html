@@ -8,7 +8,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>SNS Reduction Service</title>
+  {% block title_tag %}<title>SNS Reduction Service</title>{% endblock %}
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.5 -->
@@ -140,13 +140,29 @@ desired effect
         <li class="header">Options:</li>
         <!-- Optionally, you can add icons to the links -->
         <li class="active"><a href="{% url 'catalog:list_instruments' %}"><i class="fa fa-link"></i> <span>Catalog</span></a></li>
-        <li><a href="#"><i class="fa fa-link"></i> <span>Configurations</span></a></li>
+        <li class="treeview">
+          <a href="#"><i class="fa fa-link"></i> <span>Configurations</span> <i class="fa fa-angle-left pull-right"></i></a>
+          <ul class="treeview-menu">
+            <li><a href="#" data-toggle="tooltip"
+							data-placement="right"
+							title="Create a new configuration from scratch.">New</a></li>
+            <li><a href="#" data-toggle="tooltip"
+							data-placement="right"
+							title="See all configurations already created.">All</a></li>
+            <li><a href="#" data-toggle="tooltip"
+							data-placement="right"
+							title="See all configurations submitted.">Submitted</a></li>
+          </ul>
+        </li>
         <li class="treeview">
           <a href="#"><i class="fa fa-link"></i> <span>Jobs</span> <i class="fa fa-angle-left pull-right"></i></a>
           <ul class="treeview-menu">
-            <li><a href="#">Completed </a></li>
-            <li><a href="#">Submitted</a></li>
-            <li><a href="#">To Submit</a></li>
+            <li><a href="#" data-toggle="tooltip"
+							data-placement="right"
+							title="List of jobs completed Successfully or not!).">Completed </a></li>
+            <li><a href="#">Running</a></li>
+            <li><a href="#">Successful</a></li>
+            <li><a href="#">Unsuccessful</a></li>
           </ul>
         </li>
       </ul>

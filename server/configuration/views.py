@@ -19,11 +19,19 @@ def import_string(import_name):
     except (ImportError, AttributeError), e:
         print e
 
-# Create your views here.
-#@login_required
 class ConfigurationList(LoginRequiredMixin,ListView):
+    '''
+    List all configurations.
+    '''
     template_name = 'configuration/configuration_list.html'
-    # def get(self, request, *args, **kwargs):
-    #     instrument = request.session['instrument']
-    #     self.model = import_string(settings.INSTRUMENT_MODULES[instrument]["model_common"])
-    model = import_string(settings.INSTRUMENT_MODULES['BIOSANS']["model_common"])
+
+    def get_queryset(self):
+        instrument = self.kwargs['instrument']      
+        self.request.session['instrument'] = instrument
+        model = import_string(settings.INSTRUMENT_MODULES[instrument]["model_common"])
+        return model.objects.filter(owner=self.request.user, instrument__name = instrument)
+
+
+class ConfigurationDetail(LoginRequiredMixin,DetailView):
+    template_name = 'configuration/configuration_detail.html'
+    model = import_string(settings.INSTRUMENT_MODULES["USANS"]["model_common"])

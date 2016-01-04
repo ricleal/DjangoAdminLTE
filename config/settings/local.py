@@ -69,3 +69,6 @@ INSTALLED_APPS += (
 # DEVELOPER_IDS = ['m2d', '3qr', 'rhf']
 #
 # HIDE_RUN_DETAILS = False
+
+# Just in case the DEBUG is set to False in the .env file
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['reduction.sns.gov','lealpc.ornl.gov'])

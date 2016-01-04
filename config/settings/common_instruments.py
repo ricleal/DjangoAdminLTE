@@ -13,5 +13,11 @@ INSTRUMENT_MODULES = {
       "model_scan" : "server.configuration.models.BioSANSScan",
       "form_common" : "server.configuration.forms.BioSANSCommon",
       "form_scan" : "server.configuration.forms.BioSANSScan",
+    },
+    "USANS" : { 
+      "model_common" : "server.configuration.models.USANSSANSCommon",
+      "model_scan" : "server.configuration.models.USANSSANSScan",
+      "form_common" : "server.configuration.forms.USANSSANSCommon",
+      "form_scan" : "server.configuration.forms.USANSSANSScan",
     }
 }

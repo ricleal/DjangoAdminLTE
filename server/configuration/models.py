@@ -18,9 +18,9 @@ class Configuration(models.Model):
         ('3', 'TODO 2'),
     )
     instrument = models.ForeignKey(Instrument,
-        on_delete=models.CASCADE ) #, blank=True, null=True)
+        on_delete=models.CASCADE)  # , blank=True, null=True)
     owner = models.ForeignKey(User,
-        on_delete=models.CASCADE ) #, blank=True, null=True)
+        on_delete=models.CASCADE)  # , blank=True, null=True)
     ipts = models.CharField(max_length=16)
     title = models.CharField(max_length=256)
     label = models.CharField(max_length=1, choices=LABEL_TYPE_CHOICES, default='0')
@@ -29,8 +29,17 @@ class Configuration(models.Model):
     class Meta:
         abstract = True
     def __unicode__(self):
-            return self.title
+        return self.title
+    
+    @models.permalink
+    def get_absolute_url(self):
+        return ('configuration_detail_detail', [self.pk])
 
+    def get_fields(self):
+        '''
+        @return: pairs key,values for all fields of this class
+        '''
+        return [(field.name, field.value_to_string(self)) for field in self._meta.fields]
 class Scan(models.Model):
     '''
     '''
@@ -40,7 +49,13 @@ class Scan(models.Model):
     class Meta:
         abstract = True
     def __unicode__(self):
-            return self.title
+        return self.title
+    
+    def get_fields(self):
+        '''
+        @return: pairs key,values for all fields of this class
+        '''
+        return [(field.name, field.value_to_string(self)) for field in self._meta.fields]
 #
 # SANS Abstract
 #
@@ -69,4 +84,17 @@ class BioSANSCommon(SANSCommon):
 class BioSANSScan(SANSScans):
     # We can not have ForeignKey for abstract models. It has to be here!!
     configuration = models.ForeignKey(BioSANSCommon,
-                on_delete=models.CASCADE )
+                on_delete=models.CASCADE)
+
+#
+# BIOSANS
+#
+class USANSSANSCommon(SANSCommon):
+    pass
+
+class USANSSANSScan(SANSScans):
+    # We can not have ForeignKey for abstract models. It has to be here!!
+    configuration = models.ForeignKey(USANSSANSCommon,
+                on_delete=models.CASCADE,
+                related_name="scan",
+                related_query_name="scan",)
