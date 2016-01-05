@@ -29,7 +29,9 @@
         </div>
         <!-- /.box-body -->
         <div class="box-footer">
+        {% if user.profile %}
           Go to <a href="{% url 'users:profile_update' user.profile.pk %}">your profile</a> to change this.
+        {% endif %}
         </div>
         <!-- /.box-footer-->
       </div>

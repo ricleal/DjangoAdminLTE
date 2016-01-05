@@ -100,9 +100,11 @@ desired effect
               </li>
               <!-- Menu Footer-->
               <li class="user-footer">
+                {% if user.profile %}
                 <div class="pull-left">
                   <a href="{% url 'users:profile_update' user.profile.pk %}" class="btn btn-default btn-flat">Profile</a>
                 </div>
+                {% endif %}
                 <div class="pull-right">
                   <a href="{% url 'users:logout' %}" class="btn btn-default btn-flat">Sign out</a>
                 </div>

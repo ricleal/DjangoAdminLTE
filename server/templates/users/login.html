@@ -36,7 +36,7 @@
   <!-- /.login-logo -->
   <div class="login-box-body">
     <p class="login-box-msg">Sign in to start your session</p>
-
+            
     <form action="#" method="post">
     {% csrf_token %}
       <div class="form-group has-feedback">
@@ -50,6 +50,7 @@
       <div class="row">
         <div class="col-xs-8">
           <div class="checkbox icheck">
+          {{ form.non_field_errors }}
           </div>
         </div>
         <!-- /.col -->
@@ -90,6 +91,10 @@
       increaseArea: '20%' // optional
     });
   });
+  
+//  $("input").addClass("form-control has-feedback");
+ 
+  
 </script>
 </body>
 </html>
