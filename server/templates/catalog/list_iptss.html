@@ -10,12 +10,12 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
     <h1>
-        {{request.session.instrument}}
+        {{instrument}}
         <small>List of experiments</small>
     </h1>
     <ol class="breadcrumb">
         <li><a href="{% url 'catalog:list_instruments'%}"><i class="fa fa-dashboard"></i> Catalog</a></li>
-        <li class="active">{{request.session.instrument}}</li>
+        <li class="active">{{instrument}}</li>
     </ol>
 </section>
 
@@ -43,13 +43,13 @@
                         <tbody>
                             {% for ipts in iptss %}
                             <tr>
-                                <td><a href="{% url 'catalog:list_runs' request.session.instrument ipts.id %}" data-toggle="tooltip" data-placement="right" title="Click to see the runs for this experiment...">{{ipts.id}}</a></td>
+                                <td><a href="{% url 'catalog:list_runs' instrument ipts.id %}" data-toggle="tooltip" data-placement="right" title="Click to see the runs for this experiment...">{{ipts.id}}</a></td>
                                 <td>{{ipts.title}}</td>
                                 <td>{{ipts.createTime | date}}</td>
                                 <td>{{ipts.collection}}</td>
                                 <td>
                   <div class="btn-group">
-                  <button type="button" class="btn btn-default"><a href="{% url 'catalog:list_runs' request.session.instrument ipts.id %}">Runs...</a></button>
+                  <button type="button" class="btn btn-default"><a href="{% url 'catalog:list_runs' instrument ipts.id %}">Runs...</a></button>
                   <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                     <span class="caret"></span>
                     <span class="sr-only">Toggle Dropdown</span>

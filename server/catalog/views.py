@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 
 from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.conf import settings
+from django.views.generic import View, TemplateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
+from pprint import pformat
 import logging
-import json
-import os.path
 
 from .icat.facade import Catalog
 from .permissions import user_has_permission_to_see_this_ipts
@@ -15,33 +14,63 @@ from .models import Instrument
 
 logger = logging.getLogger('catalog')
 
-@login_required
-def list_instruments(request):
-    """
-    Get instrument list + descriptions from the database
-    """
-    instruments = Instrument.objects.visible_instruments()
-    return render(request, 'catalog/list_instruments.html',
-        {'instruments' : instruments})
 
-@login_required
-def list_iptss(request, instrument):
-    icat = Catalog(request)
-    iptss = icat.get_experiments_meta(instrument)
-    request.session['instrument'] = instrument
-    return render(request, 'catalog/list_iptss.html', {'iptss' : iptss})
+class InstrumentMixin(object):
+    '''
+    Context enhancer
+    mixin that sets the shared context variables:
+    instrument
+    '''
+    def get_context_data(self, **kwargs):
+        #context = super().get_context_data(**kwargs)
+        context = super(InstrumentMixin, self).get_context_data(**kwargs)
+        context["instrument"] = kwargs.get('instrument', None)
+        context["ipts"] = kwargs.get('ipts', None)
+        return context
 
-@login_required
-def list_runs(request, instrument, ipts):
-    if user_has_permission_to_see_this_ipts(request.user,instrument,ipts):
-        icat = Catalog(request)
-        runs = icat.get_runs_all(instrument, ipts)
-    else:
-        messages.error(request, "You do not have permission to see the details of the %s from %s."%(ipts,instrument))
-        runs = []
-    request.session['instrument'] = instrument
-    request.session['ipts'] = ipts
-    return render(request, 'catalog/list_runs.html', {'runs' : runs})
+class Instruments(LoginRequiredMixin,View):
+    def get(self, request):
+        instruments = Instrument.objects.visible_instruments()
+        logger.debug(pformat(instruments.values()))
+        return render(request, 'catalog/list_instruments.html',
+                      {'instruments' : instruments})
+    
+
+class IPTSs(LoginRequiredMixin,InstrumentMixin, TemplateView):
+    template_name = 'catalog/list_iptss.html'
+ 
+#     def get(self, request, instrument, *args, **kwargs):
+#         icat = Catalog(request)
+#         iptss = icat.get_experiments_meta(instrument)
+#         #logger.debug(pformat(iptss))
+#         return render(request, 'catalog/list_iptss.html', {'iptss' : iptss})
+        
+    def get_context_data(self, **kwargs):
+        icat = Catalog(self.request)
+        iptss = icat.get_experiments_meta(kwargs['instrument'])
+        context = super(IPTSs, self).get_context_data(**kwargs)
+        context['iptss'] = iptss
+        return context
+    
+
+class Runs(LoginRequiredMixin,InstrumentMixin,TemplateView):
+    template_name = 'catalog/list_runs.html'
+    
+    def get_context_data(self, **kwargs):
+        instrument = kwargs['instrument']
+        ipts = kwargs['ipts']
+        if user_has_permission_to_see_this_ipts(self.request.user,instrument,ipts):
+            icat = Catalog(self.request)
+            runs = icat.get_runs_all(instrument, ipts)
+        else:
+            # from django.http import HttpResponseForbidden
+            # return HttpResponseForbidden()
+            messages.error(self.request, "You do not have permission to see the details of the %s from %s."%(ipts,instrument))
+            runs = []
+        context = super(Runs, self).get_context_data(**kwargs)
+        context['runs'] = runs
+        return context
+
 
 
 

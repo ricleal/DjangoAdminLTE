@@ -19,8 +19,8 @@
 		<li><a href="{% url 'catalog:list_instruments'%}"><i
 				class="fa fa-dashboard"></i> Catalog</a></li>
 		<li><a
-			href="{% url 'catalog:list_iptss' request.session.instrument %}">{{request.session.instrument}}</a></li>
-		<li class="active">{{request.session.ipts}}</li>
+			href="{% url 'catalog:list_iptss' instrument %}">{{instrument}}</a></li>
+		<li class="active">{{ipts}}</li>
 	</ol>
 </section>
 

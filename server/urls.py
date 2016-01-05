@@ -20,13 +20,13 @@ from django.conf.urls import url, include, patterns
 from django.contrib import admin
 from django.conf import settings
 
-from .catalog.views import list_instruments
+from .catalog.views import Instruments
 
 # attempts to import an admin module in each installed application
 # admin.autodiscover()
 
 urlpatterns = [
-    url(r'^$', list_instruments, name='index'),
+    url(r'^$', Instruments.as_view(), name='index'),
     url(r'^admin/', admin.site.urls),
     url(r'^catalog/', include('server.catalog.urls', namespace='catalog') ),
     url(r'^users/', include('server.users.urls', namespace='users') ),

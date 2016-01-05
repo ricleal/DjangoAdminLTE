@@ -22,6 +22,8 @@ class Instrument(models.Model):
     # Attributes
     beamline = models.CharField(max_length=32, unique=True)
     name = models.CharField(max_length=32, unique=True)
+    icat_name = models.CharField(max_length=32, blank=True)
+    facility = models.CharField(max_length=32, blank=True)
     description = models.CharField(max_length=256,
                                    blank=True,
                                    verbose_name = _("description"),
