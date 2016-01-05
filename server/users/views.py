@@ -82,6 +82,9 @@ class ProfileCreate(LoginRequiredMixin,SuccessMessageMixin,CreateView):
     success_message = "Your profile was created successfully."
     
     def form_valid(self, form):
+        '''
+        Add user to the form as it is not shown to the user
+        '''
         user = self.request.user
         form.instance.user = user
         return super(ProfileCreate, self).form_valid(form)

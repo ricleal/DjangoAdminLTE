@@ -21,10 +21,21 @@ def import_string(import_name):
 
 
 class SetModelMixin(object):
+    instrument = None
+    
     def dispatch(self, request, *args, **kwargs):
-        instrument = self.request.user.profile.instrument.name
-        SetModelMixin.model = import_string(settings.INSTRUMENT_MODULES[instrument]["model_common"])
+        '''
+        If instrument is not passed in the argument, uses the default
+        '''
+        self.instrument = kwargs.get("instrument",self.request.user.profile.instrument.name)
+        SetModelMixin.model = import_string(settings.INSTRUMENT_MODULES[self.instrument]["model_common"])
         return super(SetModelMixin, self).dispatch(request, *args, **kwargs)
+    
+    def get_context_data(self, **kwargs):
+        context = super(SetModelMixin, self).get_context_data(**kwargs)
+        context['instrument'] = self.instrument
+        return context
+    
 
 class ConfigurationList(LoginRequiredMixin,SetModelMixin,ListView):
     '''
@@ -39,3 +50,8 @@ class ConfigurationDetail(LoginRequiredMixin,SetModelMixin,DetailView):
     '''
     template_name = 'configuration/configuration_detail.html'
     
+class ConfigurationCreate(LoginRequiredMixin,SetModelMixin,CreateView):
+    '''
+    Detail of a configuration
+    '''
+    template_name = 'configuration/configuration_detail.html'

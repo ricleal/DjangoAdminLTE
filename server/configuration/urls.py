@@ -4,7 +4,11 @@ from . import views
 
 urlpatterns = [
     url(r'^$', views.ConfigurationList.as_view(), name='configuration_list'),
+    url(r'^(?P<instrument>[\w\-]+)/$', views.ConfigurationList.as_view(), name='configuration_list'),
+    
     url(r'^(?P<pk>\d+)/$', views.ConfigurationDetail.as_view(), name='configuration_detail'),
+    url(r'^(?P<instrument>[\w\-]+)/(?P<pk>\d+)/$', views.ConfigurationDetail.as_view(), name='configuration_detail'),
+    
     #url(r'^(?P<pk>\d+)/$', views.ConfigurationUpdate.as_view(), name='configuration_update'),
     #url(r'^(?P<pk>\d+)/$', views.ConfigurationCreate.as_view(), name='configuration_create'),
     

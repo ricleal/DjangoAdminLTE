@@ -17,7 +17,7 @@
 	</h1>
 	<ol class="breadcrumb">
 		<li class="active">Configuration</li>
-		<li>{{request.user.profile.instrument}}</li>
+		<li>{{ instrument|default:request.user.profile.instrument }}</li>
 		<li>{{ object }}</li>
 	</ol>
 </section>
