@@ -19,19 +19,23 @@ def import_string(import_name):
     except (ImportError, AttributeError), e:
         print e
 
-class ConfigurationList(LoginRequiredMixin,ListView):
+
+class SetModelMixin(object):
+    def dispatch(self, request, *args, **kwargs):
+        instrument = self.request.user.profile.instrument.name
+        SetModelMixin.model = import_string(settings.INSTRUMENT_MODULES[instrument]["model_common"])
+        return super(SetModelMixin, self).dispatch(request, *args, **kwargs)
+
+class ConfigurationList(LoginRequiredMixin,SetModelMixin,ListView):
     '''
     List all configurations.
     '''
     template_name = 'configuration/configuration_list.html'
 
-    def get_queryset(self):
-        instrument = self.kwargs['instrument']      
-        self.request.session['instrument'] = instrument
-        model = import_string(settings.INSTRUMENT_MODULES[instrument]["model_common"])
-        return model.objects.filter(owner=self.request.user, instrument__name = instrument)
 
-
-class ConfigurationDetail(LoginRequiredMixin,DetailView):
+class ConfigurationDetail(LoginRequiredMixin,SetModelMixin,DetailView):
+    '''
+    Detail of a configuration
+    '''
     template_name = 'configuration/configuration_detail.html'
-    model = import_string(settings.INSTRUMENT_MODULES["USANS"]["model_common"])
+    

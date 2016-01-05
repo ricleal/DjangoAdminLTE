@@ -16,9 +16,9 @@
 		Configuration  <small>{{ object.id }}</small>
 	</h1>
 	<ol class="breadcrumb">
-		<li><a
-			href="{% url 'catalog:list_iptss' request.session.instrument %}">{{request.session.instrument}}</a></li>
-		<li class="active">Configurations</li>
+		<li class="active">Configuration</li>
+		<li>{{request.user.profile.instrument}}</li>
+		<li>{{ object }}</li>
 	</ol>
 </section>
 

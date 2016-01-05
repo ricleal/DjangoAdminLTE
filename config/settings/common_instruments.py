@@ -14,10 +14,10 @@ INSTRUMENT_MODULES = {
       "form_common" : "server.configuration.forms.BioSANSCommon",
       "form_scan" : "server.configuration.forms.BioSANSScan",
     },
-    "USANS" : { 
-      "model_common" : "server.configuration.models.USANSSANSCommon",
-      "model_scan" : "server.configuration.models.USANSSANSScan",
-      "form_common" : "server.configuration.forms.USANSSANSCommon",
-      "form_scan" : "server.configuration.forms.USANSSANSScan",
+    "EQ-SANS" : { 
+      "model_common" : "server.configuration.models.EQSANSCommon",
+      "model_scan" : "server.configuration.models.EQSANSScan",
+      "form_common" : "server.configuration.forms.EQSANSCommon",
+      "form_scan" : "server.configuration.forms.EQSANSScan",
     }
 }
