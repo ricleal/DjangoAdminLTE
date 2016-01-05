@@ -7,6 +7,12 @@ from django.contrib.auth import login, logout, authenticate
 from django.template import RequestContext
 from django.contrib import messages
 from django.contrib.auth.signals import user_logged_in
+from django.core.urlresolvers import reverse_lazy
+from django.views.generic import CreateView, UpdateView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.messages.views import SuccessMessageMixin
+
+from .models import UserProfile
 
 
 def perform_login(request):
@@ -32,8 +38,7 @@ def perform_login(request):
             return redirect(redirect_url)
         return redirect(reverse('index'))
     else:
-        return render_to_response('users/login.html', {},
-                              context_instance=RequestContext(request))
+        return render_to_response('users/login.html', context_instance=RequestContext(request))
 
 def perform_logout(request):
     """
@@ -41,3 +46,15 @@ def perform_logout(request):
     """
     logout(request)
     return redirect(reverse("index"))
+
+class ProfileUpdate(LoginRequiredMixin,SuccessMessageMixin,UpdateView):
+    model = UserProfile
+    fields = ['instrument','home_institution']
+    success_url = reverse_lazy('index')
+    success_message = "Your profile was updated successfully."
+    
+class ProfileCreate(LoginRequiredMixin,SuccessMessageMixin,CreateView):
+    model = UserProfile
+    fields = ['instrument','home_institution']
+    success_url = reverse_lazy('index')
+    success_message = "Your profile was created successfully."

@@ -1,0 +1,54 @@
+{% extends "base.html" %} {% block content %}
+
+<!-- Content Header (Page header) -->
+<section class="content-header">
+	<h1>
+		Spallation Neutron Source <small>Neutron Science at ORNL</small>
+	</h1>
+	<ol class="breadcrumb">
+		<li class="active">User Profile</li>
+	</ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+	<!-- Your Page Content Here -->
+	
+	
+      <div class="row">
+        <!-- left column -->
+        <div class="col-md-6 col-md-offset-3">
+          <!-- general form elements -->
+          <div class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">User <strong>{{user}}</strong> Profile:</h3>
+            </div>
+            <!-- /.box-header -->
+            <!-- form start -->
+            <form role="form" action="" method="post">{% csrf_token %}
+              <div class="box-body">
+                {{ form.as_p }}
+              </div>
+              <!-- /.box-body -->
+
+              <div class="box-footer">
+                <button type="submit" class="btn btn-primary">Submit</button>
+              </div>
+            </form>
+          </div>
+          <!-- /.box -->
+        </div>
+      </div>
+
+</section>
+<!-- /.content -->
+{% endblock %}
+
+{% block body_end %}
+  <!-- page script -->
+  <script>
+  <!-- Admin LTE requires these classes for better forms -->
+  $("input").addClass("form-control");
+  $("select").addClass("form-control");
+  </script>
+{% endblock body_end %}

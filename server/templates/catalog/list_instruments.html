@@ -27,8 +27,8 @@
 						<tr>
 							<td><a class="btn-block btn-default" data-toggle="tooltip"
 								data-placement="right"
-								title="Click to see all experiments for {{instrument.icat_name}}."
-								href="{% url 'catalog:list_iptss' instrument=instrument.name|upper %}">
+								title="Click to see all experiments for {{instrument.name}}."
+								href="{% url 'catalog:list_iptss' instrument=instrument.icat_name|upper %}">
 									{{instrument.beamline}}</a></td>
 							<td><a class="btn-block btn-default" data-toggle="tooltip"
 								data-placement="right"

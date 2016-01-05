@@ -11,6 +11,7 @@ import logging
 from .icat.facade import Catalog
 from .permissions import user_has_permission_to_see_this_ipts
 from .models import Instrument
+from server.users.models import UserProfile
 
 logger = logging.getLogger('catalog')
 
@@ -29,6 +30,9 @@ class InstrumentMixin(object):
         return context
 
 class Instruments(LoginRequiredMixin,View):
+    '''
+    List of visible instruments in the database
+    '''
     def get(self, request):
         instruments = Instrument.objects.visible_instruments()
         logger.debug(pformat(instruments.values()))
@@ -37,14 +41,12 @@ class Instruments(LoginRequiredMixin,View):
     
 
 class IPTSs(LoginRequiredMixin,InstrumentMixin, TemplateView):
+    '''
+    List of IPTSs for a given instrument
+    '''
+    
     template_name = 'catalog/list_iptss.html'
  
-#     def get(self, request, instrument, *args, **kwargs):
-#         icat = Catalog(request)
-#         iptss = icat.get_experiments_meta(instrument)
-#         #logger.debug(pformat(iptss))
-#         return render(request, 'catalog/list_iptss.html', {'iptss' : iptss})
-        
     def get_context_data(self, **kwargs):
         icat = Catalog(self.request)
         iptss = icat.get_experiments_meta(kwargs['instrument'])
@@ -54,6 +56,10 @@ class IPTSs(LoginRequiredMixin,InstrumentMixin, TemplateView):
     
 
 class Runs(LoginRequiredMixin,InstrumentMixin,TemplateView):
+    '''
+    List of runs for a given instrument
+    '''
+    
     template_name = 'catalog/list_runs.html'
     
     def get_context_data(self, **kwargs):

@@ -101,7 +101,7 @@ desired effect
               <!-- Menu Footer-->
               <li class="user-footer">
                 <div class="pull-left">
-                  <a href="#" class="btn btn-default btn-flat">Profile</a>
+                  <a href="{% url 'users:profile_update' user.profile.pk %}" class="btn btn-default btn-flat">Profile</a>
                 </div>
                 <div class="pull-right">
                   <a href="{% url 'users:logout' %}" class="btn btn-default btn-flat">Sign out</a>
@@ -178,7 +178,7 @@ desired effect
     <!-- Messages usually comming from the form validation -->
     {% if messages %}
     <div class="row">
-        <div class="col-md-6 col-md-offset-3">
+        <div class="col-md-10 col-md-offset-1">
             <div class="box box-default">
                 <div class="box-body">
                 {% for message in messages %}
