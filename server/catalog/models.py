@@ -33,7 +33,7 @@ class Instrument(models.Model):
     visible = models.BooleanField(default=True)
 
     def __unicode__(self):
-        return  _("%s :: %s.") %  (self.beamline, self.name)
+        return  self.name
     
     # Manager
     objects = InstrumentManager()

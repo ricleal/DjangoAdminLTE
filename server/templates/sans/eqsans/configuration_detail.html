@@ -43,12 +43,12 @@
 	{% endfor %}
           
     
-    {% for scan in object.scan.all %}
+    {% for reduction in object.reduction.all %}
     <div class="col-xs-8">
-      <p class="lead">Scan: {{scan.title}}</p>
+      <p class="lead">Reduction: {{reduction.title}}</p>
       <div class="table-responsive">
         <table class="table">
-          {% for name, value in scan.get_fields %}
+          {% for name, value in reduction.get_fields %}
           <tr>
             <th style="width:50%">{{ name }}:</th>
             <td>{{ value }}</td>
@@ -58,6 +58,26 @@
       </div>
     </div>
     {% endfor %}
+    
+    
+    {% for entry in object.reduction.entry.all %}
+    <div class="col-xs-8">
+      <p class="lead">Entry: {{entry.title}}</p>
+      <div class="table-responsive">
+        <table class="table">
+          {% for name, value in entry.get_fields %}
+          <tr>
+            <th style="width:50%">{{ name }}:</th>
+            <td>{{ value }}</td>
+          </tr>
+          {% endfor %}
+        </table>
+      </div>
+    </div>
+    {% endfor %}
+    
+    
+    
     <!-- /.col -->
   </div>
 <!-- /.row -->

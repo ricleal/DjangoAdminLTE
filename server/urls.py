@@ -29,5 +29,5 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^catalog/', include('server.catalog.urls', namespace='catalog') ),
     url(r'^users/', include('server.users.urls', namespace='users') ),
-    url(r'^configuration/', include('server.configuration.urls', namespace='configuration') ),
+    url(r'^sans/', include('server.sans.urls', namespace='sans') ),
 ]

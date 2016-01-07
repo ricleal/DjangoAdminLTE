@@ -48,7 +48,7 @@ THIRD_PARTY_APPS = (
 LOCAL_APPS = (
     'server.users',
     'server.catalog',
-    'server.configuration',
+    'server.sans',
 )
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps

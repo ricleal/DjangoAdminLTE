@@ -54,7 +54,7 @@
 								<td>{{object.created_date | date}}</td>
 								<td>{{object.modified_date | date }}</td>
 								<td><a class="btn btn-primary" data-toggle="tooltip"
-								data-placement="bottom" href="{% url 'configuration:configuration_detail' instrument object.id %}"
+								data-placement="bottom" href="{% url 'sans:eqsans_configuration_detail' object.id %}"
 								title="Click to see the details of this configuration.">Details...</a></td>
 							</tr>
 							{% endfor %}

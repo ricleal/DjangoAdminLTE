@@ -1,13 +1,11 @@
 from django.conf.urls import url
-from . import views
+from .eqsans import views as eqsans
 
 
 urlpatterns = [
-    url(r'^$', views.ConfigurationList.as_view(), name='configuration_list'),
-    url(r'^(?P<instrument>[\w\-]+)/$', views.ConfigurationList.as_view(), name='configuration_list'),
-    
-    url(r'^(?P<pk>\d+)/$', views.ConfigurationDetail.as_view(), name='configuration_detail'),
-    url(r'^(?P<instrument>[\w\-]+)/(?P<pk>\d+)/$', views.ConfigurationDetail.as_view(), name='configuration_detail'),
+    url(r'^EQ-SANS/$', eqsans.ConfigurationList.as_view(), name='eqsans_configuration_list'),
+    url(r'^EQ-SANS/(?P<pk>\d+)/$', eqsans.ConfigurationDetail.as_view(), name='eqsans_configuration_detail'),
+    url(r'^EQ-SANS/(?P<pk>\d+)/update$', eqsans.ConfigurationUpdate.as_view(), name='eqsans_configuration_update'),
     
     #url(r'^(?P<pk>\d+)/$', views.ConfigurationUpdate.as_view(), name='configuration_update'),
     #url(r'^(?P<pk>\d+)/$', views.ConfigurationCreate.as_view(), name='configuration_create'),
