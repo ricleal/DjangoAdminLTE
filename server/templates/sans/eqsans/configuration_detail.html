@@ -33,6 +33,10 @@
       </h2>
     </div>
     <!-- /.col -->
+  </div>
+  <!-- /.row -->
+    
+  <div class="row">
     {% for name, value in object.get_fields %}
 	{% if value %}
     <div class="col-xs-12">
@@ -40,46 +44,43 @@
     </div>
     <!-- /.col -->
     {% endif %}
-	{% endfor %}
-          
-    
-    {% for reduction in object.reduction.all %}
-    <div class="col-xs-8">
-      <p class="lead">Reduction: {{reduction.title}}</p>
-      <div class="table-responsive">
-        <table class="table">
-          {% for name, value in reduction.get_fields %}
-          <tr>
-            <th style="width:50%">{{ name }}:</th>
-            <td>{{ value }}</td>
-          </tr>
-          {% endfor %}
-        </table>
-      </div>
-    </div>
     {% endfor %}
-    
-    
-    {% for entry in object.reduction.entry.all %}
-    <div class="col-xs-8">
-      <p class="lead">Entry: {{entry.title}}</p>
-      <div class="table-responsive">
-        <table class="table">
-          {% for name, value in entry.get_fields %}
-          <tr>
-            <th style="width:50%">{{ name }}:</th>
-            <td>{{ value }}</td>
-          </tr>
-          {% endfor %}
-        </table>
-      </div>
+  </div>
+  <!-- /.row -->
+  
+  
+  <!-- title row -->
+  <div class="row">
+    <div class="col-xs-12">
+      <h2 class="page-header">
+        Reductions for this configuration:
+      </h2>
     </div>
-    {% endfor %}
-    
-    
-    
     <!-- /.col -->
   </div>
+  
+  
+  {% for reduction in object.reduction.all %}
+  <div class="row">
+  	<p class="lead">Reduction: {{reduction.title}}</p>
+  	{% for entry in reduction.entry.all %}
+  		    <div class="col-xs-6">
+		      <p class="lead">Entry: {{entry.title}}</p>
+		      <div class="table-responsive">
+		        <table class="table">
+		          {% for name, value in entry.get_fields %}
+		          <tr>
+		            <th style="width:50%">{{ name }}:</th>
+		            <td>{{ value }}</td>
+		          </tr>
+		          {% endfor %}
+		        </table>
+		      </div>
+		    </div>
+	 {% endfor %}
+  </div>
+  <!-- /.row -->
+  {% endfor %}
 <!-- /.row -->
 </section>
 

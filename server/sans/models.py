@@ -5,6 +5,9 @@ from django.contrib.auth.models import User
 from server.catalog.models import Instrument
 from django.utils.translation import ugettext_lazy as _
 
+from .eqsans import *
+
+
 '''
 
 Abstract models for SANS
@@ -37,7 +40,8 @@ class Configuration(models.Model):
     
     class Meta:
         abstract = True
-
+        ordering = ["id"]
+    
     def __unicode__(self):
         return self.title
 
@@ -56,7 +60,8 @@ class Reduction(models.Model):
 
     class Meta:
         abstract = True
-    
+        ordering = ["id"]
+        
     def __unicode__(self):
         return self.title
     
@@ -79,6 +84,7 @@ class Entry(models.Model):
     
     class Meta:
         abstract = True
+        ordering = ["id"]
         verbose_name_plural = _("Entries")
 
     def __unicode__(self):
@@ -91,5 +97,4 @@ class Entry(models.Model):
         return [(field.name, field.value_to_string(self)) for field in self._meta.fields]
 
 
-from .eqsans import *
 

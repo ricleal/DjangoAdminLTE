@@ -7,6 +7,7 @@
     "description": "Ultra-Small-Angle Neutron Scattering Instrument",
     "visible": true,
     "facility": "SNS",
+    "reduction_available": false,
     "icat_name": "USANS"
   }
 }, {
@@ -18,6 +19,7 @@
     "description": "Nanoscale-Ordered Materials Diffractometer",
     "visible": true,
     "facility": "SNS",
+    "reduction_available": false,
     "icat_name": "NOM"
   }
 }, {
@@ -29,6 +31,7 @@
     "description": "Backscattering Spectrometer",
     "visible": true,
     "facility": "SNS",
+    "reduction_available": false,
     "icat_name": "NOM"
   }
 }, {
@@ -40,6 +43,7 @@
     "description": "Spallation Neutrons and Pressure Diffractometer",
     "visible": true,
     "facility": "SNS",
+    "reduction_available": false,
     "icat_name": "SNAP"
   }
 }, {
@@ -71,6 +75,7 @@
     "description": "Cold Neutron Chopper Spectrometer",
     "visible": true,
     "facility": "SNS",
+    "reduction_available": false,
     "icat_name": "CNCS"
   }
 }, {
@@ -82,6 +87,7 @@
     "description": "Extended Q-Range Small-Angle Neutron Scattering Diffractometer",
     "visible": true,
     "facility": "SNS",
+    "reduction_available": true,
     "icat_name": "EQSANS"
   }
 }, {
@@ -93,6 +99,7 @@
     "description": "Engineering Materials Diffractometer",
     "visible": true,
     "facility": "SNS",
+    "reduction_available": false,
     "icat_name": "VULCAN"
   }
 }, {
@@ -104,6 +111,7 @@
     "description": "Elastic Diffuse Scattering Spectrometer",
     "visible": true,
     "facility": "SNS",
+    "reduction_available": false,
     "icat_name": "CORELLI"
   }
 }, {
@@ -135,6 +143,7 @@
     "description": "Macromolecular Neutron Diffractometer",
     "visible": true,
     "facility": "SNS",
+    "reduction_available": false,
     "icat_name": "MANDI"
   }
 }, {
@@ -146,6 +155,7 @@
     "description": "Single-Crystal Diffractometer",
     "visible": true,
     "facility": "SNS",
+    "reduction_available": false,
     "icat_name": "TOPAZ"
   }
 }, {
@@ -157,6 +167,7 @@
     "description": "Fundamental Neutron Physics Beam Line",
     "visible": true,
     "facility": "SNS",
+    "reduction_available": false,
     "icat_name": "FNPB"
   }
 }, {
@@ -168,6 +179,7 @@
     "description": "Hybrid Spectrometer",
     "visible": true,
     "facility": "SNS",
+    "reduction_available": false,
     "icat_name": "HYS"
   }
 }, {
@@ -179,6 +191,7 @@
     "description": "Neutron Spin Echo Spectrometer",
     "visible": true,
     "facility": "SNS",
+    "reduction_available": false,
     "icat_name": "NSE"
   }
 }, {
@@ -200,6 +213,7 @@
     "description": "Fine-Resolution Fermi Chopper Spectrometer",
     "visible": true,
     "facility": "SNS",
+    "reduction_available": false,
     "icat_name": "SEQ"
   }
 }, {

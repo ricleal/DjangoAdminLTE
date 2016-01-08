@@ -30,7 +30,8 @@ class Instrument(models.Model):
                                    help_text = _("Instrument description (optional)" ),
                                    )
     # We can have instruments but they will be invisible in the web page
-    visible = models.BooleanField(default=True)
+    visible = models.BooleanField(default=True, help_text = _("If it will be visible on the main catalog page"),)
+    reduction_available = models.BooleanField(default=False, help_text = _("If there is web reduction available for this instrument"),)
 
     def __unicode__(self):
         return  self.name

@@ -35,14 +35,18 @@
 								title="Click to see all experiments for {{instrument.name}}."
 								href="{% url 'catalog:list_iptss' instrument=instrument.icat_name|upper %}"><strong>{{instrument.name}}</strong></a></td>
 							<td>{{instrument.description}}</td>
-							<td><a class="btn btn-primary" data-toggle="tooltip"
+							<td>{% if instrument.reduction_available %}
+								<a class="btn-sm btn-primary" data-toggle="tooltip"
 								data-placement="bottom"
 								title="Click to see all configurations for {{instrument.name}}."
 								href="#">
-									Configurations</a></td>
-							<td><a class="btn btn-primary" data-toggle="tooltip"
+									Configurations</a>
+								{% endif %}</td>
+							<td>{% if instrument.reduction_available %}
+								<a class="btn-sm btn-primary" data-toggle="tooltip"
 								data-placement="bottom"
-								title="Click to see all jobs for {{instrument.name}}."> Jobs</a></td>
+								title="Click to see all jobs for {{instrument.name}}."> Jobs</a>
+								{% endif %}</td>
 						</tr>
 						{% endfor %}
 					</table>

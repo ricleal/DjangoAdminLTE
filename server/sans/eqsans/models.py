@@ -26,7 +26,7 @@ class EQSANSConfiguration(Configuration):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('sans:eqsans_configuration_list', [self.pk])
+        return ('sans:eqsans_configuration_detail', [self.pk])
 
 class EQSANSReduction(Reduction):
     configuration = models.ForeignKey(EQSANSConfiguration, on_delete=models.CASCADE,
@@ -36,7 +36,7 @@ class EQSANSReduction(Reduction):
 
 class EQSANSEntry(Entry):
     # We can not have ForeignKey for abstract models. It has to be here!!
-    configuration = models.ForeignKey(EQSANSReduction,
+    reduction = models.ForeignKey(EQSANSReduction,
                                       on_delete=models.CASCADE,
                                       related_name="entry",
                                       related_query_name="entry",)
