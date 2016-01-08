@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load humanize %} 
+{% block head %}
+<!-- DataTables -->
+<link rel="stylesheet"
+	href="{% static 'AdminLTE_plugins/datatables/dataTables.bootstrap.css' %}">
+<!-- Our internal functions -->
+<script src="{% static 'js/sns.js' %}"></script>
+{% endblock head %}
+{% block content %}
+
+<!-- Content Header (Page header) -->
+<section class="content-header">
+	<h1>
+		Configurations <small>{{ instrument|default:request.user.profile.instrument }}</small>
+	</h1>
+	<ol class="breadcrumb">
+		<li class="active">Reduction</li>
+		<li> {{ instrument|default:request.user.profile.instrument }} </li>
+		
+	</ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+	<!-- Your Page Content Here -->
+	<div class="row">
+		<div class="col-xs-12">
+			<div class="box">
+				<div class="box-header">
+					<h3 class="box-title">Reduction list for {{ instrument|default:request.user.profile.instrument }}</h3>
+				</div>
+				<!-- /.box-header -->
+				<div class="box-body">
+					<table id="table_configuration"
+						class="table table-bordered table-striped">
+						<thead>
+							<tr>
+								<th>Id</th>
+								<th>Title</th>
+								<th>Configuration</th>
+								<th>Date created</th>
+								<th>Date modified</th>
+								<th></th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for object in object_list %}
+							<tr>
+								<td>{{object.id}}</td>
+								<td>{{object.title}}</td>
+								<td>{{object.configuration}}</td>
+								<td>{{object.created_date | date}}</td>
+								<td>{{object.modified_date | date }}</td>
+								<td><a class="btn btn-primary" data-toggle="tooltip"
+								data-placement="bottom" href="{% url 'sans:eq-sans_configuration_detail' object.id %}"
+								title="Click to see the details of this configuration.">View</a></td>
+								<td><a class="btn btn-primary" data-toggle="tooltip"
+								data-placement="bottom" href="{% url 'sans:eq-sans_configuration_update' object.id %}"
+								title="Click to see the details of this configuration.">Edit</a></td>
+							</tr>
+							{% endfor %}
+						</tbody>
+						<tfoot>
+							<tr>
+								<th>Id</th>
+								<th>IPTS</th>
+								<th>Title</th>
+								<th>Date created</th>
+								<th>Date modified</th>
+								<th></th>
+								<th></th>
+							</tr>
+						</tfoot>
+					</table>
+				</div>
+				<!-- /.box-body -->
+			</div>
+			<!-- /.box -->
+		</div>
+		<!-- /.col -->
+	</div>
+	<!-- /.row -->
+</section>
+<!-- /.content -->
+{% endblock %} {% block body_end %}
+<!-- DataTables -->
+<script
+	src="{% static 'AdminLTE_plugins/datatables/jquery.dataTables.min.js' %}"></script>
+<script
+	src="{% static 'AdminLTE_plugins/datatables/dataTables.bootstrap.min.js' %}"></script>
+<!-- page script -->
+<script>
+	$(function() {
+		$("#table_configuration").DataTable({
+			"lengthMenu" : [ [ 20, 50, 100, -1 ], [ 20, 50, 100, "All" ] ],
+			//"order": [[ 3, 'desc' ]],
+			"paging" : true,
+			"lengthChange" : true,
+			"searching" : true,
+			"ordering" : true,
+			"info" : true,
+			"autoWidth" : true
+		});
+	});
+</script>
+{% endblock body_end %}

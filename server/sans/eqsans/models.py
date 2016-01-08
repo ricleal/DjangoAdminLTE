@@ -8,7 +8,6 @@ from ..models import Configuration, Reduction, Entry
 # EQSANS
 #
 
-
 class EQSANSConfiguration(Configuration):
     absolute_scale_factor = models.DecimalField(
         max_digits=10, decimal_places=2, default=1.0)

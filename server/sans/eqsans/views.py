@@ -2,7 +2,7 @@ from django.views.generic import CreateView, ListView, DetailView, UpdateView, D
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
 
-from .models import EQSANSConfiguration
+from .models import EQSANSConfiguration, EQSANSReduction
 from .forms import ConfigurationForm
 from server.catalog.models import Instrument
 
@@ -64,5 +64,14 @@ class ConfigurationUpdate(LoginRequiredMixin, UpdateView):
     template_name = 'sans/eq-sans/configuration_form.html'
     form_class = ConfigurationForm
     model = EQSANSConfiguration
-    
-    
+
+#
+#
+#
+
+class ReductionList(LoginRequiredMixin, ListView):
+    '''
+    List all configurations.
+    '''
+    template_name = 'sans/eq-sans/reduction_list.html'
+    model = EQSANSReduction
