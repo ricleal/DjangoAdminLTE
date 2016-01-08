@@ -26,7 +26,7 @@ class EQSANSConfiguration(Configuration):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('sans:eqsans_configuration_detail', [self.pk])
+        return ('sans:eq-sans_configuration_detail', [self.pk])
 
 class EQSANSReduction(Reduction):
     configuration = models.ForeignKey(EQSANSConfiguration, on_delete=models.CASCADE,

@@ -43,14 +43,19 @@ class ConfigurationCreate(LoginRequiredMixin, CreateView):
     template_name = 'sans/eq-sans/configuration_form.html'
     form_class = ConfigurationForm
     
-    def get_initial(self):
-        # Get the initial dictionary from the superclass method
-        initial = super(ConfigurationCreate, self).get_initial()
-        # Copy the dictionary so we don't accidentally change a mutable dict
-        initial = initial.copy()
-        initial['user'] = self.request.user.pk
-        initial['instrument'] = get_object_or_404(Instrument, name=instrument_name)
-        return initial
+#     def get_initial(self):
+#         # Get the initial dictionary from the superclass method
+#         initial = super(ConfigurationCreate, self).get_initial()
+#         # Copy the dictionary so we don't accidentally change a mutable dict
+#         initial = initial.copy()
+#         initial['user'] = self.request.user.pk
+#         initial['instrument'] = get_object_or_404(Instrument, name=instrument_name)
+#         return initial
+    
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        form.instance.instrument = get_object_or_404(Instrument, name=instrument_name)
+        return CreateView.form_valid(self, form)
 
 class ConfigurationUpdate(LoginRequiredMixin, UpdateView):
     '''
@@ -59,3 +64,5 @@ class ConfigurationUpdate(LoginRequiredMixin, UpdateView):
     template_name = 'sans/eq-sans/configuration_form.html'
     form_class = ConfigurationForm
     model = EQSANSConfiguration
+    
+    
