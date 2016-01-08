@@ -8,7 +8,7 @@ from server.catalog.models import Instrument
 
 from pprint import pformat
 import logging
-
+import json
 
 logger = logging.getLogger('sans.eq-sans')
 
@@ -19,7 +19,11 @@ class ConfigurationList(LoginRequiredMixin, ListView):
     List all configurations.
     '''
     template_name = 'sans/eq-sans/configuration_list.html'
-    model = EQSANSConfiguration
+    #model = EQSANSConfiguration
+    
+    def get_queryset(self):
+        ConfigurationList.queryset = EQSANSConfiguration.objects.filter(user = self.request.user)
+        return ListView.get_queryset(self)
 
 class ConfigurationDetail(LoginRequiredMixin, DetailView):
     '''
@@ -76,6 +80,11 @@ class ReductionList(LoginRequiredMixin, ListView):
     template_name = 'sans/eq-sans/reduction_list.html'
     model = EQSANSReduction
 
+#     
+#     def get_queryset(self):
+#         ReductionList.queryset = EQSANSReduction.objects.filter(configuration__user = self.request.user)
+#         return ListView.get_queryset(self)
+
 class ReductionDetail(LoginRequiredMixin, DetailView):
     '''
     Detail of a Reduction
@@ -90,3 +99,9 @@ class ReductionCreate(LoginRequiredMixin, CreateView):
     template_name = 'sans/eq-sans/reduction_form.html'
     model = EQSANSReduction
     fields = '__all__'
+    
+    def form_valid(self, form):
+        logger.debug(pformat(self.request.POST))
+        received_json_data=json.loads(self.request.POST["entries_hidden"])
+        logger.debug(pformat(received_json_data))
+        return CreateView.form_valid(self, form)

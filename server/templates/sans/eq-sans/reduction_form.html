@@ -1,22 +1,27 @@
 {% extends "base.html" %}
 {% load staticfiles %}
-{% load humanize %} 
+{% load humanize %}
 {% block head %}
 <!-- DataTables -->
 <link rel="stylesheet"
 	href="{% static 'AdminLTE_plugins/datatables/dataTables.bootstrap.css' %}">
 <!-- Our internal functions -->
 <script src="{% static 'js/sns.js' %}"></script>
-{% endblock head %}
-{% block content %}
+<!-- handsontable -->
+<link
+	href="https://cdnjs.cloudflare.com/ajax/libs/handsontable/0.20.3/handsontable.full.min.css"
+	rel="stylesheet">
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/handsontable/0.20.3/handsontable.full.min.js"></script>
+{% endblock head %} {% block content %}
 
 <!-- Content Header (Page header) -->
 <section class="content-header">
 	<h1>
-		Reduction  <small>{{ object.id }}</small>
+		Reduction <small>{{ object.id }}</small>
 	</h1>
 	<ol class="breadcrumb">
-		<li class="active">Configuration</li>
+		<li class="active">Reduction</li>
 		<li>{{ instrument|default:request.user.profile.instrument }}</li>
 		<li>{{ object }}</li>
 	</ol>
@@ -24,53 +29,88 @@
 
 <!-- Main content -->
 
-	<section class="content">
-      <div class="row">
-        <!-- left column -->
-        <div class="col-md-8 col-md-offset-2">
-          <!-- general form elements -->
-          <div class="box box-primary">
-            <div class="box-header with-border">
-              <h3 class="box-title">Reduction Form</h3>
-            </div>
-            <!-- /.box-header -->
-            <!-- form start -->
-            <form role="form" action="" method="post">
-            	{% csrf_token %}
-              <div class="box-body">
-                {{ form.as_p }}
-              </div>
-              <!-- /.box-body -->
-
-			  <div class="box-footer">
-                <button type="" class="btn btn-default">Cancel</button>
-                {% if form.instance.pk %}
-                <button type="submit" class="btn btn-primary">Update</button>
-                {% else %}
-                <button type="submit" class="btn btn-primary">Save</button>
-                {% endif %}
-                <button type="" class="btn btn-danger">Submit to the cluster</button>
-              </div>
-            </form>
-          </div>
-          <!-- /.box -->
+<section class="content">
+	<div class="row">
+		<!-- left column -->
+		<div class="col-md-10 col-md-offset-1">
+			<!-- general form elements -->
+			<div class="box box-primary">
+				<div class="box-header with-border">
+					<h3 class="box-title">Reduction Form</h3>
+				</div>
+				<!-- /.box-header -->
+				<!-- form start -->
+				<form role="form" action="" method="post" onsubmit="return load_table();">
+					{% csrf_token %}
+					<div class="box-body">{{ form.as_p }}</div>
+					<!-- /.box-body -->
+					
+					<div class="box-body"><div id="entries"></div></div>
+					<input type="hidden" id="entries_hidden" name="entries_hidden" value="">
+					
+					<div class="box-footer">
+						<button type="" class="btn btn-default">Cancel</button>
+						{% if form.instance.pk %}
+						<button type="submit" class="btn btn-primary">Update</button>
+						{% else %}
+						<button type="submit" class="btn btn-primary">Save</button>
+						{% endif %}
+						<button type="" class="btn btn-danger">Submit to the
+							cluster</button>
+					</div>
+				</form>
+			</div>
+			<!-- /.box -->
+		</div>
 	</div>
-	</div>
-	</section>
+</section>
 
-
+<script>
+	{% if object.entry %}
+		var data2 = [
+		{% for entry in object.entry.all %}
+			[
+			{% for name, value in entry.get_fields %}
+	        	{{ value }}
+	      	{% endfor %}
+	      	]
+		{% endfor %}
+		];
+	{% else %}
+		var data = [['','','','','','','']];
+	{% endif %}
 
 
 	
+	var container = document.getElementById('entries');
+	var hot = new Handsontable(container, {
+		data: data,
+		height: 300,
+		minSpareRows: 10,
+		stretchH: 'all',
+	    columnSorting: true,
+	    contextMenu: true,
+	    autoWrapRow: true,
+		rowHeaders : false,
+		colHeaders : ["#","Sample","Sample Trans", "Background", "Background Trans", "Trans", "Description"],
+		contextMenu : true
+	});
+	
+    function load_table() {
+    	document.getElementById('entries_hidden').value = JSON.stringify({entries_hidden: hot.getData()});
+    	console.log(document.getElementById('entries_hidden').value);
+        return true;
+     }
+	
+	
+</script>
 
 <!-- /.content -->
-{% endblock %}
-
-{% block body_end %}
-  <!-- page script -->
-  <script>
-  <!-- Admin LTE requires these classes for better forms -->
-  $("input").addClass("form-control");
-  $("select").addClass("form-control");
-  </script>
+{% endblock %} {% block body_end %}
+<!-- page script -->
+<script>
+<!-- Admin LTE requires these classes for better forms -->
+	$("input").addClass("form-control");
+	$("select").addClass("form-control");
+</script>
 {% endblock body_end %}
