@@ -82,4 +82,11 @@ class ReductionDetail(LoginRequiredMixin, DetailView):
     '''
     template_name = 'sans/eq-sans/reduction_detail.html'
     model = EQSANSReduction
-    
+
+class ReductionCreate(LoginRequiredMixin, CreateView):
+    '''
+    Detail of a configuration
+    '''
+    template_name = 'sans/eq-sans/reduction_form.html'
+    model = EQSANSReduction
+    fields = '__all__'
