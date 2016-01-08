@@ -71,7 +71,15 @@ class ConfigurationUpdate(LoginRequiredMixin, UpdateView):
 
 class ReductionList(LoginRequiredMixin, ListView):
     '''
-    List all configurations.
+    List all Reduction.
     '''
     template_name = 'sans/eq-sans/reduction_list.html'
     model = EQSANSReduction
+
+class ReductionDetail(LoginRequiredMixin, DetailView):
+    '''
+    Detail of a Reduction
+    '''
+    template_name = 'sans/eq-sans/reduction_detail.html'
+    model = EQSANSReduction
+    

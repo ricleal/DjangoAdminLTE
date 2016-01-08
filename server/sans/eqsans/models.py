@@ -31,6 +31,10 @@ class EQSANSReduction(Reduction):
     configuration = models.ForeignKey(EQSANSConfiguration, on_delete=models.CASCADE,
                                       related_name="reduction",
                                       related_query_name="reduction",)
+    
+    @models.permalink
+    def get_absolute_url(self):
+        return ('sans:eq-sans_reduction_detail', [self.pk])
 
 
 class EQSANSEntry(Entry):

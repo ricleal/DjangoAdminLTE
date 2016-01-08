@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load humanize %} 
+{% block head %}
+<!-- DataTables -->
+<link rel="stylesheet"
+	href="{% static 'AdminLTE_plugins/datatables/dataTables.bootstrap.css' %}">
+<!-- Our internal functions -->
+<script src="{% static 'js/sns.js' %}"></script>
+{% endblock head %}
+{% block content %}
+
+<!-- Content Header (Page header) -->
+<section class="content-header">
+	<h1>
+		Reduction  <small>{{ object.id }}</small>
+	</h1>
+	<ol class="breadcrumb">
+		<li class="active">Reduction</li>
+		<li>{{ instrument|default:request.user.profile.instrument }}</li>
+		<li>{{ object }}</li>
+	</ol>
+</section>
+
+<!-- Main content -->
+<section class="invoice">
+  <!-- title row -->
+  <div class="row">
+    <div class="col-xs-12">
+      <h2 class="page-header">
+        <i class="fa fa-globe"></i> Reduction: {{object.title}}
+        <small class="pull-right"> {{object.id}}</small>
+      </h2>
+    </div>
+    <!-- /.col -->
+  </div>
+  <!-- /.row -->
+  
+  <!-- title row -->
+  <div class="row">
+    <div class="col-xs-12">
+      <h2 class="page-header">
+        Configuration assigned to this reduction <small class="pull-right"> {{object.configuration}}</small>
+      </h2>
+    </div>
+    <!-- /.col -->
+  </div>
+  
+  
+
+  <div class="row">
+  	<p class="lead">Reduction Entries:</p>
+  	{% for entry in object.entry.all %}
+  		    <div class="col-xs-6">
+		      <p class="lead">Entry: {{entry.title}}</p>
+		      <div class="table-responsive">
+		        <table class="table">
+		          {% for name, value in entry.get_fields %}
+		          <tr>
+		            <th style="width:50%">{{ name }}:</th>
+		            <td>{{ value }}</td>
+		          </tr>
+		          {% endfor %}
+		        </table>
+		      </div>
+		    </div>
+	 {% endfor %}
+  </div>
+  <!-- /.row -->
+ 
+<!-- /.row -->
+</section>
+
+
+	
+</section>
+<!-- /.content -->
+{% endblock %}
+
