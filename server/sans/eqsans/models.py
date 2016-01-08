@@ -30,7 +30,8 @@ class EQSANSConfiguration(Configuration):
 class EQSANSReduction(Reduction):
     configuration = models.ForeignKey(EQSANSConfiguration, on_delete=models.CASCADE,
                                       related_name="reduction",
-                                      related_query_name="reduction",)
+                                      related_query_name="reduction",
+                                      blank=True, null=True,)
     
     @models.permalink
     def get_absolute_url(self):
