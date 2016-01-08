@@ -39,7 +39,11 @@
 								<a class="btn-sm btn-primary" data-toggle="tooltip"
 								data-placement="bottom"
 								title="Click to see all configurations for {{instrument.name}}."
-								href="#">
+								
+								
+						  		{% with link_name=instrument.type|lower|add:":"|add:instrument.name|lower|add:"_"|add:"configuration_list" %}
+								href="{% url link_name %}">
+								{% endwith %}
 									Configurations</a>
 								{% endif %}</td>
 							<td>{% if instrument.reduction_available %}

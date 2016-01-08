@@ -10,7 +10,7 @@ from pprint import pformat
 import logging
 
 
-logger = logging.getLogger('sans.eqsans')
+logger = logging.getLogger('sans.eq-sans')
 
 instrument_name = "EQ-SANS"
 
@@ -18,14 +18,14 @@ class ConfigurationList(LoginRequiredMixin, ListView):
     '''
     List all configurations.
     '''
-    template_name = 'sans/eqsans/configuration_list.html'
+    template_name = 'sans/eq-sans/configuration_list.html'
     model = EQSANSConfiguration
 
 class ConfigurationDetail(LoginRequiredMixin, DetailView):
     '''
     Detail of a configuration
     '''
-    template_name = 'sans/eqsans/configuration_detail.html'
+    template_name = 'sans/eq-sans/configuration_detail.html'
     model = EQSANSConfiguration
     
 #     def render_to_response(self, context, **response_kwargs):
@@ -40,7 +40,7 @@ class ConfigurationCreate(LoginRequiredMixin, CreateView):
     '''
     Detail of a configuration
     '''
-    template_name = 'sans/eqsans/configuration_form.html'
+    template_name = 'sans/eq-sans/configuration_form.html'
     form_class = ConfigurationForm
     
     def get_initial(self):
@@ -56,6 +56,6 @@ class ConfigurationUpdate(LoginRequiredMixin, UpdateView):
     '''
     Detail of a configuration
     '''
-    template_name = 'sans/eqsans/configuration_form.html'
+    template_name = 'sans/eq-sans/configuration_form.html'
     form_class = ConfigurationForm
     model = EQSANSConfiguration

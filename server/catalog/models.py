@@ -24,6 +24,7 @@ class Instrument(models.Model):
     name = models.CharField(max_length=32, unique=True)
     icat_name = models.CharField(max_length=32, blank=True)
     facility = models.CharField(max_length=32, blank=True)
+    type = models.CharField(max_length=32, blank=True,  help_text = _("Type of instrument: SANS, TOF, etc.."),)
     description = models.CharField(max_length=256,
                                    blank=True,
                                    verbose_name = _("description"),

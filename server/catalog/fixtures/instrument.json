@@ -8,7 +8,8 @@
     "visible": true,
     "facility": "SNS",
     "reduction_available": false,
-    "icat_name": "USANS"
+    "icat_name": "USANS",
+    "type" : "SANS"
   }
 }, {
   "model": "catalog.instrument",
@@ -88,7 +89,8 @@
     "visible": true,
     "facility": "SNS",
     "reduction_available": true,
-    "icat_name": "EQSANS"
+    "icat_name": "EQSANS",
+    "type" : "SANS"
   }
 }, {
   "model": "catalog.instrument",
