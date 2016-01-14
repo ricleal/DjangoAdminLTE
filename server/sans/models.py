@@ -73,14 +73,14 @@ class Reduction(models.Model):
 
 class Entry(models.Model):
     '''
+    All Entries are Runs, except the description
     '''
-    
-    sample_run = models.CharField(max_length=256)
-    sample_transmission_run = models.CharField(max_length=256, blank=True, null=True,)
-    background_run = models.CharField(max_length=256, blank=True, null=True,)
-    background_transmission_run = models.CharField(max_length=256, blank=True, null=True,)
-    transmission_run = models.CharField(max_length=256, blank=True, null=True,)
-    description = models.CharField(max_length=256, blank=True, null=True,)
+    sample_scattering = models.CharField(max_length=256)
+    sample_transmission = models.CharField(max_length=256)
+    background_scattering = models.CharField(max_length=256)
+    background_transmission = models.CharField(max_length=256)
+    empty_beam = models.CharField(max_length=256)
+    save_name = models.CharField(max_length=256, blank=True)
     
     class Meta:
         abstract = True
@@ -88,13 +88,28 @@ class Entry(models.Model):
         verbose_name_plural = _("Entries")
 
     def __unicode__(self):
-        return self.description
+        return self.save_name, 
     
     def get_fields(self):
         '''
         @return: pairs key,values for all fields of this class
         '''
         return [(field.name, field.value_to_string(self)) for field in self._meta.fields]
+    
+    @staticmethod
+    def get_field_titled_names():
+        '''
+        @return: field names as title for web display no unicode
+        '''
+        return [str(field.verbose_name.title()) for field in Entry._meta.fields]
+    
+    @staticmethod
+    def get_field_names():
+        '''
+        @return: field names no unicode
+        '''
+        return [str(field.name) for field in Entry._meta.fields]
+
 
 
 

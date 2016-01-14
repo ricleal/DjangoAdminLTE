@@ -2,13 +2,14 @@ from django.views.generic import CreateView, ListView, DetailView, UpdateView, D
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
 
-from .models import EQSANSConfiguration, EQSANSReduction
+from .models import EQSANSConfiguration, EQSANSReduction, EQSANSEntry
 from .forms import ConfigurationForm
 from server.catalog.models import Instrument
 
 from pprint import pformat
 import logging
 import json
+from django.core.serializers.json import DjangoJSONEncoder
 
 logger = logging.getLogger('sans.eq-sans')
 
@@ -85,23 +86,78 @@ class ReductionList(LoginRequiredMixin, ListView):
 #         ReductionList.queryset = EQSANSReduction.objects.filter(configuration__user = self.request.user)
 #         return ListView.get_queryset(self)
 
+
+class EntryMixin(object):
+    
+    def get_context_data(self, **kwargs):
+        logger.debug(pformat(kwargs))
+        logger.debug(pformat(self.kwargs))
+        context = super(EntryMixin, self).get_context_data(**kwargs)        
+        context["entry_headers"] = EQSANSEntry.get_field_titled_names()
+        context["entry_names"] = EQSANSEntry.get_field_names()
+        return context
+
+
+
 class ReductionDetail(LoginRequiredMixin, DetailView):
     '''
     Detail of a Reduction
+    
+    A Reduction is a title and a set of entries.
+    The entries are an hidden field : id="entries_hidden"
+    Which are an Handsontable
+    
     '''
     template_name = 'sans/eq-sans/reduction_detail.html'
     model = EQSANSReduction
 
-class ReductionCreate(LoginRequiredMixin, CreateView):
+class ReductionCreate(LoginRequiredMixin,EntryMixin, CreateView):
     '''
-    Detail of a configuration
+    Detail of a Reduction
     '''
     template_name = 'sans/eq-sans/reduction_form.html'
     model = EQSANSReduction
     fields = '__all__'
+    handsontable = None
     
     def form_valid(self, form):
         logger.debug(pformat(self.request.POST))
         received_json_data=json.loads(self.request.POST["entries_hidden"])
         logger.debug(pformat(received_json_data))
+        self.handsontable = received_json_data
         return CreateView.form_valid(self, form)
+    
+    def get_success_url(self):
+        '''Called after the reduction was saved on the DB'''
+        print self.object # Prints the name of the submitted user
+        print self.object.id # Prints None
+        for row in self.handsontable:
+            if any(row): #Row has some data
+                kwargs = {}
+                for elem,field in zip(row,EQSANSEntry.get_field_names()):
+                    print elem,field
+                    kwargs[field]=elem
+                kwargs['reduction']=self.object
+                entry = EQSANSEntry(**kwargs)
+                entry.save()
+                    
+        return super(ReductionCreate, self).get_success_url()
+    
+class ReductionUpdate(LoginRequiredMixin,EntryMixin, UpdateView):
+    '''
+    Detail of a Reduction
+    '''
+    template_name = 'sans/eq-sans/reduction_form.html'
+    model = EQSANSReduction
+    fields = '__all__'
+    
+    def get_context_data(self, **kwargs):
+        '''
+        Get all entries for this reduction and add them as json to the context
+        '''
+        context = super(ReductionUpdate, self).get_context_data(**kwargs)
+        entries = EQSANSEntry.objects.filter(reduction__configuration__user = self.request.user,
+                                                        reduction__id = self.kwargs['pk']).values()
+        entries_json = json.dumps(list(entries), cls=DjangoJSONEncoder)                                              
+        context["entries"] = entries_json
+        return context

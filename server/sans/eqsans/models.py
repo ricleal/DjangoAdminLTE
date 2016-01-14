@@ -44,3 +44,6 @@ class EQSANSEntry(Entry):
                                       on_delete=models.CASCADE,
                                       related_name="entry",
                                       related_query_name="entry",)
+    
+    def __unicode__(self):
+        return "Entry: %s :: Reduction: %s" % (self.save_name, self.reduction.title)

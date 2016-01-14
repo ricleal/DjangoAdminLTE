@@ -11,4 +11,5 @@ urlpatterns = [
     url(r'^EQ-SANS/reduction/$', eqsans.ReductionList.as_view(), name='eq-sans_reduction_list'),
     url(r'^EQ-SANS/reduction/(?P<pk>\d+)/$', eqsans.ReductionDetail.as_view(), name='eq-sans_reduction_detail'),
     url(r'^EQ-SANS/reduction/create$', eqsans.ReductionCreate.as_view(), name='eq-sans_reduction_create'),
+    url(r'^EQ-SANS/reduction/(?P<pk>\d+)/update$', eqsans.ReductionUpdate.as_view(), name='eq-sans_reduction_update'),
 ]

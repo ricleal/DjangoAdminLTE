@@ -32,7 +32,7 @@
 <section class="content">
 	<div class="row">
 		<!-- left column -->
-		<div class="col-md-10 col-md-offset-1">
+		<div class="col-md-12">
 			<!-- general form elements -->
 			<div class="box box-primary">
 				<div class="box-header with-border">
@@ -55,8 +55,6 @@
 						{% else %}
 						<button type="submit" class="btn btn-primary">Save</button>
 						{% endif %}
-						<button type="" class="btn btn-danger">Submit to the
-							cluster</button>
 					</div>
 				</form>
 			</div>
@@ -66,18 +64,17 @@
 </section>
 
 <script>
-	{% if object.entry %}
-		var data2 = [
-		{% for entry in object.entry.all %}
-			[
-			{% for name, value in entry.get_fields %}
-	        	{{ value }}
-	      	{% endfor %}
-	      	]
-		{% endfor %}
-		];
+
+	var headers = {{entry_headers | safe}};
+	// Empty data
+	var data = [new Array(headers.length).join(".").split(".")];
+	
+	
+	
+	{% if entries %}
+		var data = {{entries|safe}};
 	{% else %}
-		var data = [['','','','','','','']];
+		var data = [new Array(headers.length).join(".").split(".")];
 	{% endif %}
 
 
@@ -92,12 +89,16 @@
 	    contextMenu: true,
 	    autoWrapRow: true,
 		rowHeaders : false,
-		colHeaders : ["#","Sample","Sample Trans", "Background", "Background Trans", "Trans", "Description"],
-		contextMenu : true
+		colHeaders : headers,
+		contextMenu : true,
+		columns:
+	        [{% for name in entry_names %}  
+	            	{ data: "{{name}}" }{% if not forloop.last %},{% endif %}
+	            {% endfor %}]
 	});
 	
     function load_table() {
-    	document.getElementById('entries_hidden').value = JSON.stringify({entries_hidden: hot.getData()});
+    	document.getElementById('entries_hidden').value = JSON.stringify(hot.getData());
     	console.log(document.getElementById('entries_hidden').value);
         return true;
      }
