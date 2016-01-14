@@ -7,7 +7,7 @@ from django_auth_ldap.config import LDAPSearch, PosixGroupType
 import ldap
 
 # Authentication settings
-AUTH_LDAP_SERVER_URI = "ldaps://data.sns.gov/"
+AUTH_LDAP_SERVER_URI = "ldap://data.sns.gov/"
 AUTH_LDAP_BIND_DN = ''
 AUTH_LDAP_BIND_PASSWORD = ''
 
