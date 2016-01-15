@@ -82,12 +82,10 @@ class ReductionList(LoginRequiredMixin, ListView):
     List all Reduction.
     '''
     template_name = 'sans/eq-sans/reduction_list.html'
-    model = EQSANSReduction
-
-#     
-#     def get_queryset(self):
-#         ReductionList.queryset = EQSANSReduction.objects.filter(configuration__user = self.request.user)
-#         return ListView.get_queryset(self)
+    #model = EQSANSReduction
+    def get_queryset(self):
+        ReductionList.queryset = EQSANSReduction.objects.filter(configuration__user = self.request.user)
+        return ListView.get_queryset(self)
 
 
 class EntryMixin(object):
@@ -99,7 +97,13 @@ class EntryMixin(object):
         context["entry_headers"] = EQSANSEntry.get_field_titled_names()
         context["entry_names"] = EQSANSEntry.get_field_names()
         return context
-
+    
+    def form_valid(self, form):
+        '''
+        Stores the handsontable in a variable
+        '''
+        self.handsontable = json.loads(self.request.POST["entries_hidden"])
+        return super(EntryMixin, self).form_valid(form)
 
 
 class ReductionDetail(LoginRequiredMixin, DetailView):
@@ -113,6 +117,9 @@ class ReductionDetail(LoginRequiredMixin, DetailView):
     '''
     template_name = 'sans/eq-sans/reduction_detail.html'
     model = EQSANSReduction
+    
+    #TODO: Get query set by user
+
 
 class ReductionCreate(LoginRequiredMixin,EntryMixin, CreateView):
     '''
@@ -122,13 +129,6 @@ class ReductionCreate(LoginRequiredMixin,EntryMixin, CreateView):
     model = EQSANSReduction
     fields = '__all__'
     handsontable = None
-    
-    def form_valid(self, form):
-        '''
-        Stores the handsontable in a variable
-        '''
-        self.handsontable = json.loads(self.request.POST["entries_hidden"])
-        return CreateView.form_valid(self, form)
     
     def get_success_url(self):
         '''
@@ -147,8 +147,9 @@ class ReductionUpdate(LoginRequiredMixin,EntryMixin, UpdateView):
     fields = '__all__'
     
     def get_context_data(self, **kwargs):
-        '''
+        '''        
         Get all entries for this reduction and add them as json to the context
+        This will poplulate the table 
         '''
         context = super(ReductionUpdate, self).get_context_data(**kwargs)
         entries = EQSANSEntry.objects.filter(reduction__configuration__user = self.request.user,
@@ -156,3 +157,12 @@ class ReductionUpdate(LoginRequiredMixin,EntryMixin, UpdateView):
         entries_json = json.dumps(list(entries), cls=DjangoJSONEncoder)                                              
         context["entries"] = entries_json
         return context
+    
+    def get_success_url(self):
+        '''
+        Called after the reduction was saved on the DB (after form_valid)
+        It deletes all Entries first and then create new ones with the table
+        '''
+        EQSANSEntry.objects.filter(reduction = self.object).delete()
+        EQSANSEntry.objects.create_entries_from_handsontable(self.handsontable, reduction=self.object)            
+        return super(ReductionUpdate, self).get_success_url()

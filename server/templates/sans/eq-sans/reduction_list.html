@@ -58,7 +58,7 @@
 								data-placement="bottom" href="{% url 'sans:eq-sans_reduction_detail' object.id %}"
 								title="Click to see the details of this configuration.">View</a></td>
 								<td><a class="btn btn-primary" data-toggle="tooltip"
-								data-placement="bottom" href="#"
+								data-placement="bottom" href="{% url 'sans:eq-sans_reduction_update' object.id %}"
 								title="Click to see the details of this configuration.">Edit</a></td>
 							</tr>
 							{% endfor %}
