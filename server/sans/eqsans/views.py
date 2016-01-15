@@ -70,9 +70,12 @@ class ConfigurationUpdate(LoginRequiredMixin, UpdateView):
     form_class = ConfigurationForm
     model = EQSANSConfiguration
 
+
+#######################################################################
 #
-#
-#
+# Reduction
+# 
+#######################################################################
 
 class ReductionList(LoginRequiredMixin, ListView):
     '''
@@ -121,26 +124,18 @@ class ReductionCreate(LoginRequiredMixin,EntryMixin, CreateView):
     handsontable = None
     
     def form_valid(self, form):
-        logger.debug(pformat(self.request.POST))
-        received_json_data=json.loads(self.request.POST["entries_hidden"])
-        logger.debug(pformat(received_json_data))
-        self.handsontable = received_json_data
+        '''
+        Stores the handsontable in a variable
+        '''
+        self.handsontable = json.loads(self.request.POST["entries_hidden"])
         return CreateView.form_valid(self, form)
     
     def get_success_url(self):
-        '''Called after the reduction was saved on the DB'''
-        print self.object # Prints the name of the submitted user
-        print self.object.id # Prints None
-        for row in self.handsontable:
-            if any(row): #Row has some data
-                kwargs = {}
-                for elem,field in zip(row,EQSANSEntry.get_field_names()):
-                    print elem,field
-                    kwargs[field]=elem
-                kwargs['reduction']=self.object
-                entry = EQSANSEntry(**kwargs)
-                entry.save()
-                    
+        '''
+        Called after the reduction was saved on the DB (after form_valid)
+        It creates The entries for this reduction
+        '''
+        EQSANSEntry.objects.create_entries_from_handsontable(self.handsontable, reduction=self.object)            
         return super(ReductionCreate, self).get_success_url()
     
 class ReductionUpdate(LoginRequiredMixin,EntryMixin, UpdateView):
