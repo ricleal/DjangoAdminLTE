@@ -24,7 +24,7 @@ class EQSANSConfiguration(Configuration):
         max_digits=10, decimal_places=2, default=0.4)
     sensitivity_max = models.DecimalField(
         max_digits=10, decimal_places=2, default=2.0)
-    direct_beam_run = models.CharField(max_length=256, blank=True, null=True,)
+    direct_beam_file = models.CharField(max_length=256, blank=True, null=True,)
     
 
     @models.permalink

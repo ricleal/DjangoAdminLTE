@@ -19,15 +19,17 @@ Including another URLconf
 from django.conf.urls import url, include, patterns
 from django.contrib import admin
 
-from .views import Index
+from . import views
 
 # attempts to import an admin module in each installed application
 # admin.autodiscover()
 
 urlpatterns = [
-    url(r'^$', Index.as_view(), name='index'),
+    url(r'^$', views.Index.as_view(), name='index'),
     url(r'^admin/', admin.site.urls),
     url(r'^catalog/', include('server.catalog.urls', namespace='catalog') ),
     url(r'^users/', include('server.users.urls', namespace='users') ),
     url(r'^sans/', include('server.sans.urls', namespace='sans') ),
+    #
+    url(r'^dirlist/(?P<instrument>[\w\-]+)/$', views.dirlist, name='dirlist'),
 ]
