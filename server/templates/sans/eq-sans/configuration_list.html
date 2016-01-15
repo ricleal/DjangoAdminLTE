@@ -38,7 +38,6 @@
 						<thead>
 							<tr>
 								<th>Id</th>
-								<th>IPTS</th>
 								<th>Title</th>
 								<th>Date created</th>
 								<th>Date modified</th>
@@ -50,7 +49,6 @@
 							{% for object in object_list %}
 							<tr>
 								<td>{{object.id}}</td>
-								<td>{{object.ipts}}</td>
 								<td>{{object.title}}</td>
 								<td>{{object.created_date | date}}</td>
 								<td>{{object.modified_date | date }}</td>
@@ -66,7 +64,6 @@
 						<tfoot>
 							<tr>
 								<th>Id</th>
-								<th>IPTS</th>
 								<th>Title</th>
 								<th>Date created</th>
 								<th>Date modified</th>

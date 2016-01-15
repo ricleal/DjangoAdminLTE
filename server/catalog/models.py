@@ -44,4 +44,4 @@ class Instrument(models.Model):
     class Meta:
         verbose_name = _("Instrument")
         verbose_name_plural = _("Instruments")
-        ordering = ["id"]
+        ordering = ["icat_name"]
