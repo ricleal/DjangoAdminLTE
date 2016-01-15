@@ -64,21 +64,17 @@
 </section>
 
 <script>
-
+	//Initial data
 	var headers = {{entry_headers | safe}};
-	// Empty data
-	var data = [new Array(headers.length).join(".").split(".")];
-	
-	
-	
 	{% if entries %}
 		var data = {{entries|safe}};
 	{% else %}
+		// Empty data
 		var data = [new Array(headers.length).join(".").split(".")];
 	{% endif %}
 
 
-	
+	// Populates the table
 	var container = document.getElementById('entries');
 	var hot = new Handsontable(container, {
 		data: data,
@@ -97,8 +93,31 @@
 	            {% endfor %}]
 	});
 	
+	// Emitts alerts if one of the elements in the row is empty and the other non empty
+	function rowHasEmptyElements(row){
+	    var empty = 0;
+	    var full = 0;
+	    for (var i = 0; i < row.length; i++) {
+	        if (row[i] == null || row[i] == "") empty++;
+	        else full++;
+	    }
+	    if (empty > 0 && full > 0){
+	        alert("Rows must be full!\n" + row);
+	    	return true;
+	    } else
+	    	return false;
+	    
+	}
+
+	// Put in the form the hidden field entries_hidden with the table contents
+	// Used when updating or saving the table to pass table contents to django
     function load_table() {
-    	document.getElementById('entries_hidden').value = JSON.stringify(hot.getData());
+		// Some validation!
+		var data = hot.getData();
+		for (var i = 0; i < data.length; i++) {
+			if (rowHasEmptyElements(data[i])) return false;
+		}
+    	document.getElementById('entries_hidden').value = JSON.stringify(data);
     	console.log(document.getElementById('entries_hidden').value);
         return true;
      }
