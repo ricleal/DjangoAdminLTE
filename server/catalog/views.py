@@ -4,14 +4,17 @@ from django.shortcuts import render
 from django.contrib import messages
 from django.views.generic import View, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
-
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.cache import cache_page
+from django.http import JsonResponse
+ 
 from pprint import pformat
 import logging
+import json
 
 from .icat.facade import Catalog
 from .permissions import user_has_permission_to_see_this_ipts
 from .models import Instrument
-from server.users.models import UserProfile
 
 logger = logging.getLogger('catalog')
 
@@ -78,7 +81,16 @@ class Runs(LoginRequiredMixin,InstrumentMixin,TemplateView):
         return context
 
 
-
+@login_required
+@cache_page(20)
+def get_iptss_json(request, instrument):
+    """
+         Ajax call to get all the possible experiments (retrieved from ICAT)
+    """ 
+    icat = Catalog(request)
+    experiment_list = icat.get_experiments_id_and_title(instrument)
+    response = JsonResponse(experiment_list, safe=False)
+    return response
 
             
     

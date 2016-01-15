@@ -243,3 +243,22 @@ class Catalog(object):
         ranges = self._hyphen_range(raw_ranges["proposal"]["runRange"])
         raw_ranges["proposal"]["runRange"] = json.loads("[" + ranges + "]")
         return raw_ranges
+
+
+    def get_experiments_id_and_title(self, instrument):
+        '''
+        @param instrument: Valid instrument as string
+        @return:
+        
+        '''
+
+        json_data = self.icat.get_experiments_meta(instrument)
+        if json_data is not None and json_data.has_key('proposal'):
+            json_data = json_data['proposal']
+        else:
+            self.dumper.dump_error("ICAT did not return the expected result. Is the instrument valid?")
+            return None
+        
+        json_data_subset = [ {'value' : entry['@id'], 'label' : '%s - %s'%(entry['@id'],entry['title']) } 
+                            for entry in json_data]
+        return json_data_subset;

@@ -24,8 +24,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
         apply the skin class to the body tag so the changes take effect.
   -->
   <link rel="stylesheet" href="{% static 'AdminLTE/css/skins/skin-blue.min.css' %}">
-  
-  <link rel="stylesheet" href="{% static 'css/sns.css' %}">
 
   <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
 
@@ -37,6 +35,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <![endif]-->
 
    {% block head %}{% endblock head %}
+   <!--  SNS Customisations. Last to be loaded to overwrite others -->
+   <link rel="stylesheet" href="{% static 'css/sns.css' %}">
 </head>
 <!--
 BODY TAG OPTIONS:
@@ -285,6 +285,8 @@ desired effect
 
 <!-- jQuery 2.1.4 -->
 <script src="{% static 'AdminLTE_plugins/jQuery/jQuery-2.1.4.min.js' %}"></script>
+<!-- cript src="{% static 'AdminLTE_plugins/jQueryUI/jquery-ui.min.js' %}"></script --> 
+
 <!-- Bootstrap 3.3.5 -->
 <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
 <!-- AdminLTE App -->

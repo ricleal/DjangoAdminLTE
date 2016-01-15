@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load staticfiles %}
 {% load humanize %}
+
 {% block head %}
 <!-- DataTables -->
 <link rel="stylesheet"
@@ -13,7 +14,13 @@
 	rel="stylesheet">
 <script
 	src="https://cdnjs.cloudflare.com/ajax/libs/handsontable/0.20.3/handsontable.full.min.js"></script>
-{% endblock head %} {% block content %}
+
+<!--   jquery-ui for auto complete-->
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+
+{% endblock head %}
+
+{% block content %}
 
 <!-- Content Header (Page header) -->
 <section class="content-header">
@@ -126,11 +133,24 @@
 </script>
 
 <!-- /.content -->
-{% endblock %} {% block body_end %}
+{% endblock %}
+
+{% block body_end %}
 <!-- page script -->
+
+<!--   jquery-ui for auto complete-->
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+
+<script>
+/* Call autocomplete functions on load */
+$(function(){
+	set_autocomplete("#id_ipts", "{% url 'catalog:list_iptss_json' instrument=request.user.profile.instrument.icat_name|upper %}");
+});
+</script>
 <script>
 <!-- Admin LTE requires these classes for better forms -->
 	$("input").addClass("form-control");
 	$("select").addClass("form-control");
+
 </script>
 {% endblock body_end %}
