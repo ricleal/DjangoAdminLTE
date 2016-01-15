@@ -2,7 +2,7 @@
     User management
 """
 from django.contrib import messages
-from django.contrib.auth import REDIRECT_FIELD_NAME, login as auth_login, logout as auth_logout
+from django.contrib.auth import REDIRECT_FIELD_NAME, authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
@@ -39,6 +39,16 @@ class LoginView(FormView):
         return super(LoginView, self).dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
+        # Mathieu athentication
+#         username = form.cleaned_data["username"]
+#         password = form.cleaned_data["password"]
+#         user = authenticate(username=username, password=password)
+#         if user is not None and not user.is_anonymous():
+#             auth_login(self.request, user)
+#         else:
+#             messages.error(self.request, "Django Authenticate Failed. Invalid username or password!")
+        
+        # Default authentication
         auth_login(self.request, form.get_user())
         return super(LoginView, self).form_valid(form)
 

@@ -23,7 +23,6 @@ class Configuration(models.Model):
     The same configuration can launch multiple jobs!
     '''
 
-    ipts = models.CharField(max_length=16, blank=True, null=True,)
     title = models.CharField(max_length=256, blank=True, null=True,)
     dark_current_run = models.CharField(max_length=256, blank=True, null=True,)
     beam_center_run = models.CharField(max_length=256, blank=True, null=True,)
@@ -55,6 +54,7 @@ class Reduction(models.Model):
     '''
     '''
     title = models.CharField(max_length=256, blank=True, null=True,)
+    ipts = models.CharField(max_length=16, blank=True, null=True,)
     created_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
 
