@@ -63,5 +63,6 @@ target/
 *.*~
 /contrib/AdminLTE/*
 /contrib/bootstrap/*
+/contrib/bootstrap3-dialog/
 /.settings/
 

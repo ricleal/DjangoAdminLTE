@@ -83,11 +83,21 @@ git clone git@github.com:twbs/bootstrap.git
 git clone https://github.com/twbs/bootstrap.git
 ```
 
+Bootstrap Dialogs:
+https://nakupanda.github.io/bootstrap3-dialog/
+
+```
+git clone https://github.com/nakupanda/bootstrap3-dialog.git
+
+```
+
+
 Note that `server/static` has links to the `contrib` folder:
 ```
 AdminLTE -> ../contrib/AdminLTE/dist/
 AdminLTE_plugins -> ../contrib/AdminLTE/plugins/
 bootstrap -> ../contrib/bootstrap/dist/
+bootstrap3-dialog -> ../../contrib/bootstrap3-dialog/dist/
 ```
 
 ## Web Server (Mainly Production)

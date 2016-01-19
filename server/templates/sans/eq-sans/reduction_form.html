@@ -18,6 +18,9 @@
 <!--   jquery-ui for auto complete-->
 <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
 
+<!--  boostrap dialogs -->
+<link rel="stylesheet" href="{% static 'bootstrap3-dialog/css/bootstrap-dialog.min.css' %}">
+
 {% endblock head %}
 
 {% block content %}
@@ -109,7 +112,12 @@
 	        else full++;
 	    }
 	    if (empty > 0 && full > 0){
-	        alert("Rows must be full!\n" + row);
+	    	BootstrapDialog.alert({
+	    		title: 'ERROR',
+	    	    message: 'You have rows with empty cells!',
+	            type: BootstrapDialog.TYPE_DANGER
+	    	});
+	        //alert("Rows must be full!\n" + row);
 	    	return true;
 	    } else
 	    	return false;
@@ -140,6 +148,10 @@
 
 <!--   jquery-ui for auto complete-->
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+
+<!--  boostrap dialogs -->
+<script src="{% static 'bootstrap3-dialog/js/bootstrap-dialog.min.js' %}"></script>
+
 
 <script>
 /* Call autocomplete functions on load */
