@@ -8,7 +8,8 @@
 <!-- Our internal functions -->
 <link rel="stylesheet" href="{% static "jQueryFileTree/jQueryFileTree.min.css" %}">
 <script src="{% static 'js/sns.js' %}"></script>
-
+<!--  boostrap dialogs -->
+<link rel="stylesheet" href="{% static 'bootstrap3-dialog/css/bootstrap-dialog.min.css' %}">
 {% endblock head %}
 {% block content %}
 
@@ -60,65 +61,74 @@
 	</section>
 
 
-
-{% include 'dirlist.html' %}
+<!-- The tree modal form will be here (invisble) --> 
+<div id="dirlist_container" style="display: none;">
+	<div id="dirlist_wrapper" class="dirlist"></div>
+</div>
 
 <!-- /.content -->
 {% endblock %}
 
 {% block body_end %}
 <script src="{% static "jQueryFileTree/jQueryFileTree.min.js" %}"></script>
+<!--  boostrap dialogs -->
+<script src="{% static 'bootstrap3-dialog/js/bootstrap-dialog.min.js' %}"></script>
+
 <!-- page script -->
 <script>
-	// Admin LTE requires these classes for better forms
+	//Admin LTE requires these classes for better forms
 	$("input").addClass("form-control");
 	$("select").addClass("form-control");
-
-	//
-	// File browser code. Needs refactoring. 
-	// Note the include above for the modal: include 'dirlist.html'
-	//
-
+		
 	// keeps the selector to assign the selected file
 	var selector;
 	// Setting up jQuery to pass csrf tokens to Django when using ajax.
 	$.ajaxSetup({
-		data : {
-			csrfmiddlewaretoken : '{{ csrf_token }}'
-		}
-	});
-
-	// Loads the file browser
-	$(document)
-			.ready(
-					function() {
-						$('.browser')
-								.fileTree(
-										{
-											script : "{% url 'dirlist' instrument=request.user.profile.instrument.icat_name|upper %}",
-											expandSpeed : 100,
-											collapseSpeed : 100,
-											multiFolder : false
-										}, function(file) {
-											$(selector).val(file);
-											$('#file_modal').modal('hide');
-										}).on('filetreeclicked',
-										function(e, data) {
-											console.log(data);
-										});
-					});
-	//All input fields ending in file:
-	$( "input[name$='file']" ).attr('data-toggle', 'modal');
-	$( "input[name$='file']" ).attr('data-target', '#file_modal');
-	$( "input[name$='file']" ).on('click', function(event) {
-		selector = this;
+	  data: {
+	    csrfmiddlewaretoken: '{{ csrf_token }}'
+	  }
 	});
 	
-	//$('#id_dark_current_file').attr('data-toggle', 'modal');
-	//$('#id_dark_current_file').attr('data-target', '#file_modal');
-	//$('#id_dark_current_file').on('click', function(event) {
-	//	//event.preventDefault(); // To prevent following the link (optional)
-	//	selector = this;
-	//});
+	// Create the modal dialog to show the browser
+	var dialog = new BootstrapDialog({
+	    title: 'Pick a file',
+	    message: $("#dirlist_wrapper"),
+	    onhidden: function() {
+	      $("#dirlist_wrapper").appendTo('#dirlist_container'); // Put the dirlist back
+	    },
+	    buttons: [{
+	      label: 'Close',
+	      action: function(dialogRef) {
+	        dialogRef.close();
+	      }
+	    }]
+	  });
+	
+	// Loads the file browser
+	$(document)
+	  .ready(
+	    function() {
+	      $('.dirlist')
+	        .fileTree({
+	          script: "{% url 'dirlist' instrument=request.user.profile.instrument.icat_name|upper %}",
+	          expandSpeed: 100,
+	          collapseSpeed: 100,
+	          multiFolder: false
+	        }, function(file) {
+	          $(selector).val(file);
+	          // When the file is selected, close the modal
+	          dialog.close();
+	        }).on('filetreeclicked',
+	          function(e, data) {
+	            console.log(data);
+	          });
+	    });
+	
+	//All input fields ending in file will open the dialog:
+	$("input[name$='file']").on('click', function(event) {
+	  selector = this;
+	  dialog.open();
+	});
+	
 </script>
 {% endblock body_end %}
