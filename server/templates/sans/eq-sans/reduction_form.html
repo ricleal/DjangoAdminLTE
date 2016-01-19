@@ -21,6 +21,17 @@
 <!--  boostrap dialogs -->
 <link rel="stylesheet" href="{% static 'bootstrap3-dialog/css/bootstrap-dialog.min.css' %}">
 
+
+<link href="//cdn.datatables.net/tabletools/2.2.2/css/dataTables.tableTools.css" rel="stylesheet" type="text/css" />
+
+
+
+<style>
+    .modal .modal-body {
+        max-height: 420px;
+		overflow-y: auto;
+     }
+ </style>
 {% endblock head %}
 
 {% block content %}
@@ -55,6 +66,10 @@
 					<div class="box-body">{{ form.as_p }}</div>
 					<!-- /.box-body -->
 					
+					<div class="box-body">
+						<button id="button_populate" type="button" class="btn btn-primary">Populate Table below with Icat Data</button>
+					</div>
+					
 					<div class="box-body"><div id="entries"></div></div>
 					<input type="hidden" id="entries_hidden" name="entries_hidden" value="">
 					
@@ -73,7 +88,56 @@
 	</div>
 </section>
 
+<!-- The table modal form will be here (invisble) --> 
+<div id="catalog_container" style="display: none;">
+	<div id="catalog_wrapper" class="catalog">
+		<table id="catalog_table" class="table" cellspacing="0" width="100%">
+	        <thead>
+	            <tr>
+	                <th>Run</th>
+	                <th>Title</th>
+	            </tr>
+	        </thead>
+	        <tfoot>
+	            <tr>
+	                <th>Run</th>
+	                <th>Title</th>
+	            </tr>
+	        </tfoot>
+	    </table>
+	</div>
+</div>
+
+
+<!-- /.content -->
+{% endblock %}
+
+{% block body_end %}
+<!-- page script -->
+
+<!-- DataTables -->
+<script src="{% static 'AdminLTE_plugins/datatables/jquery.dataTables.min.js' %}"></script>
+
+<!--   jquery-ui for auto complete-->
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+
+<!--  boostrap dialogs -->
+<script src="{% static 'bootstrap3-dialog/js/bootstrap-dialog.min.js' %}"></script>
+
+<!--  Data table tools -->
+<script src="//cdn.datatables.net/tabletools/2.2.2/js/dataTables.tableTools.js"></script>
 <script>
+/* Call autocomplete functions on load */
+	$(function(){
+		set_autocomplete("#id_ipts", "{% url 'catalog:list_iptss_json' instrument=request.user.profile.instrument.icat_name|upper %}");
+	});
+
+	// Admin LTE requires these classes for better forms
+	$("input").addClass("form-control");
+	$("select").addClass("form-control");
+
+	/******************* Spreadsheet *************************/
+	
 	//Initial data
 	var headers = {{entry_headers | safe}};
 	{% if entries %}
@@ -122,7 +186,7 @@
 	    } else
 	    	return false;
 	    
-	}
+	};
 
 	// Put in the form the hidden field entries_hidden with the table contents
 	// Used when updating or saving the table to pass table contents to django
@@ -135,34 +199,58 @@
     	document.getElementById('entries_hidden').value = JSON.stringify(data);
     	console.log(document.getElementById('entries_hidden').value);
         return true;
-     }
+     };
 	
+     /******************* Populate Spreadsheet *************************/
+     
+     $(document).ready(function() {
+		    $('#catalog_table').DataTable( {
+		        "ajax": "/catalog/EQSANS/IPTS-10386/json",
+				"lengthMenu" : [ [ 20, 50, 100, -1 ], [ 20, 50, 100, "All" ] ],
+				"order": [[ 1, 'desc' ]],
+				"paging" : true,
+				"lengthChange" : true,
+				"searching" : false,
+				"ordering" : true,
+				"info" : true,
+				"autoWidth" : true,
+				"tableTools": {
+				      "sRowSelect": "os",
+				      "aButtons": [ "select_all", "select_none" ],
+				      "fnPreRowSelect": preRowSelect
+				     }
+		    } );
+		} );
+
+		
+	$('#button_populate').on('click', function(event) {
+		event.preventDefault(); // To prevent following the link (optional)
+		BootstrapDialog.show({
+		    title: 'Pick the runs',
+		    message: $("#catalog_wrapper"),
+		    onhidden: function() {
+		      $("#catalog_wrapper").appendTo('#catalog_container'); // Put the dirlist back
+		    },
+		    buttons: [{
+		      label: 'Close',
+		      action: function(dialogRef) {
+		        dialogRef.close();
+		      }
+		    }]
+		  });
+	});
 	
-</script>
+	function preRowSelect( e, nodes ) {
+	    var output = $.map( nodes, function( node, index ) {
+	      var data = table.row(node).data();
+	      return data[1] !== 'Javascript Developer';
+	    });
 
-<!-- /.content -->
-{% endblock %}
-
-{% block body_end %}
-<!-- page script -->
-
-<!--   jquery-ui for auto complete-->
-<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
-
-<!--  boostrap dialogs -->
-<script src="{% static 'bootstrap3-dialog/js/bootstrap-dialog.min.js' %}"></script>
+	    console.log( output );
+	    return true;
+	  };
 
 
-<script>
-/* Call autocomplete functions on load */
-$(function(){
-	set_autocomplete("#id_ipts", "{% url 'catalog:list_iptss_json' instrument=request.user.profile.instrument.icat_name|upper %}");
-});
-</script>
-<script>
-<!-- Admin LTE requires these classes for better forms -->
-	$("input").addClass("form-control");
-	$("select").addClass("form-control");
 
 </script>
 {% endblock body_end %}

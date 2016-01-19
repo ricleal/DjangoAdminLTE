@@ -266,7 +266,7 @@ class Catalog(object):
     def get_run_number_and_title(self, instrument, experiment):
         '''
         @param instrument: Valid instrument as string
-        @return:
+        @return: Output format for data tables (See. https://www.datatables.net/examples/data_sources/ajax.html)
         '''
         json_data = self.icat.get_runs_all(instrument, experiment)
         if json_data is not None and json_data.has_key('proposal'):
@@ -279,6 +279,5 @@ class Catalog(object):
             self.dumper.dump_error("ICAT did not return the expected result. Are the instrument and experiment id valids?")
             return None
         
-        json_data_subset = [ {'value' : entry['@id'], 'label' : '%s - %s'%(entry['@id'],entry['title']) } 
-                            for entry in json_data]
+        json_data_subset = {"data" : [ [entry['@id'],entry['title']] for entry in json_data] }
         return json_data_subset;
