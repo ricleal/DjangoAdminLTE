@@ -262,3 +262,23 @@ class Catalog(object):
         json_data_subset = [ {'value' : entry['@id'], 'label' : '%s - %s'%(entry['@id'],entry['title']) } 
                             for entry in json_data]
         return json_data_subset;
+
+    def get_run_number_and_title(self, instrument, experiment):
+        '''
+        @param instrument: Valid instrument as string
+        @return:
+        '''
+        json_data = self.icat.get_runs_all(instrument, experiment)
+        if json_data is not None and json_data.has_key('proposal'):
+            try:
+                json_data = json_data['proposal']['runs']['run']
+            except:
+                self.dumper.dump_error("It looks like there is not runs for this experiment!")
+                return None
+        else:
+            self.dumper.dump_error("ICAT did not return the expected result. Are the instrument and experiment id valids?")
+            return None
+        
+        json_data_subset = [ {'value' : entry['@id'], 'label' : '%s - %s'%(entry['@id'],entry['title']) } 
+                            for entry in json_data]
+        return json_data_subset;

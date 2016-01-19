@@ -93,5 +93,18 @@ def get_iptss_json(request, instrument):
     return response
 
             
+@login_required
+@cache_page(20)
+def get_runs_json(request, instrument, ipts):
+    """
+         Ajax call to get all the possible experiments (retrieved from ICAT)
+    """ 
+    icat = Catalog(request)
+    experiment_list = icat.get_run_number_and_title(instrument,ipts)
+    response = JsonResponse(experiment_list, safe=False)
+    return response
+
+            
+    
     
             
