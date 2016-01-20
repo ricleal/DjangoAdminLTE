@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load staticfiles %}
-{% load humanize %} 
+{% load humanize %}
 {% block head %}
 <!-- DataTables -->
 <link rel="stylesheet"
@@ -18,7 +18,7 @@
 	<ol class="breadcrumb">
 		<li class="active">Reduction</li>
 		<li> {{ instrument|default:request.user.profile.instrument }} </li>
-		
+
 	</ol>
 </section>
 
@@ -33,7 +33,7 @@
 				</div>
 				<!-- /.box-header -->
 				<div class="box-body">
-					<table id="table_configuration"
+					<table id="table_reduction"
 						class="table table-bordered table-striped">
 						<thead>
 							<tr>
@@ -85,7 +85,9 @@
 	<!-- /.row -->
 </section>
 <!-- /.content -->
-{% endblock %} {% block body_end %}
+{% endblock %}
+
+{% block body_end %}
 <!-- DataTables -->
 <script
 	src="{% static 'AdminLTE_plugins/datatables/jquery.dataTables.min.js' %}"></script>
@@ -94,7 +96,7 @@
 <!-- page script -->
 <script>
 	$(function() {
-		$("#table_configuration").DataTable({
+		$("#table_reduction").DataTable({
 			"lengthMenu" : [ [ 20, 50, 100, -1 ], [ 20, 50, 100, "All" ] ],
 			//"order": [[ 3, 'desc' ]],
 			"paging" : true,

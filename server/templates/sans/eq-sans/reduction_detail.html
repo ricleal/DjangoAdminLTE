@@ -47,29 +47,45 @@
   </div>
 
 
+	<div class="box-body">
+		<table id="table_reduction"
+			class="table table-bordered table-striped">
+			<thead>
+				<tr>
+					{% for header in entry_headers %}
+					<th>{{ header }}</th>
+					{% endfor %}
+				</tr>
+			</thead>
+			<tbody>
+				{% for entry in object.entry.all %}
+				<tr>
+					{% for name, value in entry.get_fields %}
+						{% if name in entry_names %}
+						<td>{{ value }}</td>
+						{% endif %}
+					{% endfor %}
+				</tr>
+				{% endfor %}
+			</tbody>
+			<tfoot>
+				<tr>
+					{% for header in entry_headers %}
+					<th>{{ header }}</th>
+					{% endfor %}
+				</tr>
+			</tfoot>
+		</table>
+	</div>
 
-  <div class="row">
-  	<p class="lead">Reduction Entries:</p>
-  	{% for entry in object.entry.all %}
-  		    <div class="col-xs-6">
-		      <p class="lead">Entry: {{entry.title}}</p>
-		      <div class="table-responsive">
-		        <table class="table">
-		          {% for name, value in entry.get_fields %}
-		          <tr>
-		            <th style="width:50%">{{ name }}:</th>
-		            <td>{{ value }}</td>
-		          </tr>
-		          {% endfor %}
-		        </table>
-		      </div>
-		    </div>
-	 {% endfor %}
-  </div>
+
   <!-- /.row -->
 
-	<button type="button" class="btn btn-default">Edit</button>
-	<button type="button" class="btn btn-info">Delete</button>
+	<a class="btn btn-primary" data-toggle="tooltip"
+	data-placement="bottom" href="{% url 'sans:eq-sans_reduction_update' object.id %}"
+	title="Click to see the details of this configuration.">Edit</a>
+
+	<button type="button" class="btn btn-default">Delete</button>
 	<button type="button" class="btn btn-danger">Reduce</button>
 
 <!-- /.row -->
@@ -80,3 +96,26 @@
 </section>
 <!-- /.content -->
 {% endblock %}
+
+{% block body_end %}
+<!-- DataTables -->
+<script
+	src="{% static 'AdminLTE_plugins/datatables/jquery.dataTables.min.js' %}"></script>
+<script
+	src="{% static 'AdminLTE_plugins/datatables/dataTables.bootstrap.min.js' %}"></script>
+<!-- page script -->
+<script>
+	$(function() {
+		$("#table_reduction").DataTable({
+			"lengthMenu" : [ [ 20, 50, 100, -1 ], [ 20, 50, 100, "All" ] ],
+			//"order": [[ 3, 'desc' ]],
+			"paging" : true,
+			"lengthChange" : true,
+			"searching" : true,
+			"ordering" : true,
+			"info" : true,
+			"autoWidth" : true
+		});
+	});
+</script>
+{% endblock body_end %}
