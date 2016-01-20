@@ -4,16 +4,11 @@
 
 {% block head %}
 <!-- DataTables -->
-<link rel="stylesheet"
-	href="{% static 'AdminLTE_plugins/datatables/dataTables.bootstrap.css' %}">
-<!-- Our internal functions -->
-<script src="{% static 'js/sns.js' %}"></script>
+<link rel="stylesheet" href="{% static 'AdminLTE_plugins/datatables/dataTables.bootstrap.css' %}">
+<link rel="stylesheet" href="{% static 'AdminLTE_plugins/datatables/extensions/TableTools/css/dataTables.tableTools.min.css' %}">
+
 <!-- handsontable -->
-<link
-	href="https://cdnjs.cloudflare.com/ajax/libs/handsontable/0.20.3/handsontable.full.min.css"
-	rel="stylesheet">
-<script
-	src="https://cdnjs.cloudflare.com/ajax/libs/handsontable/0.20.3/handsontable.full.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/handsontable/0.20.3/handsontable.full.min.css" rel="stylesheet">
 
 <!--   jquery-ui for auto complete-->
 <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
@@ -22,14 +17,10 @@
 <link rel="stylesheet" href="{% static 'bootstrap3-dialog/css/bootstrap-dialog.min.css' %}">
 
 
-<link href="//cdn.datatables.net/tabletools/2.2.2/css/dataTables.tableTools.css" rel="stylesheet" type="text/css" />
-
-
-
 <style>
-    .modal .modal-body {
+    .modal .modal-body .modal-dialog {
         max-height: 420px;
-		overflow-y: auto;
+				overflow-y: auto;
      }
  </style>
 {% endblock head %}
@@ -65,14 +56,16 @@
 					{% csrf_token %}
 					<div class="box-body">{{ form.as_p }}</div>
 					<!-- /.box-body -->
-					
+
 					<div class="box-body">
 						<button id="button_populate" type="button" class="btn btn-primary">Populate Table below with Icat Data</button>
 					</div>
-					
+
+          <!-- Handsontable will be placed here -->
 					<div class="box-body"><div id="entries"></div></div>
+          <!-- Handsontable hidden field will be placed here -->
 					<input type="hidden" id="entries_hidden" name="entries_hidden" value="">
-					
+
 					<div class="box-footer">
 						<button type="button" class="btn btn-default">Cancel</button>
 						{% if form.instance.pk %}
@@ -88,10 +81,10 @@
 	</div>
 </section>
 
-<!-- The table modal form will be here (invisble) --> 
+<!-- The table modal form will be here (invisble) -->
 <div id="catalog_container" style="display: none;">
 	<div id="catalog_wrapper" class="catalog">
-		<table id="catalog_table" class="table" cellspacing="0" width="100%">
+		<table id="catalog_table" class="table table-bordered table-hover">
 	        <thead>
 	            <tr>
 	                <th>Run</th>
@@ -115,8 +108,13 @@
 {% block body_end %}
 <!-- page script -->
 
+<!-- handsontable -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/handsontable/0.20.3/handsontable.full.min.js"></script>
+
 <!-- DataTables -->
 <script src="{% static 'AdminLTE_plugins/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'AdminLTE_plugins/datatables/dataTables.bootstrap.min.js' %}"></script>
+<script src="{% static 'AdminLTE_plugins/datatables/extensions/TableTools/js/dataTables.tableTools.min.js' %}"></script>
 
 <!--   jquery-ui for auto complete-->
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
@@ -124,21 +122,24 @@
 <!--  boostrap dialogs -->
 <script src="{% static 'bootstrap3-dialog/js/bootstrap-dialog.min.js' %}"></script>
 
-<!--  Data table tools -->
-<script src="//cdn.datatables.net/tabletools/2.2.2/js/dataTables.tableTools.js"></script>
+<!-- Our internal functions -->
+<script src="{% static 'js/sns.js' %}"></script>
+
 <script>
-/* Call autocomplete functions on load */
-	$(function(){
-		set_autocomplete("#id_ipts", "{% url 'catalog:list_iptss_json' instrument=request.user.profile.instrument.icat_name|upper %}");
-	});
+
+$(function(){
+  /* Call autocomplete functions on load */
+	set_autocomplete("#id_ipts", "{% url 'catalog:list_iptss_json' instrument=request.user.profile.instrument.icat_name|upper %}");
 
 	// Admin LTE requires these classes for better forms
 	$("input").addClass("form-control");
 	$("select").addClass("form-control");
 
+}); //$(function(){
+
 	/******************* Spreadsheet *************************/
-	
-	//Initial data
+
+	//Initial data: populated from what comes from django context variables
 	var headers = {{entry_headers | safe}};
 	{% if entries %}
 		var data = {{entries|safe}};
@@ -148,107 +149,163 @@
 	{% endif %}
 
 
-	// Populates the table
+  // Populates the spreadsheet
 	var container = document.getElementById('entries');
 	var hot = new Handsontable(container, {
-		data: data,
-		height: 300,
-		minSpareRows: 10,
-		stretchH: 'all',
+	    data: data,
+	    height: 300,
+	    minSpareRows: 10,
+	    stretchH: 'all',
 	    columnSorting: true,
 	    contextMenu: true,
 	    autoWrapRow: true,
-		rowHeaders : false,
-		colHeaders : headers,
-		contextMenu : true,
-		columns:
-	        [{% for name in entry_names %}  
-	            	{ data: "{{name}}" }{% if not forloop.last %},{% endif %}
-	            {% endfor %}]
+	    rowHeaders: false,
+	    colHeaders: headers,
+	    contextMenu: true,
+      outsideClickDeselects: false,
+	    columns: [
+        {% for name in entry_names %}
+          { data: "{{name}}"}
+          {% if not forloop.last %},
+          {% endif %}
+        {% endfor %}
+      ]
 	});
-	
-	// Emitts alerts if one of the elements in the row is empty and the other non empty
-	function rowHasEmptyElements(row){
-	    var empty = 0;
-	    var full = 0;
-	    for (var i = 0; i < row.length; i++) {
-	        if (row[i] == null || row[i] == "") empty++;
-	        else full++;
-	    }
-	    if (empty > 0 && full > 0){
-	    	BootstrapDialog.alert({
-	    		title: 'ERROR',
-	    	    message: 'You have rows with empty cells!',
-	            type: BootstrapDialog.TYPE_DANGER
-	    	});
-	        //alert("Rows must be full!\n" + row);
-	    	return true;
-	    } else
-	    	return false;
-	    
-	};
 
-	// Put in the form the hidden field entries_hidden with the table contents
-	// Used when updating or saving the table to pass table contents to django
-    function load_table() {
-		// Some validation!
-		var data = hot.getData();
-		for (var i = 0; i < data.length; i++) {
-			if (rowHasEmptyElements(data[i])) return false;
-		}
-    	document.getElementById('entries_hidden').value = JSON.stringify(data);
-    	console.log(document.getElementById('entries_hidden').value);
-        return true;
-     };
-	
-     /******************* Populate Spreadsheet *************************/
-     
-     $(document).ready(function() {
-		    $('#catalog_table').DataTable( {
-		        "ajax": "/catalog/EQSANS/IPTS-10386/json",
-				"lengthMenu" : [ [ 20, 50, 100, -1 ], [ 20, 50, 100, "All" ] ],
-				"order": [[ 1, 'desc' ]],
-				"paging" : true,
-				"lengthChange" : true,
-				"searching" : false,
-				"ordering" : true,
-				"info" : true,
-				"autoWidth" : true,
-				"tableTools": {
-				      "sRowSelect": "os",
-				      "aButtons": [ "select_all", "select_none" ],
-				      "fnPreRowSelect": preRowSelect
-				     }
-		    } );
-		} );
+  // spreadsheet
+  // Emitts alerts if one of the elements in the row is empty and the other non empty
+  function rowHasEmptyElements(row) {
+      var empty = 0;
+      var full = 0;
+      for (var i = 0; i < row.length; i++) {
+          if (row[i] == null || row[i] == "") empty++;
+          else full++;
+      }
+      if (empty > 0 && full > 0) {
+          BootstrapDialog.alert({
+              title: 'ERROR',
+              message: 'You have rows with empty cells!',
+              type: BootstrapDialog.TYPE_DANGER
+          });
+          //alert("Rows must be full!\n" + row);
+          return true;
+      } else
+          return false;
 
-		
-	$('#button_populate').on('click', function(event) {
-		event.preventDefault(); // To prevent following the link (optional)
-		BootstrapDialog.show({
-		    title: 'Pick the runs',
-		    message: $("#catalog_wrapper"),
-		    onhidden: function() {
-		      $("#catalog_wrapper").appendTo('#catalog_container'); // Put the dirlist back
-		    },
-		    buttons: [{
-		      label: 'Close',
-		      action: function(dialogRef) {
-		        dialogRef.close();
-		      }
-		    }]
-		  });
-	});
-	
-	function preRowSelect( e, nodes ) {
-	    var output = $.map( nodes, function( node, index ) {
-	      var data = table.row(node).data();
-	      return data[1] !== 'Javascript Developer';
-	    });
+  };
 
-	    console.log( output );
-	    return true;
-	  };
+  // Put in the form the hidden field entries_hidden with the table contents
+  // Used when updating or saving the table to pass table contents to django
+  function load_table() {
+      // Some validation!
+      var data = hot.getData();
+      for (var i = 0; i < data.length; i++) {
+          if (rowHasEmptyElements(data[i])) return false;
+      }
+      document.getElementById('entries_hidden').value = JSON.stringify(data);
+      console.log(document.getElementById('entries_hidden').value);
+      return true;
+  };
+
+	/******************* Populate the catalog modal *************************/
+  var selected_rows = new Array();
+  var table = null;
+  // When the user enter the IPTS:
+  $( "#id_ipts" ).change(function() {
+    var ipts = this.value;
+    console.log(ipts);
+    var catalog_url = "{% url 'catalog:list_runs_json'  instrument=request.user.profile.instrument.icat_name ipts=12345 %}".replace(/12345/, ipts);
+    console.log(catalog_url);
+
+    if (table != null){
+      console.log("Destroying table...");
+      table.destroy();
+    }
+
+    table = $('#catalog_table').DataTable({
+        //"ajax": "/catalog/EQSANS/IPTS-10386/json",
+        "ajax": catalog_url,
+        "lengthMenu": [
+            [20, 50, 100, -1],
+            [20, 50, 100, "All"]
+        ],
+        "order": [
+            [1, 'desc']
+        ],
+        "paging": true,
+        "lengthChange": true,
+        "searching": true,
+        "ordering": true,
+        "info": true,
+        "autoWidth": true,
+        "dom": 'C<"clear">lfrtipT',
+        "tableTools": {
+            "sRowSelect": "os",
+            "aButtons": ["select_all", "select_none"],
+            "fnRowSelected": function(nodes) {
+                $(nodes).each(function(index, tr) {
+                    var lines = $('td:first', tr).map(function(index, td) {
+                      var v = $(td).text();
+                      //console.log(v);
+                      // make sure there's no duplicates
+                      var index = selected_rows.indexOf(v);
+                      while (index > -1) {
+                          selected_rows.splice(index, 1);
+                          index = selected_rows.indexOf(v);
+                      }
+                      selected_rows.push($(td).text());
+                    });
+                });
+            },
+            "fnRowDeselected": function(nodes) {
+                $(nodes).each(function(index, tr) {
+                    var lines = $('td:first', tr).map(function(index, td) {
+                        var v = $(td).text();
+                        //console.log(v);
+                        var index = selected_rows.indexOf(v);
+                        while (index > -1) {
+                            selected_rows.splice(index, 1);
+                            index = selected_rows.indexOf(v);
+                        }
+                    });
+                });
+            }
+        }
+    });
+  }); //$( "#id_ipts" ).change(function() {
+
+  // Open modal dialog to populate the spreadsheet
+  $('#button_populate').on('click', function(event) {
+      event.preventDefault(); // To prevent following the link (optional)
+      BootstrapDialog.show({
+          title: 'Pick the runs',
+          message: $("#catalog_wrapper"),
+          onhidden: function() {
+              $("#catalog_wrapper").appendTo('#catalog_container'); // Put the table back
+          },
+          buttons: [{
+              label: 'Cancel',
+              action: function(dialogRef) {
+                  dialogRef.close();
+              }
+            },{
+              label: 'Populate',
+              action: function(dialogRef) {
+                  console.log(selected_rows);
+                  var instance = hot.getInstance();
+                  var selection = instance.getSelected();
+                  if (selection == null) selection = [0,0];
+                  // Make an array of arrays to populate a collumn
+                  var collumn_to_populate = new Array();
+                  for (var i=selected_rows.length;i--;){
+                    collumn_to_populate.push([selected_rows[i]]);
+                  };
+                  hot.populateFromArray(selection[0],selection[1], collumn_to_populate);
+                  dialogRef.close();
+              }
+          }]
+      });
+  });
 
 
 

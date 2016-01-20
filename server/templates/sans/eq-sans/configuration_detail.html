@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load staticfiles %}
-{% load humanize %} 
+{% load humanize %}
 {% block head %}
 <!-- DataTables -->
 <link rel="stylesheet"
@@ -35,7 +35,7 @@
     <!-- /.col -->
   </div>
   <!-- /.row -->
-    
+
   <div class="row">
     {% for name, value in object.get_fields %}
 	{% if value %}
@@ -47,8 +47,8 @@
     {% endfor %}
   </div>
   <!-- /.row -->
-  
-  
+
+
   <!-- title row -->
   <div class="row">
     <div class="col-xs-12">
@@ -58,8 +58,8 @@
     </div>
     <!-- /.col -->
   </div>
-  
-  
+
+
   {% for reduction in object.reduction.all %}
   <div class="row">
   	<p class="lead">Reduction: {{reduction.title}}</p>
@@ -78,15 +78,21 @@
 		      </div>
 		    </div>
 	 {% endfor %}
-  </div>
+
   <!-- /.row -->
   {% endfor %}
 <!-- /.row -->
 </section>
 
+<div class="row">
+	<div class="col-xs-10 ">
+		<button type="button" class="btn btn-default">Edit</button>
+		<button type="button" class="btn btn-info">Delete</button>
+		<button type="button" class="btn btn-danger">Assign to user</button>
+	</div>
+</div>
 
-	
+
 </section>
 <!-- /.content -->
 {% endblock %}
-

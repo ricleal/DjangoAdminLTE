@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load staticfiles %}
-{% load humanize %} 
+{% load humanize %}
 {% block head %}
 <!-- DataTables -->
 <link rel="stylesheet"
@@ -35,7 +35,7 @@
     <!-- /.col -->
   </div>
   <!-- /.row -->
-  
+
   <!-- title row -->
   <div class="row">
     <div class="col-xs-12">
@@ -45,8 +45,8 @@
     </div>
     <!-- /.col -->
   </div>
-  
-  
+
+
 
   <div class="row">
   	<p class="lead">Reduction Entries:</p>
@@ -67,13 +67,16 @@
 	 {% endfor %}
   </div>
   <!-- /.row -->
- 
+
+	<button type="button" class="btn btn-default">Edit</button>
+	<button type="button" class="btn btn-info">Delete</button>
+	<button type="button" class="btn btn-danger">Reduce</button>
+
 <!-- /.row -->
 </section>
 
 
-	
+
 </section>
 <!-- /.content -->
 {% endblock %}
-
