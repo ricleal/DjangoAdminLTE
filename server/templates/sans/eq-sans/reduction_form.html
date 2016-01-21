@@ -243,8 +243,8 @@ $(function(){
             "sRowSelect": "os",
             "aButtons": ["select_all", "select_none"],
             "fnRowSelected": function(nodes) {
-                $(nodes).each(function(index, tr) {
-                    var lines = $('td:first', tr).map(function(index, td) {
+                $(nodes).each(function(index, tr) { //for every row
+                    var lines = $('td:first', tr).map(function(index, td) { //for every first collumn
                       var v = $(td).text();
                       //console.log(v);
                       // make sure there's no duplicates
@@ -297,7 +297,7 @@ $(function(){
                   if (selection == null) selection = [0,0];
                   // Make an array of arrays to populate a collumn
                   var collumn_to_populate = new Array();
-                  for (var i=selected_rows.length;i--;){
+                  for (var i=selected_rows.length;i--;){ //array into array of arrays
                     collumn_to_populate.push([selected_rows[i]]);
                   };
                   hot.populateFromArray(selection[0],selection[1], collumn_to_populate);
