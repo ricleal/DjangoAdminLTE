@@ -67,7 +67,7 @@
 					<input type="hidden" id="entries_hidden" name="entries_hidden" value="">
 
 					<div class="box-footer">
-						<button type="button" class="btn btn-default">Cancel</button>
+						<button type="button" class="btn btn-default" onclick="goBack()">Cancel</button>
 						{% if form.instance.pk %}
 						<button type="submit" class="btn btn-primary">Update</button>
 						{% else %}

@@ -19,11 +19,16 @@ def dirlist(request, instrument):
     This wil be called by the server side file browser
 
     '''
-    r = ['<ul class="jqueryFileTree" style="display: none;">']
     default_dir = settings.SERVER_FILES_PREFIX%({"instrument":instrument})
+    
+    r = ['<ul class="jqueryFileTree" style="display: none;">']
     try:
         r = ['<ul class="jqueryFileTree" style="display: none;">']
-        d = urllib.unquote(request.POST.get('dir', default_dir))
+        post_dir = urllib.unquote(request.POST.get('dir'))
+        if post_dir == '/':
+            d = default_dir
+        else:
+            d = post_dir
         for f in os.listdir(d):
             ff = os.path.join(d, f)
             if os.path.isdir(ff):

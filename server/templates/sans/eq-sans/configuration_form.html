@@ -2,14 +2,14 @@
 {% load staticfiles %}
 {% load humanize %}
 {% block head %}
-<!-- DataTables -->
-<link rel="stylesheet"
-	href="{% static 'AdminLTE_plugins/datatables/dataTables.bootstrap.css' %}">
-<!-- Our internal functions -->
+
+<!-- jQueryFileTree -->
 <link rel="stylesheet" href="{% static "jQueryFileTree/jQueryFileTree.min.css" %}">
-<script src="{% static 'js/sns.js' %}"></script>
+<!-- DataTables -->
+<link rel="stylesheet" href="{% static 'AdminLTE_plugins/datatables/dataTables.bootstrap.css' %}">
 <!--  boostrap dialogs -->
 <link rel="stylesheet" href="{% static 'bootstrap3-dialog/css/bootstrap-dialog.min.css' %}">
+
 {% endblock head %}
 
 {% block content %}
@@ -76,7 +76,7 @@
       <div class="box box-primary">
           <!-- /.box-body -->
           <div class="box-footer">
-            <button type="button" class="btn btn-default">Cancel</button>
+            <button type="button" class="btn btn-default"  onclick="goBack()">Cancel</button>
             {% if form.instance.pk %}
             <button type="submit" class="btn btn-primary">Update</button>
             {% else %}
@@ -98,6 +98,9 @@
 
 {% block body_end %}
 
+<!-- Our internal functions -->
+<script src="{% static 'js/sns.js' %}"></script>
+<!-- jQueryFileTree -->
 <script src="{% static "jQueryFileTree/jQueryFileTree.min.js" %}"></script>
 <!--  boostrap dialogs -->
 <script src="{% static 'bootstrap3-dialog/js/bootstrap-dialog.min.js' %}"></script>

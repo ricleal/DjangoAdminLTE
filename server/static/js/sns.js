@@ -54,3 +54,9 @@ function set_autocomplete(selector, jsonurl) {
 	});
 }
 
+// Used in the cancel buttons
+function goBack() {
+    window.history.back();
+};
+
+
