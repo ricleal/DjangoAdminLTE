@@ -69,8 +69,6 @@ AdminLTE:
 https://github.com/almasaeed2010/AdminLTE
 
 ```
-git clone git@github.com:almasaeed2010/AdminLTE.git
-# or
 git clone https://github.com/almasaeed2010/AdminLTE.git
 ```
 
@@ -78,8 +76,6 @@ Bootstrap:
 https://github.com/twbs/bootstrap
 
 ```
-git clone git@github.com:twbs/bootstrap.git
-# or
 git clone https://github.com/twbs/bootstrap.git
 ```
 
@@ -91,6 +87,12 @@ git clone https://github.com/nakupanda/bootstrap3-dialog.git
 
 ```
 
+jQueryFileTree:
+http://jqueryfiletree.github.io/
+
+```
+git clone https://github.com/jqueryfiletree/jqueryfiletree.git
+```
 
 Note that `server/static` has links to the `contrib` folder:
 ```
