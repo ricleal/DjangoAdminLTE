@@ -12,19 +12,18 @@ import os
 
 class Index(LoginRequiredMixin,TemplateView):
     template_name = 'index.html'
-    
+
 
 def dirlist(request, instrument):
     '''
     This wil be called by the server side file browser
-    
+
     '''
     r = ['<ul class="jqueryFileTree" style="display: none;">']
-    prefix = settings.SERVER_FILES_PREFIX%({"instrument":instrument})
+    default_dir = settings.SERVER_FILES_PREFIX%({"instrument":instrument})
     try:
         r = ['<ul class="jqueryFileTree" style="display: none;">']
-        #d = urllib.unquote(request.POST.get('dir', '/tmp'))
-        d = prefix
+        d = urllib.unquote(request.POST.get('dir', default_dir))
         for f in os.listdir(d):
             ff = os.path.join(d, f)
             if os.path.isdir(ff):
