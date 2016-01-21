@@ -209,6 +209,7 @@ $(function(){
 
 	/******************* Populate the catalog modal *************************/
   var selected_rows = new Array();
+  var selected_rows_name = new Array();
   var table = null;
   // When the user enter the IPTS:
   $( "#id_ipts" ).change(function() {
@@ -244,17 +245,21 @@ $(function(){
             "aButtons": ["select_all", "select_none"],
             "fnRowSelected": function(nodes) {
                 $(nodes).each(function(index, tr) { //for every row
-                    var lines = $('td:first', tr).map(function(index, td) { //for every first collumn
-                      var v = $(td).text();
-                      //console.log(v);
-                      // make sure there's no duplicates
-                      var index = selected_rows.indexOf(v);
-                      while (index > -1) {
-                          selected_rows.splice(index, 1);
-                          index = selected_rows.indexOf(v);
-                      }
-                      selected_rows.push($(td).text());
-                    });
+                  var row = new Array();
+                  var lines = $('td', tr).map(function(index, td) { //for every first collumn
+                    var v = $(td).text();
+                    row.push(v)
+                    //console.log(v);
+                  });
+                  // make sure there's no duplicates
+                  var index = selected_rows.indexOf(row[0]);
+                  while (index > -1) {
+                      selected_rows.splice(index, 1);
+                      selected_rows_name.splice(index, 1);
+                      index = selected_rows.indexOf(row[0]);
+                  }
+                  selected_rows.push(row[0]);
+                  selected_rows_name.push([row[1]]);
                 });
             },
             "fnRowDeselected": function(nodes) {
@@ -265,6 +270,7 @@ $(function(){
                         var index = selected_rows.indexOf(v);
                         while (index > -1) {
                             selected_rows.splice(index, 1);
+                            selected_rows_name.splice(index, 1);
                             index = selected_rows.indexOf(v);
                         }
                     });
@@ -301,6 +307,11 @@ $(function(){
                     collumn_to_populate.push([selected_rows[i]]);
                   };
                   hot.populateFromArray(selection[0],selection[1], collumn_to_populate);
+                  if (selection[1] == 0){ // if populating first collumn, polulates last with names of the run
+                    hot.populateFromArray(selection[1], instance.countCols()-1, selected_rows_name);
+                  }
+                  selected_rows = new Array();
+                  selected_rows_name = new Array();
                   dialogRef.close();
               }
           }]
