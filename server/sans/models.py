@@ -25,21 +25,21 @@ class Configuration(models.Model):
 
     title = models.CharField(max_length=256, blank=True, null=True,)
     dark_current_file = models.CharField(max_length=256, blank=True, null=True,)
-    
+
     created_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
-    
+
     instrument = models.ForeignKey(Instrument, on_delete=models.CASCADE,
                                    related_name="instrument",
                                    related_query_name="instrument",)  # , blank=True, null=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE,
                              related_name="user",
                              related_query_name="user",)  # , blank=True, null=True)
-    
+
     class Meta:
         abstract = True
         ordering = ["id"]
-    
+
     def __unicode__(self):
         return self.title
 
@@ -48,6 +48,14 @@ class Configuration(models.Model):
         @return: pairs key,values for all fields of this class
         '''
         return [(field.name, field.value_to_string(self)) for field in self._meta.fields]
+
+    def get_field_titled_names_and_values(self):
+        '''
+        Does not display related fields (i.e. FK)
+        @return: field names as title and values for web display no unicode
+        '''
+        return [ (str(field.verbose_name.title()), field.value_to_string(self)) for field in self._meta.fields if not field.is_relation]
+
 
 class Reduction(models.Model):
     '''
@@ -60,10 +68,10 @@ class Reduction(models.Model):
     class Meta:
         abstract = True
         ordering = ["id"]
-        
+
     def __unicode__(self):
         return self.title
-    
+
     def get_fields(self):
         '''
         @return: pairs key,values for all fields of this class
@@ -75,12 +83,12 @@ class EntryManager(models.Manager):
     '''
     Queries go here!!
     '''
-    
+
     use_for_related_fields = True
 
     def visible_instruments(self, **kwargs):
         return self.filter(visible="True", **kwargs)
-    
+
     def create_entries_from_handsontable(self, handsontable, reduction):
         '''
         Create entries based on the contensts of handsontable
@@ -92,12 +100,12 @@ class EntryManager(models.Manager):
                 keywords_args = { field : elem for elem,field in zip(row,Entry.get_field_names()) }
                 logger.debug("Creating Entry object with: %s"%keywords_args)
                 keywords_args['reduction']=reduction
-                # The following is the same as: 
+                # The following is the same as:
                 # entry = Entry(**keywords_args)
                 # entry.save(force_insert=True)
                 self.create(**keywords_args)
-                
-                    
+
+
 
 class Entry(models.Model):
     '''
@@ -109,38 +117,34 @@ class Entry(models.Model):
     background_transmission = models.CharField(max_length=256)
     empty_beam = models.CharField(max_length=256)
     save_name = models.CharField(max_length=256, blank=True)
-    
+
     # Manager
     objects = EntryManager()
-    
+
     class Meta:
         abstract = True
         ordering = ["id"]
         verbose_name_plural = _("Entries")
 
     def __unicode__(self):
-        return self.save_name, 
-    
+        return self.save_name,
+
     def get_fields(self):
         '''
         @return: pairs key,values for all fields of this class
         '''
         return [(field.name, field.value_to_string(self)) for field in self._meta.fields]
-    
+
     @staticmethod
     def get_field_titled_names():
         '''
         @return: field names as title for web display no unicode
         '''
         return [str(field.verbose_name.title()) for field in Entry._meta.fields]
-    
+
     @staticmethod
     def get_field_names():
         '''
         @return: field names no unicode
         '''
         return [str(field.name) for field in Entry._meta.fields]
-
-
-
-

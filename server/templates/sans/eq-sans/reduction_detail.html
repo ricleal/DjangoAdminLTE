@@ -39,9 +39,12 @@
   <!-- title row -->
   <div class="row">
     <div class="col-xs-12">
-      <h2 class="page-header">
-        Configuration assigned to this reduction <small class="pull-right"> {{object.configuration}}</small>
-      </h2>
+      <h3 class="page-header">
+        Configuration:
+				<a class="btn-link pull-right" data-toggle="tooltip"
+				data-placement="bottom" href="{% url 'sans:eq-sans_configuration_detail' object.configuration.id %}"
+				title="Click to see the details of this configuration.">{{object.configuration}}</a>
+      </h3>
     </div>
     <!-- /.col -->
   </div>
@@ -81,13 +84,23 @@
 
   <!-- /.row -->
 
+<p>
 	<a class="btn btn-primary" data-toggle="tooltip"
-	data-placement="bottom" href="{% url 'sans:eq-sans_reduction_update' object.id %}"
-	title="Click to see the details of this configuration.">Edit</a>
+	data-placement="top" href="{% url 'sans:eq-sans_reduction_update' object.id %}"
+	title="Click to edit the details of this reduction.">Edit</a>
 
-	<button type="button" class="btn btn-default">Delete</button>
-	<button type="button" class="btn btn-danger">Reduce</button>
+	<a class="btn btn-danger" data-toggle="tooltip"
+	data-placement="top" href="#"
+	title="Delete...">Delete</a>
 
+	<a class="btn btn-info" data-toggle="tooltip"
+	data-placement="top" href="#"
+	title="Creates a copy of this reduction as you might need a few different parameters.">Duplicate</a>
+
+	<a class="btn btn-warning" data-toggle="tooltip"
+	data-placement="top" href="#"
+	title="Submit this configuration to the cluster. Keep an eye on the results.">Reduce</a>
+</p>
 <!-- /.row -->
 </section>
 

@@ -13,7 +13,7 @@
 <!-- Content Header (Page header) -->
 <section class="content-header">
 	<h1>
-		Configuration  <small>{{ object.id }}</small>
+		Configuration detail
 	</h1>
 	<ol class="breadcrumb">
 		<li class="active">Configuration</li>
@@ -27,27 +27,26 @@
   <!-- title row -->
   <div class="row">
     <div class="col-xs-12">
-      <h2 class="page-header">
-        <i class="fa fa-globe"></i> Configuration: {{object.title}}
-        <small class="pull-right"> {{object.id}}</small>
-      </h2>
+      <h2 class="page-header">{{object.title}}</h2>
     </div>
     <!-- /.col -->
   </div>
   <!-- /.row -->
 
-  <div class="row">
-    {% for name, value in object.get_fields %}
-	{% if value %}
-    <div class="col-xs-12">
-      <p>{{ name }} <small class="pull-right"> {{ value }} </small></p>
-    </div>
-    <!-- /.col -->
-    {% endif %}
-    {% endfor %}
-  </div>
-  <!-- /.row -->
-
+	<div class="row">
+		<div class="table-responsive">
+    	<table class="table">
+    		{% for name, value in object.get_field_titled_names_and_values %}
+				{% if value %}
+				<tr>
+					<th style="width:50%">{{ name }}</th>
+					<td>{{ value }} </td>
+				</tr>
+				{% endif %}
+				{% endfor %}
+			</table>
+		</div>
+	</div>
 
   <!-- title row -->
   <div class="row">
@@ -59,36 +58,44 @@
     <!-- /.col -->
   </div>
 
-
-  {% for reduction in object.reduction.all %}
-  <div class="row">
-  	<p class="lead">Reduction: {{reduction.title}}</p>
-  	{% for entry in reduction.entry.all %}
-  		    <div class="col-xs-6">
-		      <p class="lead">Entry: {{entry.title}}</p>
-		      <div class="table-responsive">
-		        <table class="table">
-		          {% for name, value in entry.get_fields %}
-		          <tr>
-		            <th style="width:50%">{{ name }}:</th>
-		            <td>{{ value }}</td>
-		          </tr>
-		          {% endfor %}
-		        </table>
-		      </div>
-		    </div>
-	 {% endfor %}
-
-  <!-- /.row -->
-  {% endfor %}
-<!-- /.row -->
+	<div class="row">
+		<div class="table-responsive">
+			<table class="table">
+				{% for reduction in object.reduction.all %}
+				<tr>
+					<th style="width:70%">{{reduction.title}}</th>
+					<td><a class="btn btn-primary" data-toggle="tooltip"
+					data-placement="bottom" href="{% url 'sans:eq-sans_reduction_detail' object.id %}"
+					title="Click to see the details of this reduction.">View</a></td>
+					<td><a class="btn btn-primary" data-toggle="tooltip"
+					data-placement="bottom" href="{% url 'sans:eq-sans_reduction_update' object.id %}"
+					title="Click to see the details of this reduction.">Edit</a></td>
+				</tr>
+				{% endfor %}
+			</table>
+		</div>
+	</div>
 </section>
 
 <div class="row">
 	<div class="col-xs-10 ">
-		<button type="button" class="btn btn-default">Edit</button>
-		<button type="button" class="btn btn-info">Delete</button>
-		<button type="button" class="btn btn-danger">Assign to user</button>
+		<p>
+			<a class="btn btn-primary" data-toggle="tooltip"
+			data-placement="top" href="{% url 'sans:eq-sans_configuration_update' object.id %}"
+			title="Click to edit the details of this configuration.">Edit</a>
+
+			<a class="btn btn-danger" data-toggle="tooltip"
+			data-placement="top" href="#"
+			title="Delete...">Delete</a>
+
+			<a class="btn btn-info" data-toggle="tooltip"
+			data-placement="top" href="#"
+			title="Creates a copy of this configuration as you might need a few different parameters.">Duplicate</a>
+
+			<a class="btn btn-warning" data-toggle="tooltip"
+			data-placement="top" href="#"
+			title="If you would like to send this configuarion to another user.">Assign to...</a>
+		</p>
 	</div>
 </div>
 
