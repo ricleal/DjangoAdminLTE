@@ -51,33 +51,34 @@
 
 
 	<div class="box-body">
-		<table id="table_reduction"
-			class="table table-bordered table-striped">
-			<thead>
+		<table id="table_reduction" class="table table-bordered table-striped">
+			{% for entry in object.entry.all %}
+				{% if forloop.first %}
+                <thead>
+					<tr>
+					{% for name, value in entry.get_field_titled_names_and_values %}
+					<th>{{ name }}</th>
+					{% endfor %}
+					</tr>
+				</thead>
+				<tbody>	
+				{% endif %}
 				<tr>
-					{% for header in entry_headers %}
-					<th>{{ header }}</th>
+					{% for name, value in entry.get_field_titled_names_and_values %}
+					<td>{{ value }}</td>
 					{% endfor %}
 				</tr>
-			</thead>
-			<tbody>
-				{% for entry in object.entry.all %}
-				<tr>
-					{% for name, value in entry.get_fields %}
-						{% if name in entry_names %}
-						<td>{{ value }}</td>
-						{% endif %}
+				{% if forloop.last %}
+				</tbody>
+                <tfoot>
+					<tr>
+					{% for name, value in entry.get_field_titled_names_and_values %}
+					<th>{{ name }}</th>
 					{% endfor %}
-				</tr>
-				{% endfor %}
-			</tbody>
-			<tfoot>
-				<tr>
-					{% for header in entry_headers %}
-					<th>{{ header }}</th>
-					{% endfor %}
-				</tr>
-			</tfoot>
+					</tr>
+				</tfoot>
+				{% endif %}
+			{% endfor %}
 		</table>
 	</div>
 

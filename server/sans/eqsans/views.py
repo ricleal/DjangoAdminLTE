@@ -107,7 +107,7 @@ class EntryMixin(object):
         return super(EntryMixin, self).form_valid(form)
 
 
-class ReductionDetail(LoginRequiredMixin, EntryMixin, DetailView):
+class ReductionDetail(LoginRequiredMixin, DetailView):
     '''
     Detail of a Reduction
 
