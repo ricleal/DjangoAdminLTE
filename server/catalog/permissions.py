@@ -1,4 +1,7 @@
 from django.contrib.auth.models import User, Group
+import logging
+import json
+from pprint import pformat
 '''
 My groups: rhf
 
@@ -41,6 +44,8 @@ My groups: rhf
 "sns_usans_team"
 '''
 
+logger = logging.getLogger('catalog.permissions')
+
 def user_has_permission_to_see_this_ipts(user,instrument,ipts):
     """
     @param user: user object
@@ -53,7 +58,7 @@ def user_has_permission_to_see_this_ipts(user,instrument,ipts):
     - Or be in this IPTS group!
 
     """
-    # user = User.objects.get(username='rhf')
+
     if user.groups.filter(name = 'SNS_Neutron_dev'):
         return True
     if  user.groups.filter(name = 'sns_%s_team'%instrument.lower()):
@@ -61,3 +66,10 @@ def user_has_permission_to_see_this_ipts(user,instrument,ipts):
     if user.groups.filter(name = ipts.upper()):
         return True
     return False
+
+def filter_user_permission(user, instrument, ipts_list):
+    '''
+    Iterates the ipts_list and returns a new ipts_list width
+    ipts whose user is allowed to see
+    '''
+    return [ ipts for  ipts in ipts_list if user_has_permission_to_see_this_ipts(user,instrument,ipts) ]

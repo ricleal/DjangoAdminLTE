@@ -316,7 +316,7 @@ LOGGING = {
         },
         'catalog.icat': {
             'handlers': ['console'],
-            'level': 'DEBUG',
+            'level': 'INFO',
         },
         'main': {
             'handlers': ['console'],

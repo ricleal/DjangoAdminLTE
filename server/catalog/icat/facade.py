@@ -248,8 +248,8 @@ class Catalog(object):
     def get_experiments_id_and_title(self, instrument):
         '''
         @param instrument: Valid instrument as string
-        @return:
-        
+        @return: [ {'value' : '...', 'label' : '....'}, ..... ]
+
         '''
 
         json_data = self.icat.get_experiments_meta(instrument)
@@ -258,8 +258,8 @@ class Catalog(object):
         else:
             self.dumper.dump_error("ICAT did not return the expected result. Is the instrument valid?")
             return None
-        
-        json_data_subset = [ {'value' : entry['@id'], 'label' : '%s - %s'%(entry['@id'],entry['title']) } 
+
+        json_data_subset = [ {'value' : entry['@id'], 'label' : '%s - %s'%(entry['@id'],entry['title']) }
                             for entry in json_data]
         return json_data_subset;
 
@@ -278,6 +278,6 @@ class Catalog(object):
         else:
             self.dumper.dump_error("ICAT did not return the expected result. Are the instrument and experiment id valids?")
             return None
-        
+
         json_data_subset = {"data" : [ [entry['@id'],entry['title']] for entry in json_data] }
         return json_data_subset;

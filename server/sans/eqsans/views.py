@@ -78,6 +78,7 @@ class ReductionMixin(object):
     '''
     Used in the template form to populate the redution spreadsheet
     '''
+
     def get_context_data(self, **kwargs):
         '''
         Populates the context with the titled case names and names as in the model
@@ -100,6 +101,15 @@ class ReductionMixin(object):
         Get only reductions for this user: reduction.configuration.user
         '''
         return EQSANSReduction.objects.filter(configuration__user = self.request.user)
+
+    def get_form(self, form_class=None):
+        '''
+        When creating a new form, this will make sure the user only sees it's own
+        configurations
+        '''
+        form = super(ReductionMixin,self).get_form(form_class) #instantiate using parent
+        form.fields['configuration'].queryset = EQSANSConfiguration.objects.filter(user = self.request.user)
+        return form
 
 class ReductionList(LoginRequiredMixin, ReductionMixin, ListView):
     '''
@@ -136,7 +146,7 @@ class ReductionDetail(LoginRequiredMixin, ReductionMixin, DetailView):
 
 class ReductionCreate(LoginRequiredMixin,ReductionMixin, CreateView):
     '''
-    Detail of a Reduction
+    Create a new entry!
     '''
     template_name = 'sans/eq-sans/reduction_form.html'
     model = EQSANSReduction
@@ -150,6 +160,7 @@ class ReductionCreate(LoginRequiredMixin,ReductionMixin, CreateView):
         '''
         EQSANSEntry.objects.create_entries_from_handsontable(self.handsontable, reduction=self.object)
         return super(ReductionCreate, self).get_success_url()
+
 
 class ReductionUpdate(LoginRequiredMixin,ReductionMixin, UpdateView):
     '''
