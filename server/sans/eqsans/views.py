@@ -3,6 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse_lazy
 from django.http import Http404
+from django.contrib import messages
 
 from .models import EQSANSConfiguration, EQSANSReduction, EQSANSEntry
 from .forms import ConfigurationForm
@@ -84,6 +85,24 @@ class ConfigurationDelete(LoginRequiredMixin, DeleteView):
             raise Http404
         logger.debug("Deleting %s"%obj)
         return obj
+
+
+class ConfigurationClone(LoginRequiredMixin, ConfigurationMixin, DetailView):
+    '''
+    Detail of a configuration
+    '''
+    template_name = 'sans/eq-sans/configuration_detail.html'
+    #model = EQSANSConfiguration
+
+    def get_object(self):
+        queryset = super(ConfigurationClone, self).get_queryset()
+        obj = queryset.get(id = self.kwargs['pk'])
+        obj.pk = None # setting to None, clones the object!
+        obj.save() 
+        self.kwargs['pk'] = obj.pk
+        messages.success(self.request, 'Configuration cloned. New id = %s'%obj.pk)
+        return obj
+
     
 #######################################################################
 #
@@ -223,3 +242,23 @@ class ReductionDelete(LoginRequiredMixin, DeleteView):
             raise Http404
         logger.debug("Deleting %s"%obj)
         return obj
+
+class ReductionClone(LoginRequiredMixin, ReductionMixin, DetailView):
+    '''
+    Detail of a configuration
+    '''
+    template_name = 'sans/eq-sans/reduction_detail.html'
+    
+
+    def get_object(self):
+        queryset = super(ReductionClone, self).get_queryset()
+        obj = queryset.get(id = self.kwargs['pk'])
+        obj.pk = None # setting to None, clones the object!
+        obj.save() 
+        #TODO: Need to clone entries:
+        # obj.entry.all
+        
+        self.kwargs['pk'] = obj.pk
+        messages.success(self.request, 'Reduction cloned. New id = %s'%obj.pk)
+        return obj
+    

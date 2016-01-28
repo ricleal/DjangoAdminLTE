@@ -83,11 +83,10 @@
 				title="Click to edit the details of this configuration.">Edit</a>
 
 				<a id="button_delete" class="btn btn-warning" data-toggle="tooltip"
-				data-placement="top" href="#"
-				title="Delete...">Delete</a>
+				data-placement="top" href="#" title="Delete...">Delete</a>
 
 				<a class="btn btn-info" data-toggle="tooltip"
-				data-placement="top" href="#"
+				data-placement="top" href="{% url 'sans:eq-sans_configuration_clone' object.id %}"
 				title="Creates a copy of this configuration as you might need a few different parameters.">Duplicate</a>
 
 				<a class="btn btn-warning" data-toggle="tooltip"
