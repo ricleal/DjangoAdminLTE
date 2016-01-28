@@ -70,6 +70,21 @@ class ConfigurationUpdate(LoginRequiredMixin, UpdateView):
     model = EQSANSConfiguration
 
 
+class ConfigurationDelete(LoginRequiredMixin, DeleteView):
+    
+    model = EQSANSConfiguration
+    success_url = reverse_lazy('sans:eq-sans_configuration_list')
+
+    def get_object(self, queryset=None):
+        """
+        Hook to ensure object is owned by request.user.
+        """
+        obj = super(ConfigurationDelete, self).get_object()
+        if not obj.user  == self.request.user:
+            raise Http404
+        logger.debug("Deleting %s"%obj)
+        return obj
+    
 #######################################################################
 #
 # Reduction

@@ -63,10 +63,10 @@
 				<tr>
 					<th style="width:70%">{{reduction.title}}</th>
 					<td><a class="btn btn-primary" data-toggle="tooltip"
-					data-placement="bottom" href="{% url 'sans:eq-sans_reduction_detail' object.id %}"
+					data-placement="bottom" href="{% url 'sans:eq-sans_reduction_detail' reduction.id %}"
 					title="Click to see the details of this reduction.">View</a></td>
 					<td><a class="btn btn-primary" data-toggle="tooltip"
-					data-placement="bottom" href="{% url 'sans:eq-sans_reduction_update' object.id %}"
+					data-placement="bottom" href="{% url 'sans:eq-sans_reduction_update' reduction.id %}"
 					title="Click to see the details of this reduction.">Edit</a></td>
 				</tr>
 				{% endfor %}
@@ -82,7 +82,7 @@
 				data-placement="top" href="{% url 'sans:eq-sans_configuration_update' object.id %}"
 				title="Click to edit the details of this configuration.">Edit</a>
 
-				<a class="btn btn-danger" data-toggle="tooltip"
+				<a id="button_delete" class="btn btn-warning" data-toggle="tooltip"
 				data-placement="top" href="#"
 				title="Delete...">Delete</a>
 
@@ -92,7 +92,7 @@
 
 				<a class="btn btn-warning" data-toggle="tooltip"
 				data-placement="top" href="#"
-				title="If you would like to send this configuarion to another user.">Assign to...</a>
+				title="If you would like to send this configuration to another user.">Assign to...</a>
 			</p>
 		</div>
 	</div>
@@ -101,3 +101,22 @@
 
 <!-- /.content -->
 {% endblock %}
+
+{% block body_end %}
+<!--  boostrap dialogs -->
+<script src="{% static 'bootstrap3-dialog/js/bootstrap-dialog.min.js' %}"></script>
+<!-- page script -->
+<script>
+	$(function() {
+		// Called when we call delete!
+		// It basically intercepts de get and makes the post that deletes the data
+		// django, by default, asks in a get if you want to delete the objects
+		// Since I want to show a modal I ignore the get and confirm by post
+		$('#button_delete').on('click', function(event) {
+			event.preventDefault(); // To prevent following the link (optional)
+			delete_object("{% url 'sans:eq-sans_configuration_delete' object.id %}", 
+					"<strong>{{object.title}}</strong> and all associated reductions", "{{ csrf_token }}");	
+		});
+	});
+</script>
+{% endblock body_end %}
