@@ -43,8 +43,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
   -->
   <link rel="stylesheet" href="{% static 'AdminLTE/css/skins/skin-blue.min.css' %}">
 
-  <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
-
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
   <!--[if lt IE 9]>
@@ -52,7 +50,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
   <![endif]-->
 
-   {% block head %}{% endblock head %}
+   {% block head %}
+   {% endblock head %}
    <!--  SNS Customisations. Last to be loaded to overwrite others -->
    <link rel="stylesheet" href="{% static 'css/sns.css' %}">
 </head>
@@ -303,7 +302,7 @@ desired effect
 
 <!-- jQuery 2.1.4 -->
 <script src="{% static 'AdminLTE_plugins/jQuery/jQuery-2.1.4.min.js' %}"></script>
-<!-- cript src="{% static 'AdminLTE_plugins/jQueryUI/jquery-ui.min.js' %}"></script -->
+<script src="{% static 'AdminLTE_plugins/jQueryUI/jquery-ui.min.js' %}"></script>
 
 <!-- Bootstrap 3.3.5 -->
 <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
@@ -317,10 +316,13 @@ desired effect
 
  <!-- SlimScroll -->
 <script src="{% static 'AdminLTE_plugins/slimScroll/jquery.slimscroll.min.js' %}"></script>
- <!-- FastClick -->
- <script src="{% static 'AdminLTE_plugins/fastclick/fastclick.js' %}"></script>
-
-{% block body_end %}{% endblock body_end %}
+<!-- FastClick -->
+<script src="{% static 'AdminLTE_plugins/fastclick/fastclick.js' %}"></script>
+<!-- Our internal functions -->
+<script src="{% static 'js/sns.js' %}"></script>
+	
+{% block body_end %}
+{% endblock body_end %}
 
 </body>
 </html>

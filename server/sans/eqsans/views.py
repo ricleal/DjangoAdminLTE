@@ -202,7 +202,9 @@ class ReductionDelete(LoginRequiredMixin, DeleteView):
         """
         Hook to ensure object is owned by request.user.
         """
+        
         obj = super(ReductionDelete, self).get_object()
         if not obj.configuration.user  == self.request.user:
             raise Http404
+        logger.debug("Deleting %s"%obj)
         return obj

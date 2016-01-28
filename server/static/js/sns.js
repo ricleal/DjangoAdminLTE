@@ -1,27 +1,26 @@
 /**
-*  Converts a number to Scientific Notation
-* Use for example as:
-* <script language="javascript"> document.write(to_scientific_notation({{ run.protonCharge }})); </script>
-*/
+ * Converts a number to Scientific Notation Use for example as: <script
+ * language="javascript"> document.write(to_scientific_notation({{
+ * run.protonCharge }})); </script>
+ */
 function to_scientific_notation(num, decimals) {
-    if (typeof(decimals)==='undefined') decimals = 2;
-    try {
-        var ret = num.toExponential(decimals);
-        return ret;
-    } catch (e) {
-        return num;
-    }
+	if (typeof (decimals) === 'undefined')
+		decimals = 2;
+	try {
+		var ret = num.toExponential(decimals);
+		return ret;
+	} catch (e) {
+		return num;
+	}
 };
 
-
-/**********************************************************************
+/*******************************************************************************
  * Autocomplete
  */
 
 /**
- * Populates the autocomplete for data for runs
- * for a certain experiment_id
- *  
+ * Populates the autocomplete for data for runs for a certain experiment_id
+ * 
  */
 
 /*******************************************************************************
@@ -56,7 +55,51 @@ function set_autocomplete(selector, jsonurl) {
 
 // Used in the cancel buttons
 function goBack() {
-    window.history.back();
+	window.history.back();
 };
 
-
+/*******************************************************************************
+ * Function used instead of the default django delete It posts to the DeleteView
+ * Call as: delete_object("{% url 'sans:eq-sans_reduction_delete' object.id %}", "{{object.title}}", "{{ csrf_token }}");
+ * 
+ */
+function delete_object(delete_url, object_title, csrf_token) {
+	BootstrapDialog.show({
+		type : BootstrapDialog.TYPE_WARNING,
+		title : 'Delete?',
+		message : 'Are you sure you want to delete  ' + object_title + '?',
+		buttons : [
+				{
+					label : 'Cancel',
+					action : function(dialogRef) {
+						dialogRef.close();
+					}
+				},
+				{
+					label : 'Delete',
+					cssClass : 'btn-warning',
+					action : function(dialogRef) {
+						dialogRef.close();
+						$.ajax({
+							type : "POST",
+							url : delete_url,
+							data : {
+								csrfmiddlewaretoken : csrf_token
+							},
+							success : function(result) {
+								document.open();
+								document.write(result);
+								document.close();
+							},
+							error : function(xhr, ajaxOptions, thrownError) {
+								BootstrapDialog.show({
+									type : BootstrapDialog.TYPE_DANGER,
+									message : 'Error deleting the object!<br/>'
+											+ thrownError
+								});
+							}
+						});
+					}
+				} ]
+	});
+}
