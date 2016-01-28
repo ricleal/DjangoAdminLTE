@@ -15,49 +15,46 @@ logger = logging.getLogger('sans.eq-sans')
 
 instrument_name = "EQ-SANS"
 
-class ConfigurationList(LoginRequiredMixin, ListView):
+class ConfigurationMixin(object):
+
+    def get_queryset(self):
+        '''
+        Make sure the user only accesses its configurations
+        '''
+        return EQSANSConfiguration.objects.filter(user = self.request.user)
+
+class ConfigurationList(LoginRequiredMixin, ConfigurationMixin, ListView):
     '''
     List all configurations.
     '''
     template_name = 'sans/eq-sans/configuration_list.html'
     #model = EQSANSConfiguration
-
     def get_queryset(self):
-        ConfigurationList.queryset = EQSANSConfiguration.objects.filter(user = self.request.user)
-        return ListView.get_queryset(self)
+        return super(ConfigurationList, self).get_queryset()
 
-class ConfigurationDetail(LoginRequiredMixin, DetailView):
+class ConfigurationDetail(LoginRequiredMixin, ConfigurationMixin, DetailView):
     '''
     Detail of a configuration
     '''
     template_name = 'sans/eq-sans/configuration_detail.html'
-    model = EQSANSConfiguration
+    #model = EQSANSConfiguration
 
-#     def render_to_response(self, context, **response_kwargs):
-#         '''
-#         Just to log the context
-#         '''
-#         logger.debug(pformat(context))
-#         return super(ConfigurationDetail, self).render_to_response(context, **response_kwargs)
-
+    def get_queryset(self):
+        queryset = super(ConfigurationDetail, self).get_queryset()
+        return queryset.filter(id = self.kwargs['pk'])
 
 class ConfigurationCreate(LoginRequiredMixin, CreateView):
     '''
     Detail of a configuration
     '''
     template_name = 'sans/eq-sans/configuration_form.html'
+    # Using form rather than model as we are hiding some fields!!
     form_class = ConfigurationForm
 
-#     def get_initial(self):
-#         # Get the initial dictionary from the superclass method
-#         initial = super(ConfigurationCreate, self).get_initial()
-#         # Copy the dictionary so we don't accidentally change a mutable dict
-#         initial = initial.copy()
-#         initial['user'] = self.request.user.pk
-#         initial['instrument'] = get_object_or_404(Instrument, name=instrument_name)
-#         return initial
-
     def form_valid(self, form):
+        """
+        Sets initial values which are hidden in the form
+        """
         form.instance.user = self.request.user
         form.instance.instrument = get_object_or_404(Instrument, name=instrument_name)
         return CreateView.form_valid(self, form)
@@ -77,23 +74,15 @@ class ConfigurationUpdate(LoginRequiredMixin, UpdateView):
 #
 #######################################################################
 
-class ReductionList(LoginRequiredMixin, ListView):
+class ReductionMixin(object):
     '''
-    List all Reduction.
+    Used in the template form to populate the redution spreadsheet
     '''
-    template_name = 'sans/eq-sans/reduction_list.html'
-    #model = EQSANSReduction
-    def get_queryset(self):
-        ReductionList.queryset = EQSANSReduction.objects.filter(configuration__user = self.request.user)
-        return ListView.get_queryset(self)
-
-
-class EntryMixin(object):
-
     def get_context_data(self, **kwargs):
-        logger.debug(pformat(kwargs))
-        logger.debug(pformat(self.kwargs))
-        context = super(EntryMixin, self).get_context_data(**kwargs)
+        '''
+        Populates the context with the titled case names and names as in the model
+        '''
+        context = super(ReductionMixin, self).get_context_data(**kwargs)
         context["entry_headers"] = EQSANSEntry.get_field_titled_names()
         context["entry_names"] = EQSANSEntry.get_field_names()
         return context
@@ -102,12 +91,30 @@ class EntryMixin(object):
         '''
         Stores the handsontable in a variable
         '''
-        logger.debug(self.request.POST["entries_hidden"]);
+        #logger.debug(self.request.POST["entries_hidden"]);
         self.handsontable = json.loads(self.request.POST["entries_hidden"])
-        return super(EntryMixin, self).form_valid(form)
+        return super(ReductionMixin, self).form_valid(form)
 
+    def get_queryset(self):
+        '''
+        Get only reductions for this user: reduction.configuration.user
+        '''
+        return EQSANSReduction.objects.filter(configuration__user = self.request.user)
 
-class ReductionDetail(LoginRequiredMixin, DetailView):
+class ReductionList(LoginRequiredMixin, ReductionMixin, ListView):
+    '''
+    List all Reduction.
+    '''
+    template_name = 'sans/eq-sans/reduction_list.html'
+    # We wither use the model or the function get_queryset
+    #model = EQSANSReduction
+    def get_queryset(self):
+        '''
+        Get only reductions for this user: reduction.configuration.user
+        '''
+        return super(ReductionList, self).get_queryset()
+
+class ReductionDetail(LoginRequiredMixin, ReductionMixin, DetailView):
     '''
     Detail of a Reduction
 
@@ -117,12 +124,17 @@ class ReductionDetail(LoginRequiredMixin, DetailView):
 
     '''
     template_name = 'sans/eq-sans/reduction_detail.html'
-    model = EQSANSReduction
+    # either model or get_queryset
+    #model = EQSANSReduction
 
-    #TODO: Get query set by user
+    def get_queryset(self):
+        '''
+        Get only reductions for this user: reduction.configuration.user
+        '''
+        queryset = super(ReductionDetail, self).get_queryset()
+        return queryset.filter(id = self.kwargs['pk'])
 
-
-class ReductionCreate(LoginRequiredMixin,EntryMixin, CreateView):
+class ReductionCreate(LoginRequiredMixin,ReductionMixin, CreateView):
     '''
     Detail of a Reduction
     '''
@@ -139,7 +151,7 @@ class ReductionCreate(LoginRequiredMixin,EntryMixin, CreateView):
         EQSANSEntry.objects.create_entries_from_handsontable(self.handsontable, reduction=self.object)
         return super(ReductionCreate, self).get_success_url()
 
-class ReductionUpdate(LoginRequiredMixin,EntryMixin, UpdateView):
+class ReductionUpdate(LoginRequiredMixin,ReductionMixin, UpdateView):
     '''
     Detail of a Reduction
     '''

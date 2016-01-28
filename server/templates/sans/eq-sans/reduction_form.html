@@ -144,10 +144,9 @@ $(function(){
 	{% if entries %}
 		var data = {{entries|safe}};
 	{% else %}
-		// Empty data
+		// 2D empty array
 		var data = [new Array(headers.length).join(".").split(".")];
 	{% endif %}
-
 
   // Populates the spreadsheet
 	var container = document.getElementById('entries');
@@ -166,8 +165,7 @@ $(function(){
 	    columns: [
         {% for name in entry_names %}
           { data: "{{name}}"}
-          {% if not forloop.last %},
-          {% endif %}
+          {% if not forloop.last %},{% endif %}
         {% endfor %}
       ]
 	});
