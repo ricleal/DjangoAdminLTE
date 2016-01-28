@@ -1,6 +1,8 @@
 from django.views.generic import CreateView, ListView, DetailView, UpdateView, DeleteView, FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
+from django.core.urlresolvers import reverse_lazy
+from django.http import Http404
 
 from .models import EQSANSConfiguration, EQSANSReduction, EQSANSEntry
 from .forms import ConfigurationForm
@@ -190,3 +192,17 @@ class ReductionUpdate(LoginRequiredMixin,ReductionMixin, UpdateView):
         EQSANSEntry.objects.filter(reduction = self.object).delete()
         EQSANSEntry.objects.create_entries_from_handsontable(self.handsontable, reduction=self.object)
         return super(ReductionUpdate, self).get_success_url()
+
+class ReductionDelete(LoginRequiredMixin, DeleteView):
+    
+    model = EQSANSReduction
+    success_url = reverse_lazy('sans:eq-sans_reduction_list')
+
+    def get_object(self, queryset=None):
+        """
+        Hook to ensure object is owned by request.user.
+        """
+        obj = super(ReductionDelete, self).get_object()
+        if not obj.configuration.user  == self.request.user:
+            raise Http404
+        return obj

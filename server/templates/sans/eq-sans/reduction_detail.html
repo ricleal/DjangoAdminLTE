@@ -3,8 +3,9 @@
 {% load humanize %}
 {% block head %}
 <!-- DataTables -->
-<link rel="stylesheet"
-	href="{% static 'AdminLTE_plugins/datatables/dataTables.bootstrap.css' %}">
+<link rel="stylesheet" href="{% static 'AdminLTE_plugins/datatables/dataTables.bootstrap.css' %}">
+<!--  boostrap dialogs -->
+<link rel="stylesheet" href="{% static 'bootstrap3-dialog/css/bootstrap-dialog.min.css' %}">
 <!-- Our internal functions -->
 <script src="{% static 'js/sns.js' %}"></script>
 {% endblock head %}
@@ -61,7 +62,7 @@
 					{% endfor %}
 					</tr>
 				</thead>
-				<tbody>	
+				<tbody>
 				{% endif %}
 				<tr>
 					{% for name, value in entry.get_field_titled_names_and_values %}
@@ -90,8 +91,8 @@
 	data-placement="top" href="{% url 'sans:eq-sans_reduction_update' object.id %}"
 	title="Click to edit the details of this reduction.">Edit</a>
 
-	<a class="btn btn-danger" data-toggle="tooltip"
-	data-placement="top" href="#"
+	<a id="button_delete" class="btn btn-danger" data-toggle="tooltip"
+	data-placement="top" href="{% url 'sans:eq-sans_reduction_delete' object.id %}"
 	title="Delete...">Delete</a>
 
 	<a class="btn btn-info" data-toggle="tooltip"
@@ -113,10 +114,11 @@
 
 {% block body_end %}
 <!-- DataTables -->
-<script
-	src="{% static 'AdminLTE_plugins/datatables/jquery.dataTables.min.js' %}"></script>
-<script
-	src="{% static 'AdminLTE_plugins/datatables/dataTables.bootstrap.min.js' %}"></script>
+<script	src="{% static 'AdminLTE_plugins/datatables/jquery.dataTables.min.js' %}"></script>
+
+<script src="{% static 'AdminLTE_plugins/datatables/dataTables.bootstrap.min.js' %}"></script>
+<!--  boostrap dialogs -->
+<script src="{% static 'bootstrap3-dialog/js/bootstrap-dialog.min.js' %}"></script>
 <!-- page script -->
 <script>
 	$(function() {
@@ -129,6 +131,47 @@
 			"ordering" : true,
 			"info" : true,
 			"autoWidth" : true
+		});
+
+		// Called when we call delete!
+		// It basically intercepts de get and makes the post that deletes the data
+		// django, by default, asks in a get if you want to delete the objects
+		// Since I want to show a modal I ignore the get and confirm by post
+		$('#button_delete').on('click', function(event) {
+			event.preventDefault(); // To prevent following the link (optional)
+			BootstrapDialog.show({
+				type : BootstrapDialog.TYPE_WARNING,
+				title: 'Delete?',
+				message: 'Are you sure you want to delete this reduction?<br/>Reduction: {{object.title}}',
+				buttons: [{
+			    label: 'Cancel',
+					action: function(dialogRef) {
+			        dialogRef.close();
+			    }
+				}, {
+			    label: 'Delete',
+					cssClass: 'btn-warning',
+			    action: function(dialogRef) {
+						dialogRef.close();
+						$.ajax({
+						  type: "POST",
+						  url: "{% url 'sans:eq-sans_reduction_delete' object.id %}",
+						  data: {csrfmiddlewaretoken: '{{ csrf_token }}'},
+						  success: function(result) {
+								document.open();
+        				document.write(result);
+        				document.close();
+							},
+							error: function (xhr, ajaxOptions, thrownError) {
+								BootstrapDialog.show({
+									type: BootstrapDialog.TYPE_DANGER,
+            			message: 'Error deleting the object!<br/>' + thrownError
+        				});
+				      }
+						});
+			    }
+				}]
+			});
 		});
 	});
 </script>

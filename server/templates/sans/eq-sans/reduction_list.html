@@ -52,14 +52,14 @@
 								<td>{{object.id}}</td>
 								<td>{{object.title}}</td>
 								<td>{{object.configuration}}</td>
-								<td>{{object.created_date | date}}</td>
-								<td>{{object.modified_date | date }}</td>
+								<td>{{object.created_date | date:"DATETIME_FORMAT" }}</td>
+								<td>{{object.modified_date | date:"DATETIME_FORMAT" }}</td>
 								<td><a class="btn btn-primary" data-toggle="tooltip"
-								data-placement="bottom" href="{% url 'sans:eq-sans_reduction_detail' object.id %}"
-								title="Click to see the details of this reduction.">View</a></td>
+									data-placement="bottom" href="{% url 'sans:eq-sans_reduction_detail' object.id %}"
+									title="Click to see the details of this reduction.">View</a></td>
 								<td><a class="btn btn-primary" data-toggle="tooltip"
-								data-placement="bottom" href="{% url 'sans:eq-sans_reduction_update' object.id %}"
-								title="Click to see the details of this reduction.">Edit</a></td>
+									data-placement="bottom" href="{% url 'sans:eq-sans_reduction_update' object.id %}"
+									title="Click to see the details of this reduction.">Edit</a></td>
 							</tr>
 							{% endfor %}
 						</tbody>
