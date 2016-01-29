@@ -51,7 +51,7 @@
 
 	<div class="box-body">
 		<table id="table_reduction" class="table table-bordered table-striped">
-			{% for entry in object.entry.all %}
+			{% for entry in object.entries.all %}
 				{% if forloop.first %}
                 <thead>
 					<tr>
@@ -104,6 +104,11 @@
 <!-- /.row -->
 </section>
 
+<div class="box-body">
+	<p>
+	<a class="btn btn-primary" href="{% url 'sans:eq-sans_reduction_list' %}">Back to the Reduction list</a>
+	</p>	
+</div>
 
 
 </section>

@@ -33,7 +33,7 @@ class EQSANSConfiguration(Configuration):
 
 class EQSANSReduction(Reduction):
     configuration = models.ForeignKey(EQSANSConfiguration, on_delete=models.CASCADE,
-                                      related_name="reduction",
+                                      related_name="reductions",
                                       related_query_name="reduction",
                                       blank=True, null=True,)
     
@@ -46,7 +46,7 @@ class EQSANSEntry(Entry):
     # We can not have ForeignKey for abstract models. It has to be here!!
     reduction = models.ForeignKey(EQSANSReduction,
                                       on_delete=models.CASCADE,
-                                      related_name="entry",
+                                      related_name="entries",
                                       related_query_name="entry",)
     
     def __unicode__(self):

@@ -243,6 +243,7 @@ class ReductionDelete(LoginRequiredMixin, DeleteView):
         logger.debug("Deleting %s"%obj)
         return obj
 
+   
 class ReductionClone(LoginRequiredMixin, ReductionMixin, DetailView):
     '''
     Detail of a configuration
@@ -253,11 +254,10 @@ class ReductionClone(LoginRequiredMixin, ReductionMixin, DetailView):
     def get_object(self):
         queryset = super(ReductionClone, self).get_queryset()
         obj = queryset.get(id = self.kwargs['pk'])
+        old_entries =  obj.entries.all()
         obj.pk = None # setting to None, clones the object!
-        obj.save() 
-        #TODO: Need to clone entries:
-        # obj.entry.all
-        
+        obj.save()
+        obj.entries = old_entries
         self.kwargs['pk'] = obj.pk
         messages.success(self.request, 'Reduction cloned. New id = %s'%obj.pk)
         return obj
