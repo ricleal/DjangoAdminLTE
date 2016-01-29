@@ -74,3 +74,8 @@
 .ui-autocomplete > li.ui-state-focus {
   background-color: #FF6C00;
 }
+
+/* Show row selections for datatable. I use this rather than the jquery.dataTables.css which has conflicts with Adminlte*/
+table.dataTable tbody tr.selected {
+  background-color: #B0BED9;
+}

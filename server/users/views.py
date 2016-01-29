@@ -16,7 +16,11 @@ from django.views.generic import CreateView, UpdateView, FormView, RedirectView
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
+from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+
 import logging
+import json
 
 from .models import UserProfile
 
@@ -99,3 +103,21 @@ class ProfileCreate(LoginRequiredMixin,SuccessMessageMixin,CreateView):
         form.instance.user = user
         return super(ProfileCreate, self).form_valid(form)
      
+@login_required
+def get_users_json(request):
+    """
+    Ajax call to get all the possible users
+    @return: Json in DataTables format :
+    {
+  "data": [
+    [
+      "col 1 row 1",
+      "col 2 row 1",
+      ],[...]
+      ] }
+    
+    """
+    users_queryset = User.objects.all()
+    users_json = {"data" : [ [user.username,user.first_name] for user in users_queryset] }
+    response = JsonResponse(users_json, safe=False)
+    return response

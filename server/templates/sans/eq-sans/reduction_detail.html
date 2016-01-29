@@ -93,11 +93,11 @@
 	data-placement="top" href="#"
 	title="Delete...">Delete</a>
 
-	<a class="btn btn-info" data-toggle="tooltip"
+	<a class="btn btn-primary" data-toggle="tooltip"
 	data-placement="top" href="{% url 'sans:eq-sans_reduction_clone' object.id %}"
 	title="Creates a copy of this reduction as you might need a few different parameters.">Duplicate</a>
 
-	<a class="btn btn-info" data-toggle="tooltip"
+	<a id="button_reduce" class="btn btn-primary" data-toggle="tooltip"
 	data-placement="top" href="#"
 	title="Submit this configuration to the cluster. Keep an eye on the results.">Reduce</a>
 </p>
@@ -132,6 +132,12 @@
 		$('#button_delete').on('click', function(event) {
 			event.preventDefault(); // To prevent following the link (optional)
 			delete_object("{% url 'sans:eq-sans_reduction_delete' object.id %}", "<strong>{{object.title}}</strong>", "{{ csrf_token }}");	
+		});
+	});
+	$(function() {
+		$('#button_reduce').on('click', function(event) {
+			event.preventDefault(); // To prevent following the link (optional)
+			alert("Sorry... Not working yet!");
 		});
 	});
 	$(function() {

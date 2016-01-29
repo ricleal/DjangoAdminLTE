@@ -9,6 +9,7 @@ urlpatterns = [
     url(r'^EQ-SANS/(?P<pk>\d+)/update$', eqsans.ConfigurationUpdate.as_view(), name='eq-sans_configuration_update'),
     url(r'^EQ-SANS/(?P<pk>\d+)/delete$', eqsans.ConfigurationDelete.as_view(), name='eq-sans_configuration_delete'),
     url(r'^EQ-SANS/(?P<pk>\d+)/clone$', eqsans.ConfigurationClone.as_view(), name='eq-sans_configuration_clone'),
+    url(r'^EQ-SANS/(?P<pk>\d+)/assign/(?P<uid>\w{3})$', eqsans.ConfigurationAssign.as_view(), name='eq-sans_configuration_assign'),
 
     url(r'^EQ-SANS/reduction/$', eqsans.ReductionList.as_view(), name='eq-sans_reduction_list'),
     url(r'^EQ-SANS/reduction/(?P<pk>\d+)/$', eqsans.ReductionDetail.as_view(), name='eq-sans_reduction_detail'),

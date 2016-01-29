@@ -4,6 +4,10 @@
 {% block head %}
 <!-- DataTables -->
 <link rel="stylesheet"	href="{% static 'AdminLTE_plugins/datatables/dataTables.bootstrap.css' %}">
+<!-- link rel="stylesheet"	href="{% static 'AdminLTE_plugins/datatables/jquery.dataTables.css' %}" -->
+
+<!--  boostrap dialogs -->
+<link rel="stylesheet" href="{% static 'bootstrap3-dialog/css/bootstrap-dialog.min.css' %}">
 
 {% endblock head %}
 {% block content %}
@@ -85,11 +89,11 @@
 				<a id="button_delete" class="btn btn-warning" data-toggle="tooltip"
 				data-placement="top" href="#" title="Delete...">Delete</a>
 
-				<a class="btn btn-info" data-toggle="tooltip"
+				<a class="btn btn-primary" data-toggle="tooltip"
 				data-placement="top" href="{% url 'sans:eq-sans_configuration_clone' object.id %}"
 				title="Creates a copy of this configuration as you might need a few different parameters.">Duplicate</a>
 
-				<a class="btn btn-warning" data-toggle="tooltip"
+				<a id="button_assign_user" class="btn btn-primary" data-toggle="tooltip"
 				data-placement="top" href="#"
 				title="If you would like to send this configuration to another user.">Assign to...</a>
 			</p>
@@ -104,12 +108,36 @@
 </div>
 
 
+<!-- The table modal form will be here (invisble) -->
+<div id="users_container" style="display: none;">
+	<div id="users_wrapper">
+		<table id="users_table" class="table table-bordered table-hover">
+	        <thead>
+	            <tr>
+	                <th>UID</th>
+	                <th>Name</th>
+	            </tr>
+	        </thead>
+	        <tfoot>
+	            <tr>
+	                <th>UID</th>
+	                <th>Name</th>
+	            </tr>
+	        </tfoot>
+	    </table>
+	</div>
+</div>
+
 <!-- /.content -->
 {% endblock %}
 
 {% block body_end %}
 <!--  boostrap dialogs -->
 <script src="{% static 'bootstrap3-dialog/js/bootstrap-dialog.min.js' %}"></script>
+<!-- DataTables -->
+<script src="{% static 'AdminLTE_plugins/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'AdminLTE_plugins/datatables/dataTables.bootstrap.min.js' %}"></script>
+
 <!-- page script -->
 <script>
 	$(function() {
@@ -122,6 +150,86 @@
 			delete_object("{% url 'sans:eq-sans_configuration_delete' object.id %}", 
 					"<strong>{{object.title}}</strong> and all associated reductions", "{{ csrf_token }}");	
 		});
+	});
+	$(function() {
+		
+		// Creates modal table with json from the user list
+		var users_url = "{% url 'users:users_list_json' %}"
+	    var table = $('#users_table').DataTable({
+	        "ajax": users_url,
+	        "lengthMenu": [
+	            [20, 50, 100, -1],
+	            [20, 50, 100, "All"]
+	        ],
+	        "order": [
+	            [1, 'desc']
+	        ],
+	        "paging": true,
+	        "lengthChange": true,
+	        "searching": true,
+	        "ordering": true,
+	        "info": true,
+	        "autoWidth": true
+	    });
+		// Called when of the rows is clicked (highlights the rows)
+		$('#users_table tbody').on( 'click', 'tr', function () {
+	        if ( $(this).hasClass('selected') ) {
+	        	console.log($(this));
+	            $(this).removeClass('selected');
+	        }
+	        else {
+	            table.$('tr.selected').removeClass('selected');
+	            $(this).addClass('selected');
+	        }
+	    } );
+	
+	    // Open modal dialog to list users
+	    $('#button_assign_user').on('click', function(event) {
+	        event.preventDefault(); // To prevent following the link (optional)
+	        BootstrapDialog.show({
+	        	type: BootstrapDialog.TYPE_PRIMARY, 
+	            title: 'Select a user',
+	            message: $("#users_wrapper"),
+	            onhidden: function() {
+	                $("#users_wrapper").appendTo('#users_container'); // Put the table back
+	            },
+	            buttons: [{
+	                label: 'Cancel',
+	                action: function(dialogRef) {
+	                    dialogRef.close();
+	                }
+	              },{
+	                label: 'Assign',
+	                action: function(dialogRef) {
+	                	// if a user is selected:
+	                	if (table.row('.selected').data()) {
+	                		// get first column
+	                		uid = table.row('.selected').data()[0];
+	                		// And clones it!
+							$.ajax({
+								type : "GET",
+								url : "{% url 'sans:eq-sans_configuration_assign'  object.id 'XXX' %}".replace(/XXX/, uid),
+								data : {},
+								success : function(result) {
+									document.open();
+									document.write(result);
+									document.close();
+								},
+								error : function(xhr, ajaxOptions, thrownError) {
+									BootstrapDialog.show({
+										type : BootstrapDialog.TYPE_DANGER,
+										message : 'Error Assigning this configuration!<br/>'
+												+ thrownError
+									});
+								}
+							});
+	                		
+	                	}
+	                    dialogRef.close();
+	                }
+	            }]
+	        });
+	    });
 	});
 </script>
 {% endblock body_end %}

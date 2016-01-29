@@ -26,11 +26,23 @@ class ConfigurationManager(models.Manager):
 
     def clone(self, pk):
         '''
+        Clone an object and returns 
         '''
         obj = self.get(id = pk)
         obj.pk = None # setting to None, clones the object!
         obj.save() 
         return obj
+    
+    def clone_and_assign_new_user(self,pk,new_user):
+        '''
+        '''
+        obj = self.get(id = pk)
+        obj.pk = None # setting to None, clones the object!
+        obj.user = User.objects.get(username= new_user)
+        obj.save() 
+        return obj
+        
+        
         
 
 class Configuration(models.Model):

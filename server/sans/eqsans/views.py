@@ -4,6 +4,7 @@ from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse_lazy
 from django.http import Http404
 from django.contrib import messages
+from django.core.serializers.json import DjangoJSONEncoder
 
 from .models import EQSANSConfiguration, EQSANSReduction, EQSANSEntry
 from .forms import ConfigurationForm
@@ -12,7 +13,7 @@ from server.catalog.models import Instrument
 from pprint import pformat
 import logging
 import json
-from django.core.serializers.json import DjangoJSONEncoder
+
 
 logger = logging.getLogger('sans.eq-sans')
 
@@ -89,7 +90,7 @@ class ConfigurationDelete(LoginRequiredMixin, DeleteView):
 
 class ConfigurationClone(LoginRequiredMixin, ConfigurationMixin, DetailView):
     '''
-    Detail of a configuration
+    
     '''
     template_name = 'sans/eq-sans/configuration_detail.html'
     #model = EQSANSConfiguration
@@ -100,6 +101,17 @@ class ConfigurationClone(LoginRequiredMixin, ConfigurationMixin, DetailView):
         messages.success(self.request, 'Configuration %s cloned. New id = %s'%(obj, obj.pk))
         return obj
 
+class ConfigurationAssign(LoginRequiredMixin, ConfigurationMixin, DetailView):
+    '''
+    
+    '''
+    template_name = 'sans/eq-sans/configuration_detail.html'
+    model = EQSANSConfiguration
+    
+    def get(self, request, *args, **kwargs):
+        obj = EQSANSConfiguration.objects.clone_and_assign_new_user(kwargs['pk'],kwargs['uid'])
+        messages.success(request, "Configuration '%s' assigned to %s. New id = %s"%(obj, obj.user, obj.pk))
+        return super(ConfigurationAssign, self).get(request, *args, **kwargs)
     
 #######################################################################
 #
