@@ -17,6 +17,22 @@ Reduction - 1 to many - Entries
 
 '''
 
+class ConfigurationManager(models.Manager):
+    '''
+    Configuration go here!!
+    '''
+
+    use_for_related_fields = True
+
+    def clone(self, pk):
+        '''
+        '''
+        obj = self.get(id = pk)
+        obj.pk = None # setting to None, clones the object!
+        obj.save() 
+        return obj
+        
+
 class Configuration(models.Model):
     '''
     Job will have a foreign key to here
@@ -35,6 +51,9 @@ class Configuration(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE,
                              related_name="user",
                              related_query_name="user",)  # , blank=True, null=True)
+    
+    # Manager
+    objects = ConfigurationManager()
 
     class Meta:
         abstract = True
@@ -56,7 +75,24 @@ class Configuration(models.Model):
         '''
         return [ (str(field.verbose_name.title()), field.value_to_string(self)) for field in self._meta.fields if not field.is_relation]
 
+class ReductionManager(models.Manager):
+    '''
+    Configuration go here!!
+    '''
 
+    use_for_related_fields = True
+
+    def clone(self, pk):
+        '''
+        Clones the Reduction object and related entries
+        '''
+        obj = self.get(id = pk)
+        old_entries =  obj.entries.all()
+        obj.pk = None # setting to None, clones the object!
+        obj.save()
+        obj.entries = old_entries
+        return obj
+    
 class Reduction(models.Model):
     '''
     '''
@@ -65,6 +101,9 @@ class Reduction(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
 
+    # Manager
+    objects = ReductionManager()
+    
     class Meta:
         abstract = True
         ordering = ["id"]
@@ -85,9 +124,6 @@ class EntryManager(models.Manager):
     '''
 
     use_for_related_fields = True
-
-    def visible_instruments(self, **kwargs):
-        return self.filter(visible="True", **kwargs)
 
     def create_entries_from_handsontable(self, handsontable, reduction):
         '''

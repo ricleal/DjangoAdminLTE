@@ -95,12 +95,9 @@ class ConfigurationClone(LoginRequiredMixin, ConfigurationMixin, DetailView):
     #model = EQSANSConfiguration
 
     def get_object(self):
-        queryset = super(ConfigurationClone, self).get_queryset()
-        obj = queryset.get(id = self.kwargs['pk'])
-        obj.pk = None # setting to None, clones the object!
-        obj.save() 
+        obj = EQSANSConfiguration.objects.clone(self.kwargs['pk'])
         self.kwargs['pk'] = obj.pk
-        messages.success(self.request, 'Configuration cloned. New id = %s'%obj.pk)
+        messages.success(self.request, 'Configuration %s cloned. New id = %s'%(obj, obj.pk))
         return obj
 
     
@@ -250,15 +247,12 @@ class ReductionClone(LoginRequiredMixin, ReductionMixin, DetailView):
     '''
     template_name = 'sans/eq-sans/reduction_detail.html'
     
-
     def get_object(self):
-        queryset = super(ReductionClone, self).get_queryset()
-        obj = queryset.get(id = self.kwargs['pk'])
-        old_entries =  obj.entries.all()
-        obj.pk = None # setting to None, clones the object!
-        obj.save()
-        obj.entries = old_entries
+        '''
+        Clones a reduction and related entries.
+        '''
+        obj = EQSANSReduction.objects.clone(self.kwargs['pk'])
         self.kwargs['pk'] = obj.pk
-        messages.success(self.request, 'Reduction cloned. New id = %s'%obj.pk)
+        messages.success(self.request, 'Reduction %s cloned. New id = %s'%(obj, obj.pk))
         return obj
-    
+            
