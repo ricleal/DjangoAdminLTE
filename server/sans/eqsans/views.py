@@ -1,10 +1,11 @@
-from django.views.generic import CreateView, ListView, DetailView, UpdateView, DeleteView, FormView
+from django.views.generic import CreateView, ListView, DetailView, UpdateView, DeleteView, FormView, RedirectView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse_lazy
 from django.http import Http404
 from django.contrib import messages
 from django.core.serializers.json import DjangoJSONEncoder
+from django.core.urlresolvers import reverse
 
 from .models import EQSANSConfiguration, EQSANSReduction, EQSANSEntry
 from .forms import ConfigurationForm
@@ -253,18 +254,32 @@ class ReductionDelete(LoginRequiredMixin, DeleteView):
         return obj
 
    
-class ReductionClone(LoginRequiredMixin, ReductionMixin, DetailView):
+# class ReductionClone(LoginRequiredMixin, ReductionMixin, DetailView):
+#     '''
+#     Configuration clone
+#     '''
+#     template_name = 'sans/eq-sans/reduction_detail.html'
+#     
+#     def get_object(self):
+#         '''
+#         Clones a reduction and related entries.
+#         '''
+#         obj = EQSANSReduction.objects.clone(self.kwargs['pk'])
+#         self.kwargs['pk'] = obj.pk
+#         messages.success(self.request, "Reduction '%s' cloned. New id = %s"%(obj, obj.pk))
+#         return obj
+
+class ReductionClone(LoginRequiredMixin, ReductionMixin, RedirectView):
     '''
-    Configuration clone
+    Configuration clone using redirect
     '''
-    template_name = 'sans/eq-sans/reduction_detail.html'
-    
-    def get_object(self):
-        '''
-        Clones a reduction and related entries.
-        '''
+    permanent = False
+    query_string = False
+    pattern_name = 'sans:eq-sans_reduction_update'
+
+    def get_redirect_url(self, *args, **kwargs):
         obj = EQSANSReduction.objects.clone(self.kwargs['pk'])
-        self.kwargs['pk'] = obj.pk
         messages.success(self.request, "Reduction '%s' cloned. New id = %s"%(obj, obj.pk))
-        return obj
+        self.url = reverse(self.pattern_name, kwargs={'pk': obj.pk})
+        return super(ReductionClone, self).get_redirect_url(*args, **kwargs)
             

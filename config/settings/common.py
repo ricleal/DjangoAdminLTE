@@ -336,6 +336,9 @@ ADMIN_URL = r'^admin/'
 ICAT_DOMAIN = 'icat.sns.gov'
 ICAT_PORT = 2080
 
-
+# USed in the configuration form when using the file tree browser
 SERVER_FILES_PREFIX = "/SNS/%(instrument)s/shared"
 
+# 
+USER_OUTPUT_FOLDER = "/SNS/%(instrument)s/%(ipts)s/shared"
+#
