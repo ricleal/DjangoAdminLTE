@@ -15,7 +15,7 @@ from django.views.decorators.debug import sensitive_post_parameters
 from django.views.generic import CreateView, UpdateView, FormView, RedirectView
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import get_object_or_404
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 
@@ -117,7 +117,7 @@ def get_users_json(request):
       ] }
     
     """
-    users_queryset = User.objects.all()
-    users_json = {"data" : [ [user.username,user.first_name] for user in users_queryset] }
+    users_queryset = get_user_model().objects.all()
+    users_json = {"data" : [ [user.username,user.fullname] for user in users_queryset] }
     response = JsonResponse(users_json, safe=False)
     return response

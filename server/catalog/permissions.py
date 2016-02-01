@@ -1,7 +1,7 @@
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import Group
+
 import logging
-import json
-from pprint import pformat
+
 '''
 My groups: rhf
 

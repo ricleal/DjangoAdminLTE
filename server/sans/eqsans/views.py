@@ -255,7 +255,7 @@ class ReductionDelete(LoginRequiredMixin, DeleteView):
    
 class ReductionClone(LoginRequiredMixin, ReductionMixin, DetailView):
     '''
-    Detail of a configuration
+    Configuration clone
     '''
     template_name = 'sans/eq-sans/reduction_detail.html'
     
@@ -265,6 +265,6 @@ class ReductionClone(LoginRequiredMixin, ReductionMixin, DetailView):
         '''
         obj = EQSANSReduction.objects.clone(self.kwargs['pk'])
         self.kwargs['pk'] = obj.pk
-        messages.success(self.request, 'Reduction %s cloned. New id = %s'%(obj, obj.pk))
+        messages.success(self.request, "Reduction '%s' cloned. New id = %s"%(obj, obj.pk))
         return obj
             

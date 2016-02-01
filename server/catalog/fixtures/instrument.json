@@ -9,6 +9,8 @@
     "facility": "SNS",
     "reduction_available": false,
     "icat_name": "USANS",
+    "ldap_name" : "usans",
+    "drive_name" : "USANS",
     "type" : "SANS"
   }
 }, {
@@ -90,6 +92,8 @@
     "facility": "SNS",
     "reduction_available": true,
     "icat_name": "EQSANS",
+    "ldap_name" : "eqsans",
+    "drive_name" : "EQSANS",
     "type" : "SANS"
   }
 }, {

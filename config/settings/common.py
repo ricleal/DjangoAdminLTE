@@ -236,7 +236,8 @@ ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 # Select the correct user model
 # AUTH_USER_MODEL = 'users.User'
 # LOGIN_REDIRECT_URL = 'users:redirect'
-# LOGIN_URL = 'account_login'
+LOGIN_URL = 'users:login'
+AUTH_USER_MODEL = 'users.User'
 
 # SLUGLIFIER
 AUTOSLUG_SLUGIFY_FUNCTION = 'slugify.slugify'
@@ -335,4 +336,6 @@ ADMIN_URL = r'^admin/'
 ICAT_DOMAIN = 'icat.sns.gov'
 ICAT_PORT = 2080
 
-from config.settings.common_instruments import *
+
+SERVER_FILES_PREFIX = "/SNS/%(instrument)s/shared"
+

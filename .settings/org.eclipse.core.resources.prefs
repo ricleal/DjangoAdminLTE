@@ -4,4 +4,3 @@ encoding//config/settings/local.py=utf-8
 encoding//config/settings/production.py=utf-8
 encoding//server/catalog/models.py=utf-8
 encoding//server/catalog/views.py=utf-8
-encoding//server/users/migrations/change_fields.py=utf-8

@@ -1,9 +1,10 @@
 from __future__ import unicode_literals
 
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from server.catalog.models import Instrument
 from django.utils.translation import ugettext_lazy as _
+from django.conf import settings
 
 import logging
 logger = logging.getLogger('sans.models')
@@ -38,7 +39,7 @@ class ConfigurationManager(models.Manager):
         '''
         obj = self.get(id = pk)
         obj.pk = None # setting to None, clones the object!
-        obj.user = User.objects.get(username= new_user)
+        obj.user = get_user_model().objects.get(username= new_user)
         obj.save() 
         return obj
         
@@ -52,15 +53,14 @@ class Configuration(models.Model):
     '''
 
     title = models.CharField(max_length=256, blank=True, null=True,)
-    dark_current_file = models.CharField(max_length=256, blank=True, null=True,)
-
+    
     created_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
 
     instrument = models.ForeignKey(Instrument, on_delete=models.CASCADE,
-                                   related_name="instrument",
+                                   related_name="instruments",
                                    related_query_name="instrument",)  # , blank=True, null=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE,
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
                              related_name="user",
                              related_query_name="user",)  # , blank=True, null=True)
     
@@ -110,6 +110,7 @@ class Reduction(models.Model):
     '''
     title = models.CharField(max_length=256, blank=True, null=True,)
     ipts = models.CharField(max_length=16, blank=True, null=True,)
+    
     created_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
 

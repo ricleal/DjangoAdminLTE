@@ -24,7 +24,12 @@
           
         </div>
         <div class="box-body">
-          <p>Hello <strong>{{ user.first_name }}</strong>!</p>
+          <p>Hello <strong>{{ user.fullname }}</strong>!</p>
+          <p> From the LDAP server we have the following information:</p>
+          <ul>
+          <li> <strong>Email: </strong> {{ user.email }} </li>
+          <li> <strong>Address: </strong> {{ user.address }} </li>
+          </ul>
           <p>Your default instrument is: <strong>{{ user.profile.instrument }}</strong>. </p>
         </div>
         <!-- /.box-body -->

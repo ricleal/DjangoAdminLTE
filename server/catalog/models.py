@@ -22,7 +22,6 @@ class Instrument(models.Model):
     # Attributes
     beamline = models.CharField(max_length=32, unique=True)
     name = models.CharField(max_length=32, unique=True)
-    icat_name = models.CharField(max_length=32, blank=True)
     facility = models.CharField(max_length=32, blank=True)
     type = models.CharField(max_length=32, blank=True,  help_text = _("Type of instrument: SANS, TOF, etc.."),)
     description = models.CharField(max_length=256,
@@ -30,6 +29,9 @@ class Instrument(models.Model):
                                    verbose_name = _("description"),
                                    help_text = _("Instrument description (optional)" ),
                                    )
+    icat_name = models.CharField(max_length=32, blank=True)
+    ldap_name = models.CharField(max_length=32, blank=True)
+    drive_name = models.CharField(max_length=32, blank=True)
     # We can have instruments but they will be invisible in the web page
     visible = models.BooleanField(default=True, help_text = _("If it will be visible on the main catalog page"),)
     reduction_available = models.BooleanField(default=False, help_text = _("If there is web reduction available for this instrument"),)
@@ -44,4 +46,4 @@ class Instrument(models.Model):
     class Meta:
         verbose_name = _("Instrument")
         verbose_name_plural = _("Instruments")
-        ordering = ["icat_name"]
+        ordering = ["name"]

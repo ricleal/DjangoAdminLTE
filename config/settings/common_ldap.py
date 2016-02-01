@@ -37,17 +37,18 @@ AUTH_LDAP_USER_FLAGS_BY_GROUP = {
     # Has access to Admin
     "is_staff": "cn=SNS_Neutron_dev,ou=Groups,dc=sns,dc=ornl,dc=gov",
     # Has access to Admin and can change permissions
-    "is_superuser": "cn=SNS_Neutron_dev,ou=Groups,dc=sns,dc=ornl,dc=gov"
+    "is_superuser": "cn=SNS_Neutron_dev,ou=Groups,dc=sns,dc=ornl,dc=gov",
+    "is_admin": "cn=SNS_Neutron_dev,ou=Groups,dc=sns,dc=ornl,dc=gov"
 }
 
 # Populate the Django user from the LDAP directory.
 AUTH_LDAP_USER_ATTR_MAP = {
-   "first_name": "cn",
+   "fullname": "cn",
    "email":  "description",
-   "last_name":      "gecos"
+   "address":      "gecos"
 }
 
 # Populate group permissions based on the LDAP
 AUTH_LDAP_FIND_GROUP_PERMS = True
 
-LOGIN_URL = 'users:login'
+
