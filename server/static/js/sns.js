@@ -14,6 +14,23 @@ function to_scientific_notation(num, decimals) {
 	}
 };
 
+/**
+ * Remove duplicates from an array:
+ * Use as:
+ * uniqueCoords = uniq(coordinates, [].join)
+ * See: http://stackoverflow.com/questions/14415787/remove-duplicate-element-pairs-from-multidimensional-array
+ */
+
+uniq = function(items, key) {
+    var set = {};
+    return items.filter(function(item) {
+        var k = key ? key.apply(item) : item;
+        return k in set ? false : set[k] = true;
+    })
+}
+
+	
+
 /*******************************************************************************
  * Autocomplete
  */

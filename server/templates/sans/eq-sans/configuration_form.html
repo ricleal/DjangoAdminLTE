@@ -21,7 +21,7 @@
   <ol class="breadcrumb">
     <li class="active">Configuration</li>
     <li>{{ instrument|default:request.user.profile.instrument }}</li>
-    <li>{{ object }}</li>
+    <li>{%if not object %}New Configuration{% else %}{{object}}{% endif %}</li>
   </ol>
 </section>
 <!-- Main content -->
@@ -139,7 +139,7 @@
 	    function() {
 	      $('.dirlist')
 	        .fileTree({
-	          script: "{% url 'dirlist' instrument=request.user.profile.instrument.icat_name|upper %}",
+	          script: "{% url 'dirlist' instrument=request.user.profile.instrument.drive_name|upper %}",
 	          expandSpeed: 100,
 	          collapseSpeed: 100,
 	          multiFolder: false

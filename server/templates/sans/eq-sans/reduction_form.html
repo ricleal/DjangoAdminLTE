@@ -35,7 +35,7 @@
 	<ol class="breadcrumb">
 		<li class="active">Reduction</li>
 		<li>{{ instrument|default:request.user.profile.instrument }}</li>
-		<li>{{ object }}</li>
+		<li>{%if not object %}New Reduction{% else %}{{object}}{% endif %}</li>
 	</ol>
 </section>
 
@@ -132,7 +132,7 @@ $(function(){
 }); //$(function(){
 
 	/******************* Spreadsheet *************************/
-
+	
 	//Initial data: populated from what comes from django context variables
 	var headers = {{entry_headers | safe}};
 	{% if entries %}
@@ -142,7 +142,7 @@ $(function(){
 		var data = [new Array(headers.length).join(".").split(".")];
 	{% endif %}
 
-  // Populates the spreadsheet
+ 	// Creates and Populates the spreadsheet if editing the form
 	var container = document.getElementById('entries');
 	var hot = new Handsontable(container, {
 	    data: data,
@@ -155,7 +155,7 @@ $(function(){
 	    rowHeaders: false,
 	    colHeaders: headers,
 	    contextMenu: true,
-      outsideClickDeselects: false,
+      	outsideClickDeselects: false,
 	    columns: [
         {% for name in entry_names %}
           { data: "{{name}}"}
@@ -165,7 +165,7 @@ $(function(){
 	});
 
   // spreadsheet
-  // Emitts alerts if one of the elements in the row is empty and the other non empty
+  // Emitts alerts if one of the elements in the row is empty and the others are non empty
   function rowHasEmptyElements(row) {
       var empty = 0;
       var full = 0;
@@ -179,11 +179,9 @@ $(function(){
               message: 'You have rows with empty cells!',
               type: BootstrapDialog.TYPE_DANGER
           });
-          //alert("Rows must be full!\n" + row);
           return true;
       } else
           return false;
-
   };
 
   // Put in the form the hidden field entries_hidden with the table contents
@@ -199,31 +197,28 @@ $(function(){
       return true;
   };
 
-	/******************* Populate the catalog modal *************************/
-  var selected_rows = new Array();
-  var selected_rows_name = new Array();
-  var table = null;
-  // When the user enter the IPTS:
+  /******************* Created and Populates the catalog modal dialog *************************/
+  var rows_selected = new Array();
+  var table_icat = null;
+  
+  // Called when the user enter the IPTS value in the IPTS form field:
   $( "#id_ipts" ).change(function() {
     var ipts = this.value;
-    console.log(ipts);
     var catalog_url = "{% url 'catalog:list_runs_json'  instrument=request.user.profile.instrument.icat_name ipts=12345 %}".replace(/12345/, ipts);
-    console.log(catalog_url);
-
-    if (table != null){
-      console.log("Destroying table...");
-      table.destroy();
+    
+    // Destroys the table when the IPTS is changed!!
+    if (table_icat != null){
+      table_icat.destroy();
     }
-
-    table = $('#catalog_table').DataTable({
-        //"ajax": "/catalog/EQSANS/IPTS-10386/json",
+	// Creates datatable with the icat IPTSs
+    table_icat = $('#catalog_table').DataTable({
         "ajax": catalog_url,
         "lengthMenu": [
             [20, 50, 100, -1],
             [20, 50, 100, "All"]
         ],
         "order": [
-            [1, 'desc']
+            [0, 'asc']
         ],
         "paging": true,
         "lengthChange": true,
@@ -237,41 +232,38 @@ $(function(){
             "aButtons": ["select_all", "select_none"],
             "fnRowSelected": function(nodes) {
                 $(nodes).each(function(index, tr) { //for every row
-                  var row = new Array();
-                  var lines = $('td', tr).map(function(index, td) { //for every first collumn
-                    var v = $(td).text();
-                    row.push(v)
-                    //console.log(v);
-                  });
-                  // make sure there's no duplicates
-                  var index = selected_rows.indexOf(row[0]);
-                  while (index > -1) {
-                      selected_rows.splice(index, 1);
-                      selected_rows_name.splice(index, 1);
-                      index = selected_rows.indexOf(row[0]);
-                  }
-                  selected_rows.push(row[0]);
-                  selected_rows_name.push([row[1]]);
+                	var row = new Array();
+                    $('td', tr).map(function(index, td) { //for every collumn
+                      var v = $(td).text();
+                      row.push(v)
+                    });
+                	rows_selected.push(row);
+                	rows_selected = uniq(rows_selected, [].join); //remove duplicates!
                 });
             },
             "fnRowDeselected": function(nodes) {
                 $(nodes).each(function(index, tr) {
-                    var lines = $('td:first', tr).map(function(index, td) {
-                        var v = $(td).text();
-                        //console.log(v);
-                        var index = selected_rows.indexOf(v);
-                        while (index > -1) {
-                            selected_rows.splice(index, 1);
-                            selected_rows_name.splice(index, 1);
-                            index = selected_rows.indexOf(v);
-                        }
+                	var row = new Array();
+                    $('td', tr).map(function(index, td) { //for every collumn
+                      var v = $(td).text();
+                      row.push(v)
                     });
+                    // remove deletected row from rows_selected
+                    rows_selected.forEach(function(el,index){               		
+               			if (el[0] == row[0]){
+               				rows_selected.splice(index, 1);
+               				//break; // does not work with foreach
+               			}
+               		});
+                	
                 });
             }
         }
     });
   }); //$( "#id_ipts" ).change(function() {
 
+	  
+	  
   // Open modal dialog to populate the spreadsheet
   $('#button_populate').on('click', function(event) {
       event.preventDefault(); // To prevent following the link (optional)
@@ -289,21 +281,29 @@ $(function(){
             },{
               label: 'Populate',
               action: function(dialogRef) {
-                  console.log(selected_rows);
+            	  // rows_selected has 2 columns: run number, run title
+            	             	              	  
+            	  // Let's fill the spreadsheet
                   var instance = hot.getInstance();
                   var selection = instance.getSelected();
+                  // If there's not rows selected on the spreadsheets let's assume [0,0]
                   if (selection == null) selection = [0,0];
-                  // Make an array of arrays to populate a collumn
+                  
+                  // Make an array of arrays to populate a collumn:[[row1],[row2],[row3]]
                   var collumn_to_populate = new Array();
-                  for (var i=selected_rows.length;i--;){ //array into array of arrays
-                    collumn_to_populate.push([selected_rows[i]]);
+                  for (var i=rows_selected.length;i--;){ //array into array of arrays
+                    collumn_to_populate.push([rows_selected[i][0]]);
                   };
                   hot.populateFromArray(selection[0],selection[1], collumn_to_populate);
-                  if (selection[1] == 0){ // if populating first collumn, polulates last with names of the run
-                    hot.populateFromArray(selection[1], instance.countCols()-1, selected_rows_name);
-                  }
-                  selected_rows = new Array();
-                  selected_rows_name = new Array();
+               	  // if populating first collumn, polulates last with names of the run
+                  if (selection[1] == 0){ 
+                	  var collumn_to_populate = new Array();
+                      for (var i=rows_selected.length;i--;){ //array into array of arrays
+                        collumn_to_populate.push([rows_selected[i][1]]);
+                      };
+                    hot.populateFromArray(selection[0], instance.countCols()-1, collumn_to_populate);
+                  }                  
+                  rows_selected = new Array();
                   dialogRef.close();
               }
           }]

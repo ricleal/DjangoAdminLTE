@@ -52,7 +52,7 @@ class Configuration(models.Model):
     The same configuration can launch multiple jobs!
     '''
 
-    title = models.CharField(max_length=256, blank=True, null=True,)
+    title = models.CharField(max_length=256, blank=True)
     
     created_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
@@ -61,7 +61,7 @@ class Configuration(models.Model):
                                    related_name="instruments",
                                    related_query_name="instrument",)  # , blank=True, null=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
-                             related_name="user",
+                             related_name="users",
                              related_query_name="user",)  # , blank=True, null=True)
     
     # Manager
@@ -99,17 +99,26 @@ class ReductionManager(models.Manager):
         Clones the Reduction object and related entries
         '''
         obj = self.get(id = pk)
-        old_entries =  obj.entries.all()
+        old_title = obj.title
+        # Let's clone the related entries
+        new_entries =[]
+        for e in obj.entries.all():
+            e.pk = None
+            e.save()
+            new_entries.append(e)
+            
         obj.pk = None # setting to None, clones the object!
         obj.save()
-        obj.entries = old_entries
+        obj.entries = new_entries
+        obj.title = "%s (copy)"%old_title
+        obj.save()
         return obj
     
 class Reduction(models.Model):
     '''
     '''
-    title = models.CharField(max_length=256, blank=True, null=True,)
-    ipts = models.CharField(max_length=16, blank=True, null=True,)
+    title = models.CharField(max_length=256, blank=True)
+    ipts = models.CharField(max_length=16, blank=True)
     
     created_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)

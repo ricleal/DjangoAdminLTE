@@ -17,15 +17,15 @@ class EQSANSConfiguration(Configuration):
     sample_aperture_diameter = models.DecimalField(
         max_digits=10, decimal_places=2, default=10.0)
     
+    direct_beam_file = models.CharField(max_length=256, blank=True, help_text="File path")
     mask_file = models.CharField(max_length=256, blank=True, help_text="File path")
     dark_current_file = models.CharField(max_length=256, blank=True, help_text="File path")
     sensitivity_file = models.CharField(max_length=256, blank=True, help_text="File path")
-    
+        
     sensitivity_min = models.DecimalField(
         max_digits=10, decimal_places=2, default=0.4)
     sensitivity_max = models.DecimalField(
         max_digits=10, decimal_places=2, default=2.0)
-    direct_beam_file = models.CharField(max_length=256, blank=True, null=True,)
     
 
     @models.permalink

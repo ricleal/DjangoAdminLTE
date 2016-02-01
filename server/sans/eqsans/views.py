@@ -209,7 +209,7 @@ class ReductionCreate(LoginRequiredMixin,ReductionMixin, CreateView):
 
 class ReductionUpdate(LoginRequiredMixin,ReductionMixin, UpdateView):
     '''
-    Detail of a Reduction
+    Edit a Reduction
     '''
     template_name = 'sans/eq-sans/reduction_form.html'
     model = EQSANSReduction
