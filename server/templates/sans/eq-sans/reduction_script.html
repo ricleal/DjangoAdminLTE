@@ -2,13 +2,15 @@
 {% load staticfiles %}
 {% load humanize %}
 {% block head %}
-<!-- DataTables -->
-<link rel="stylesheet" href="{% static 'AdminLTE_plugins/datatables/dataTables.bootstrap.css' %}">
-<!--  boostrap dialogs -->
-<link rel="stylesheet" href="{% static 'bootstrap3-dialog/css/bootstrap-dialog.min.css' %}">
+<style type="text/css" media="screen">
+    #ace_editor { 
+		height: 600px;
+		border-style: groove;
+    }
+</style>
 {% endblock head %}
-{% block content %}
 
+{% block content %}
 <!-- Content Header (Page header) -->
 <section class="content-header">
 	<h1>
@@ -37,24 +39,28 @@
 
  
 	<div class="box-body">
-		<pre>{{script}}</pre>
+		<div id="ace_editor">{{script}}</div>
+		
 	</div>
 
 
   <!-- /.row -->
 
 <p>
-
-	<a id="button_reduce" class="btn btn-primary" data-toggle="tooltip"
+	<a id="button_save" class="btn btn-primary" data-toggle="tooltip"
 	data-placement="top" href="#"
-	title="Submit this configuration to the cluster. Keep an eye on the results.">Reduce</a>
+	title="Submit this configuration to the cluster. Keep an eye on the results.">Save</a>
+	
+	<a id="button_save_reduce" class="btn btn-primary" data-toggle="tooltip"
+	data-placement="top" href="#"
+	title="Submit this configuration to the cluster. Keep an eye on the results.">Save and Reduce</a>
 </p>
 <!-- /.row -->
 </section>
 
 <div class="box-body">
 	<p>
-	<a class="btn btn-primary" href="{% url 'sans:eq-sans_reduction_list' %}">Back to the Reduction list</a>
+	<a class="btn btn-primary" href="{% url 'sans:eq-sans_reduction_detail' object.id %}">Back to Reduction details</a>
 	</p>	
 </div>
 
@@ -64,14 +70,20 @@
 {% endblock %}
 
 {% block body_end %}
-<!-- DataTables -->
-<script	src="{% static 'AdminLTE_plugins/datatables/jquery.dataTables.min.js' %}"></script>
-
-<script src="{% static 'AdminLTE_plugins/datatables/dataTables.bootstrap.min.js' %}"></script>
-<!--  boostrap dialogs -->
-<script src="{% static 'bootstrap3-dialog/js/bootstrap-dialog.min.js' %}"></script>
-<!-- page script -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.3/ace.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.3/theme-github.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.3/mode-python.js" type="text/javascript" charset="utf-8"></script>
 <script>
-	
+    var editor = ace.edit("ace_editor");
+    editor.setTheme("ace/theme/github");
+    editor.getSession().setMode("ace/mode/python");
+    
+    $('#button_save').on('click', function() {
+    	event.preventDefault(); // To prevent following the link (optional)
+        var editor_content = editor.getSession().getValue();
+    	// todo!
+    	alert(editor_content)
+    });
+    
 </script>
 {% endblock body_end %}
