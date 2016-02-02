@@ -5,7 +5,10 @@ from django.contrib.auth import get_user_model
 from server.catalog.models import Instrument
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
+from django.contrib.contenttypes.fields import GenericRelation
 
+from server.jobs.models import Job
+    
 import logging
 logger = logging.getLogger('sans.models')
 
@@ -122,6 +125,12 @@ class Reduction(models.Model):
     
     created_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
+    
+    # Generic relation to Job
+    # To access this from jobs, do:
+    # job_for_this_reduction = Job.objects.get(reductions__title = "XXXX")
+    # reduction =  job_for_this_reduction.content_object
+    job = GenericRelation(Job, related_query_name='reductions')
 
     # Manager
     objects = ReductionManager()

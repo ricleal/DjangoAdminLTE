@@ -30,6 +30,7 @@ urlpatterns = [
     url(r'^catalog/', include('server.catalog.urls', namespace='catalog') ),
     url(r'^users/', include('server.users.urls', namespace='users') ),
     url(r'^sans/', include('server.sans.urls', namespace='sans') ),
+    url(r'^jobs/', include('server.jobs.urls', namespace='jobs') ),
     #
     url(r'^dirlist/(?P<instrument>[\w\-]+)/$', views.dirlist, name='dirlist'),
 ]

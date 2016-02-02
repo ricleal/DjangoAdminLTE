@@ -49,6 +49,7 @@ LOCAL_APPS = (
     'server.users',
     'server.catalog',
     'server.sans',
+    'server.jobs',
 )
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
