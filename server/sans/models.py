@@ -6,6 +6,7 @@ from server.catalog.models import Instrument
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericRelation
+from django.forms.models import model_to_dict
 
 from server.jobs.models import Job
     
@@ -116,6 +117,17 @@ class ReductionManager(models.Manager):
         obj.title = "%s (copy)"%old_title
         obj.save()
         return obj
+    
+    def to_json(self, pk):
+        '''
+        Gets this reduction object in json format
+        Is it the right way to serialise to JSON????
+        '''
+        obj = self.select_related().get(pk = pk)
+        d = model_to_dict(obj)
+        d["entries"] = [model_to_dict(entry) for entry in obj.entries.all()]
+        d["configuration"] = model_to_dict(obj.configuration)
+        return d
     
 class Reduction(models.Model):
     '''

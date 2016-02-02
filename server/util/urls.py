@@ -16,8 +16,7 @@ Including another URLconf
     2. Import the include() function: from django.conf.urls import url, include
     3. Add a URL to urlpatterns:  url(r'^blog/', include(blog_urls))
 """
-from django.conf.urls import url, include, patterns
-from django.contrib import admin
+from django.conf.urls import url
 
 from . import views
 
@@ -25,11 +24,5 @@ from . import views
 # admin.autodiscover()
 
 urlpatterns = [
-    url(r'^$', views.Index.as_view(), name='index'),
-    url(r'^admin/', admin.site.urls),
-    url(r'^catalog/', include('server.catalog.urls', namespace='catalog') ),
-    url(r'^users/', include('server.users.urls', namespace='users') ),
-    url(r'^sans/', include('server.sans.urls', namespace='sans') ),
-    url(r'^jobs/', include('server.jobs.urls', namespace='jobs') ),
-    url(r'^util/', include('server.util.urls', namespace='util') ),
+    url(r'^dirlist/(?P<instrument>[\w\-]+)/$', views.dirlist, name='dirlist'),
 ]

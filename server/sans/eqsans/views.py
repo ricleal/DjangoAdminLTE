@@ -1,4 +1,4 @@
-from django.views.generic import CreateView, ListView, DetailView, UpdateView, DeleteView, FormView, RedirectView
+from django.views.generic import CreateView, ListView, DetailView, UpdateView, DeleteView, RedirectView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse_lazy
@@ -10,15 +10,17 @@ from django.core.urlresolvers import reverse
 from .models import EQSANSConfiguration, EQSANSReduction, EQSANSEntry
 from .forms import ConfigurationForm
 from server.catalog.models import Instrument
+from server.util.script import build_script
 
 from pprint import pformat
 import logging
 import json
-
+import os
 
 logger = logging.getLogger('sans.eq-sans')
 
 instrument_name = "EQ-SANS"
+script_file = os.path.join(os.path.dirname(os.path.abspath(__file__)),"scripts","template.py")
 
 class ConfigurationMixin(object):
 
@@ -282,4 +284,17 @@ class ReductionClone(LoginRequiredMixin, ReductionMixin, RedirectView):
         messages.success(self.request, "Reduction '%s' cloned. New id = %s"%(obj, obj.pk))
         self.url = reverse(self.pattern_name, kwargs={'pk': obj.pk})
         return super(ReductionClone, self).get_redirect_url(*args, **kwargs)
-            
+
+
+class ReductionScript(LoginRequiredMixin, ReductionMixin, DetailView):
+    '''
+    Generates the script
+    '''
+    template_name = 'sans/eq-sans/reduction_script.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super(ReductionScript, self).get_context_data(**kwargs)
+        obj_json = EQSANSReduction.objects.to_json(self.kwargs['pk'])
+        context['script'] = build_script(script_file, obj_json)
+        return context
+    

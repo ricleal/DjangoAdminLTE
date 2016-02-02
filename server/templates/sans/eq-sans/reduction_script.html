@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load humanize %}
+{% block head %}
+<!-- DataTables -->
+<link rel="stylesheet" href="{% static 'AdminLTE_plugins/datatables/dataTables.bootstrap.css' %}">
+<!--  boostrap dialogs -->
+<link rel="stylesheet" href="{% static 'bootstrap3-dialog/css/bootstrap-dialog.min.css' %}">
+{% endblock head %}
+{% block content %}
+
+<!-- Content Header (Page header) -->
+<section class="content-header">
+	<h1>
+		Reduction  <small>{{ object.id }}</small>
+	</h1>
+	<ol class="breadcrumb">
+		<li class="active">Reduction</li>
+		<li>{{ instrument|default:request.user.profile.instrument }}</li>
+		<li>{{ object }}</li>
+	</ol>
+</section>
+
+<!-- Main content -->
+<section class="invoice">
+  <!-- title row -->
+  <div class="row">
+    <div class="col-xs-12">
+      <h2 class="page-header">
+        <i class="fa fa-globe"></i> Reduction: {{object.title}}
+        <small class="pull-right"> {{object.id}}</small>
+      </h2>
+    </div>
+    <!-- /.col -->
+  </div>
+  <!-- /.row -->
+
+ 
+	<div class="box-body">
+		<pre>{{script}}</pre>
+	</div>
+
+
+  <!-- /.row -->
+
+<p>
+
+	<a id="button_reduce" class="btn btn-primary" data-toggle="tooltip"
+	data-placement="top" href="#"
+	title="Submit this configuration to the cluster. Keep an eye on the results.">Reduce</a>
+</p>
+<!-- /.row -->
+</section>
+
+<div class="box-body">
+	<p>
+	<a class="btn btn-primary" href="{% url 'sans:eq-sans_reduction_list' %}">Back to the Reduction list</a>
+	</p>	
+</div>
+
+
+</section>
+<!-- /.content -->
+{% endblock %}
+
+{% block body_end %}
+<!-- DataTables -->
+<script	src="{% static 'AdminLTE_plugins/datatables/jquery.dataTables.min.js' %}"></script>
+
+<script src="{% static 'AdminLTE_plugins/datatables/dataTables.bootstrap.min.js' %}"></script>
+<!--  boostrap dialogs -->
+<script src="{% static 'bootstrap3-dialog/js/bootstrap-dialog.min.js' %}"></script>
+<!-- page script -->
+<script>
+	
+</script>
+{% endblock body_end %}

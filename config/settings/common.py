@@ -316,6 +316,10 @@ LOGGING = {
             'handlers': ['console'],
             'level': 'DEBUG',
         },
+        'util': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },
         'catalog.icat': {
             'handlers': ['console'],
             'level': 'INFO',

@@ -17,4 +17,5 @@ urlpatterns = [
     url(r'^EQ-SANS/reduction/(?P<pk>\d+)/update$', eqsans.ReductionUpdate.as_view(), name='eq-sans_reduction_update'),
     url(r'^EQ-SANS/reduction/(?P<pk>\d+)/delete$', eqsans.ReductionDelete.as_view(), name='eq-sans_reduction_delete'),
     url(r'^EQ-SANS/reduction/(?P<pk>\d+)/clone$', eqsans.ReductionClone.as_view(), name='eq-sans_reduction_clone'),
+    url(r'^EQ-SANS/reduction/(?P<pk>\d+)/script', eqsans.ReductionScript.as_view(), name='eq-sans_reduction_script'),
 ]
