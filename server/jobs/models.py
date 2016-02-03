@@ -22,8 +22,10 @@ class Job(models.Model):
                     (7,'DEFERRED'), 
                     (8,'IDLE'), 
                     (9,'UNKNOWN'),)
-    # Blank means not submitted
+    
     status = models.IntegerField(choices =  MY_STATUS + FERMI_STATUS, default = MY_STATUS[0])
+    
+    script = models.TextField(max_length=10240)
     
     created_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)

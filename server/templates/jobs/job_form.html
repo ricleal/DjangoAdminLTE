@@ -3,7 +3,7 @@
 {% load humanize %}
 {% block head %}
 <style type="text/css" media="screen">
-    #ace_editor { 
+    #script { 
 		height: 600px;
 		border-style: groove;
     }
@@ -11,58 +11,51 @@
 {% endblock head %}
 
 {% block content %}
+
 <!-- Content Header (Page header) -->
 <section class="content-header">
 	<h1>
-		Reduction <small>{{ object.id }}</small>
+		Edit script <small>{{ object.id }}</small>
 	</h1>
 	<ol class="breadcrumb">
-		<li class="active">Reduction</li>
+		<li class="active">Jobs</li>
 		<li>{{ instrument|default:request.user.profile.instrument }}</li>
-		<li>{{ object }}</li>
+		<li>{%if not object %}New{% else %}{{object}}{% endif %}</li>
 	</ol>
 </section>
 
-<!-- Main content -->
-<section class="invoice">
 
-	<!-- title row -->
+<!-- Main content -->
+<section class="content">
+	<!-- Your Page Content Here -->
 	<div class="row">
 		<div class="col-xs-12">
-			<h2 class="page-header">
-				<i class="fa fa-globe"></i> Reduction: {{object.title}} <small class="pull-right"> {{object.id}}</small>
-			</h2>
+
+			<!-- form start -->
+			<form role="form" action="{% url 'jobs:job_create'%}" method="post">
+				{% csrf_token %}
+				<div class="box">
+					<div class="box-header">
+						<h3 class="box-title">{{object.title}}</h3>
+					</div>
+					<!-- /.box-header -->
+					<div class="box-body">
+						<div id="script">{{request.session.script}}</div>
+						{{ form.as_p }} 
+					</div>
+					<!-- /.box-body -->
+				</div>
+				<!-- /.box -->
+				<p>
+					<button id="button_save" type="submit" class="btn btn-primary">Save</button>
+					<button type="submit" class="btn btn-primary">Submit</button>
+				</p>
+			</form>
 		</div>
 		<!-- /.col -->
 	</div>
 	<!-- /.row -->
-
-
-	<div class="box-body">
-		<div id="ace_editor">{{script}}</div>
-	</div>
-
-	<p>
-		<a id="button_save" class="btn btn-primary" data-toggle="tooltip"
-			data-placement="top" href="#"
-			title="Submit this configuration to the cluster. Keep an eye on the results.">Save</a>
-
-		<a id="button_save_reduce" class="btn btn-primary"
-			data-toggle="tooltip" data-placement="top" href="#"
-			title="Submit this configuration to the cluster. Keep an eye on the results.">Save
-			and Reduce</a>
-	</p>
-
 </section>
-
-<div class="box-body">
-	<p>
-		<a class="btn btn-primary"
-			href="{% url 'sans:eq-sans_reduction_detail' object.id %}">Back
-			to Reduction details</a>
-	</p>
-</div>
-
 <!-- /.content -->
 {% endblock %}
 
@@ -71,15 +64,18 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.3/theme-github.js" type="text/javascript" charset="utf-8"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.3/mode-python.js" type="text/javascript" charset="utf-8"></script>
 <script>
-    var editor = ace.edit("ace_editor");
+    var editor = ace.edit("script");
     editor.setTheme("ace/theme/github");
     editor.getSession().setMode("ace/mode/python");
     
+    var textarea = $('textarea[name="script"]').hide();
+    
     $('#button_save').on('click', function() {
-    	event.preventDefault(); // To prevent following the link (optional)
+    	//event.preventDefault(); // To prevent following the link (optional)
         var editor_content = editor.getSession().getValue();
     	// todo!
-    	alert(editor_content)
+    	textarea.val(editor_content);
+    	
     });
     
 </script>

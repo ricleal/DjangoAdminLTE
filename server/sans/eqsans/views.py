@@ -6,6 +6,7 @@ from django.http import Http404
 from django.contrib import messages
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core.urlresolvers import reverse
+from django.contrib.contenttypes.models import ContentType
 
 from .models import EQSANSConfiguration, EQSANSReduction, EQSANSEntry
 from .forms import ConfigurationForm
@@ -275,7 +276,7 @@ class ReductionClone(LoginRequiredMixin, ReductionMixin, RedirectView):
     '''
     Configuration clone using redirect
     '''
-    permanent = False
+    permanent = True
     query_string = False
     pattern_name = 'sans:eq-sans_reduction_update'
 
@@ -286,15 +287,24 @@ class ReductionClone(LoginRequiredMixin, ReductionMixin, RedirectView):
         return super(ReductionClone, self).get_redirect_url(*args, **kwargs)
 
 
-class ReductionScript(LoginRequiredMixin, ReductionMixin, DetailView):
+class ReductionScript(LoginRequiredMixin, ReductionMixin, RedirectView):
     '''
-    Generates the script
+    Generates the script, puts in in the session and redirects to job form
     '''
-    template_name = 'sans/eq-sans/reduction_script.html'
+    permanent = True
+    query_string = False
+    # Pattern is not working!
+    pattern_name = 'jobs:job_create'
+    url = '/jobs/create'
     
-    def get_context_data(self, **kwargs):
-        context = super(ReductionScript, self).get_context_data(**kwargs)
-        obj_json = EQSANSReduction.objects.to_json(self.kwargs['pk'])
-        context['script'] = build_script(script_file, obj_json)
-        return context
+    def get_redirect_url(self, *args, **kwargs):
+        logger.debug("Redirecting to %s...."%reverse(self.pattern_name))
+        obj_json = EQSANSReduction.objects.to_json(kwargs['pk'])
+        self.request.session['script'] = build_script(script_file, obj_json)
+        self.request.session['content_type'] = ContentType.objects.get(app_label="sans", model="eqsansreduction")
+        self.request.session['object_id'] =  kwargs['pk']
+        return super(ReductionScript, self).get_redirect_url(*args, **kwargs)
+
+
+    
     

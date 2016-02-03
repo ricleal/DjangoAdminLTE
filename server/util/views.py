@@ -7,6 +7,9 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 import urllib
 import os
+import logging
+
+logger = logging.getLogger('util.views')
 
 @login_required
 def dirlist(request, instrument):
@@ -36,5 +39,6 @@ def dirlist(request, instrument):
         r.append('</ul>')
     except Exception, e:
         r.append('Could not load directory: %s' % str(e))
+        logger.exception(e)
     r.append('</ul>')
     return HttpResponse(''.join(r))

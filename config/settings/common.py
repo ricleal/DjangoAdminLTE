@@ -316,6 +316,10 @@ LOGGING = {
             'handlers': ['console'],
             'level': 'DEBUG',
         },
+        'jobs': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        },
         'util': {
             'handlers': ['console'],
             'level': 'DEBUG',
@@ -347,3 +351,6 @@ SERVER_FILES_PREFIX = "/SNS/%(instrument)s/shared"
 # 
 USER_OUTPUT_FOLDER = "/SNS/%(instrument)s/%(ipts)s/shared"
 #
+
+# because otherwise: TypeError: <EQSANSReduction: Reduction 15> is not JSON serializable
+SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'

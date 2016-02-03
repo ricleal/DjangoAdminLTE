@@ -139,7 +139,7 @@
 	    function() {
 	      $('.dirlist')
 	        .fileTree({
-	          script: "{% url 'util:dirlist' instrument=request.user.profile.instrument.drive_name|upper %}",
+	          script: "{% url 'util:dirlist' instrument=request.user.profile.instrument.drive_name %}",
 	          expandSpeed: 100,
 	          collapseSpeed: 100,
 	          multiFolder: false
