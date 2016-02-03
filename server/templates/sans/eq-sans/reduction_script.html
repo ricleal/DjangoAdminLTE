@@ -1,20 +1,17 @@
 {% extends "base.html" %}
 {% load staticfiles %}
 {% load humanize %}
+
 {% block head %}
-<style type="text/css" media="screen">
-    #ace_editor { 
-		height: 600px;
-		border-style: groove;
-    }
-</style>
+<!-- highlight.js -->
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/github.min.css">
 {% endblock head %}
 
 {% block content %}
 <!-- Content Header (Page header) -->
 <section class="content-header">
 	<h1>
-		Reduction  <small>{{ object.id }}</small>
+		Reduction <small>{{ object.id }}</small>
 	</h1>
 	<ol class="breadcrumb">
 		<li class="active">Reduction</li>
@@ -25,65 +22,49 @@
 
 <!-- Main content -->
 <section class="invoice">
-  <!-- title row -->
-  <div class="row">
-    <div class="col-xs-12">
-      <h2 class="page-header">
-        <i class="fa fa-globe"></i> Reduction: {{object.title}}
-        <small class="pull-right"> {{object.id}}</small>
-      </h2>
-    </div>
-    <!-- /.col -->
-  </div>
-  <!-- /.row -->
 
- 
+	<!-- title row -->
+	<div class="row">
+		<div class="col-xs-12">
+			<h2 class="page-header">
+				<i class="fa fa-globe"></i> Reduction: {{object.title}} <small class="pull-right"> {{object.id}}</small>
+			</h2>
+		</div>
+		<!-- /.col -->
+	</div>
+	<!-- /.row -->
+
+
 	<div class="box-body">
-		<div id="ace_editor">{{script}}</div>
-		
+		<pre><code class="python">{{script}}</code></pre>
 	</div>
 
+	<p>
+		<a id="button_edit" class="btn btn-primary" data-toggle="tooltip"
+			data-placement="top" href="#"
+			title="Edit the script! Note that reduction and configuration details will be ignored.">Edit</a>
 
-  <!-- /.row -->
+		<a id="button_reduce" class="btn btn-primary"
+			data-toggle="tooltip" data-placement="top" href="#"
+			title="Submit this configuration to the cluster.">Reduce</a>
+	</p>
 
-<p>
-	<a id="button_save" class="btn btn-primary" data-toggle="tooltip"
-	data-placement="top" href="#"
-	title="Submit this configuration to the cluster. Keep an eye on the results.">Save</a>
-	
-	<a id="button_save_reduce" class="btn btn-primary" data-toggle="tooltip"
-	data-placement="top" href="#"
-	title="Submit this configuration to the cluster. Keep an eye on the results.">Save and Reduce</a>
-</p>
-<!-- /.row -->
 </section>
 
 <div class="box-body">
 	<p>
-	<a class="btn btn-primary" href="{% url 'sans:eq-sans_reduction_detail' object.id %}">Back to Reduction details</a>
-	</p>	
+		<a class="btn btn-primary"
+			href="{% url 'sans:eq-sans_reduction_detail' object.id %}">Back
+			to Reduction details</a>
+	</p>
 </div>
 
-
-</section>
 <!-- /.content -->
 {% endblock %}
 
 {% block body_end %}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.3/ace.js" type="text/javascript" charset="utf-8"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.3/theme-github.js" type="text/javascript" charset="utf-8"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.3/mode-python.js" type="text/javascript" charset="utf-8"></script>
-<script>
-    var editor = ace.edit("ace_editor");
-    editor.setTheme("ace/theme/github");
-    editor.getSession().setMode("ace/mode/python");
-    
-    $('#button_save').on('click', function() {
-    	event.preventDefault(); // To prevent following the link (optional)
-        var editor_content = editor.getSession().getValue();
-    	// todo!
-    	alert(editor_content)
-    });
-    
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/highlight.min.js"></script>
+<script type="application/javascript">
+hljs.initHighlightingOnLoad();
 </script>
 {% endblock body_end %}

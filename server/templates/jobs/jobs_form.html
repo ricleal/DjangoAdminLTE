@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load humanize %}
+{% block head %}
+<style type="text/css" media="screen">
+    #ace_editor { 
+		height: 600px;
+		border-style: groove;
+    }
+</style>
+{% endblock head %}
+
+{% block content %}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+	<h1>
+		Reduction <small>{{ object.id }}</small>
+	</h1>
+	<ol class="breadcrumb">
+		<li class="active">Reduction</li>
+		<li>{{ instrument|default:request.user.profile.instrument }}</li>
+		<li>{{ object }}</li>
+	</ol>
+</section>
+
+<!-- Main content -->
+<section class="invoice">
+
+	<!-- title row -->
+	<div class="row">
+		<div class="col-xs-12">
+			<h2 class="page-header">
+				<i class="fa fa-globe"></i> Reduction: {{object.title}} <small class="pull-right"> {{object.id}}</small>
+			</h2>
+		</div>
+		<!-- /.col -->
+	</div>
+	<!-- /.row -->
+
+
+	<div class="box-body">
+		<div id="ace_editor">{{script}}</div>
+	</div>
+
+	<p>
+		<a id="button_save" class="btn btn-primary" data-toggle="tooltip"
+			data-placement="top" href="#"
+			title="Submit this configuration to the cluster. Keep an eye on the results.">Save</a>
+
+		<a id="button_save_reduce" class="btn btn-primary"
+			data-toggle="tooltip" data-placement="top" href="#"
+			title="Submit this configuration to the cluster. Keep an eye on the results.">Save
+			and Reduce</a>
+	</p>
+
+</section>
+
+<div class="box-body">
+	<p>
+		<a class="btn btn-primary"
+			href="{% url 'sans:eq-sans_reduction_detail' object.id %}">Back
+			to Reduction details</a>
+	</p>
+</div>
+
+<!-- /.content -->
+{% endblock %}
+
+{% block body_end %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.3/ace.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.3/theme-github.js" type="text/javascript" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.3/mode-python.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var editor = ace.edit("ace_editor");
+    editor.setTheme("ace/theme/github");
+    editor.getSession().setMode("ace/mode/python");
+    
+    $('#button_save').on('click', function() {
+    	event.preventDefault(); // To prevent following the link (optional)
+        var editor_content = editor.getSession().getValue();
+    	// todo!
+    	alert(editor_content)
+    });
+    
+</script>
+{% endblock body_end %}
