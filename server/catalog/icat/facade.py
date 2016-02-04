@@ -1,42 +1,13 @@
 from django.utils import dateparse
-from django.contrib import messages
 
-from .communication import IDumper, ICat
+from .communication import ICat
+from server.util.dumper import DjangoDumper
 
 import json
 import logging
 
 
 logger = logging.getLogger('catalog.icat')
-
-class DjangoDumper(IDumper):
-    """
-    For Django
-    If using django, instantiatiate this class first with:
-    dumper = DjangoDumper(request)
-    Then instantiate ICat
-    icat = ICat(dumper)
-    This will allow passing messages to the interface
-    """
-    def __init__(self, django_request):
-        self.django_request = django_request
-
-    def dump_exception(self, exception, message):
-        """
-        @param exception: Must be a valid python exception
-        @param message: Must be a string
-        """
-        logger.exception(exception)
-        logger.error(message)
-        messages.error(self.django_request, message)
-        messages.error(self.django_request, str(exception))
-
-    def dump_error(self, message):
-        """
-        @param message: Must be a string
-        """
-        logger.error(message)
-        messages.error(self.django_request, message)
 
 class Catalog(object):
     '''
@@ -48,7 +19,7 @@ class Catalog(object):
             The idea is to have a way to dump errors in django or command line.
         '''
         self.dumper = DjangoDumper(request)
-        self.icat = icat = ICat(self.dumper)
+        self.icat = ICat(self.dumper)
 
     @staticmethod
     def _hyphen_range(s):

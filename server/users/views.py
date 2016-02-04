@@ -23,6 +23,8 @@ import logging
 import json
 
 from .models import UserProfile
+from server.jobs.remote.comunication import Fermi
+from server.util.dumper import DjangoDumper
 
 logger = logging.getLogger('users')
 
@@ -36,6 +38,17 @@ class LoginView(FormView):
     success_url = reverse_lazy('index')
     create_profile_url = reverse_lazy('users:profile_create')
     
+    def _remote_authentication(self, request, username, password):
+        """
+        remote authentication to fermi
+        Sets a cookie for fermi
+        """
+        d = DjangoDumper(request)
+        f = Fermi(d)
+        cookie = f.authentication(username, password)
+        if cookie:
+            request.session['remote']=cookie
+    
     @method_decorator(sensitive_post_parameters('password'))
     @method_decorator(csrf_protect)
     @method_decorator(never_cache)
@@ -44,8 +57,8 @@ class LoginView(FormView):
 
     def form_valid(self, form):
         # Mathieu athentication
-#         username = form.cleaned_data["username"]
-#         password = form.cleaned_data["password"]
+        username = form.cleaned_data["username"]
+        password = form.cleaned_data["password"]
 #         user = authenticate(username=username, password=password)
 #         if user is not None and not user.is_anonymous():
 #             auth_login(self.request, user)
@@ -54,6 +67,9 @@ class LoginView(FormView):
         
         # Default authentication
         auth_login(self.request, form.get_user())
+        # Fermi
+        self._remote_authentication(self.request, username, password)
+        
         return super(LoginView, self).form_valid(form)
 
     def get_success_url(self):

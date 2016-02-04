@@ -9,7 +9,6 @@ import json
 import logging
 
 from django.conf import settings
-from abc import ABCMeta, abstractmethod
 from pprint import pformat, pprint
 
 logger = logging.getLogger('catalog.icat')
@@ -30,44 +29,6 @@ DEFAULT_ICAT_PORT = 2080
 
 TIMEOUT = 5
 HEADERS = {"Accept": "application/json"}
-
-class IDumper():
-    __metaclass__ = ABCMeta
-
-    @abstractmethod
-    def dump_exception(self, exception, message):
-        raise NotImplementedError
-
-    @abstractmethod
-    def dump_error(self, message):
-        raise NotImplementedError
-
-class GeneralDumper(IDumper):
-    """
-    For Command Line Testing.
-    If running outside Django it overrides the logger.
-    Use as:
-    dumper = GeneralDumper(request)
-    icat = ICat(dumper)
-    """
-    def __init__(self):
-        #
-        pass
-
-    def dump_exception(self, exception, message):
-        """
-        @param exception: Must be a valid python exception
-        @param message: Must be a string
-        """
-        pprint(exception)
-        pprint(message)
-
-    def dump_error(self,message):
-        """
-        @param exception: Must be a valid python exception
-        @param message: Must be a string
-        """
-        pprint(message)
 
 class ICat(object):
     '''
@@ -494,6 +455,7 @@ class ICat(object):
 # Main just for testing
 if __name__ == "__main__":
 
+    from server.util.dumper import GeneralDumper
     dumper = GeneralDumper()
     icat = ICat(dumper)
     pprint(icat.get_instruments())
