@@ -3,7 +3,7 @@
 {% load humanize %}
 {% block head %}
 <style type="text/css" media="screen">
-    #script { 
+    #editor { 
 		height: 600px;
 		border-style: groove;
     }
@@ -32,7 +32,7 @@
 		<div class="col-xs-12">
 
 			<!-- form start -->
-			<form role="form" action="{% url 'jobs:job_create'%}" method="post">
+			<form role="form" action="" method="post">
 				{% csrf_token %}
 				<div class="box">
 					<div class="box-header">
@@ -40,8 +40,10 @@
 					</div>
 					<!-- /.box-header -->
 					<div class="box-body">
-						<div id="script">{{request.session.script}}</div>
-						{{ form.as_p }} 
+						<div id="editor"></div>
+						<div class="form-group">
+						{{ form }} 
+						</div>
 					</div>
 					<!-- /.box-body -->
 				</div>
@@ -64,11 +66,14 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.3/theme-github.js" type="text/javascript" charset="utf-8"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.3/mode-python.js" type="text/javascript" charset="utf-8"></script>
 <script>
-    var editor = ace.edit("script");
+    var editor = ace.edit("editor");
     editor.setTheme("ace/theme/github");
     editor.getSession().setMode("ace/mode/python");
     
-    var textarea = $('textarea[name="script"]').hide();
+    //hide all form fields!! Don't need to edit them!
+    $(".form-group").hide();
+    var textarea = $('#id_script');
+    editor.setValue(textarea.val(), 1);
     
     $('#button_save').on('click', function() {
     	//event.preventDefault(); // To prevent following the link (optional)

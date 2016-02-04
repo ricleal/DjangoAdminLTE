@@ -9,7 +9,8 @@ from django.contrib.contenttypes.fields import GenericRelation
 from django.forms.models import model_to_dict
 
 from server.jobs.models import Job
-    
+from server.util.script import build_script
+
 import logging
 logger = logging.getLogger('sans.models')
 
@@ -118,16 +119,17 @@ class ReductionManager(models.Manager):
         obj.save()
         return obj
     
-    def to_json(self, pk):
+    def to_script(self, pk):
         '''
-        Gets this reduction object in json format
+        Gets this reduction object in json format and builds a script
+        Note that the children object must have a script_file variable
         Is it the right way to serialise to JSON????
         '''
         obj = self.select_related().get(pk = pk)
         d = model_to_dict(obj)
         d["entries"] = [model_to_dict(entry) for entry in obj.entries.all()]
         d["configuration"] = model_to_dict(obj.configuration)
-        return d
+        return build_script(obj.script_file, d)
     
 class Reduction(models.Model):
     '''

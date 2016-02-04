@@ -48,4 +48,16 @@ class Job(models.Model):
         ordering = ["id"]
 
     def __unicode__(self):
-        return self.id
+        return "%s - %s" % (self.id, self.status)
+    
+    @models.permalink
+    def get_absolute_url(self):
+        return ('jobs:job_detail', [self.pk])
+    
+    def get_field_titled_names_and_values(self):
+        '''
+        Does not display related fields (i.e. FK)
+        @return: field names as title and values for web display no unicode
+        '''
+        return [ (str(field.verbose_name.title()), field.value_to_string(self)) for field in self._meta.fields if not field.is_relation]
+

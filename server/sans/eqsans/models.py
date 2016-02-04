@@ -4,6 +4,8 @@ from django.db import models
 
 from ..models import Configuration, Reduction, Entry
 
+import os.path
+
 #
 # EQSANS
 #
@@ -41,6 +43,9 @@ class EQSANSReduction(Reduction):
     @models.permalink
     def get_absolute_url(self):
         return ('sans:eq-sans_reduction_detail', [self.pk])
+
+    # Needed to generate the script from this object
+    script_file = os.path.join(os.path.dirname(os.path.abspath(__file__)),"scripts","template.py")
 
 
 class EQSANSEntry(Entry):

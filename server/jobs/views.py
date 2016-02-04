@@ -14,36 +14,40 @@ class JobCreate(LoginRequiredMixin, CreateView):
     '''
     template_name = 'jobs/job_form.html'
     model = Job
-    fields = ['script']
+    fields = '__all__'
     
-    #TODO
-    # get session in the get and fill in the form?
+    def get_initial(self):
+        """
+        Returns the initial data to populate the form
+        """
+        initial = super(JobCreate, self).get_initial()
+        content_type = ContentType.objects.get(app_label=self.kwargs['app_name'], model=self.kwargs['model_name'])
+        initial['content_type'] = content_type
+        initial['object_id'] = self.kwargs['key']
+        initial['user'] = self.request.user
+        initial['instrument'] = self.request.user.profile.instrument
+        # Let's make the script: get the Manager
+        object_class = content_type.model_class()
+        initial['script'] = object_class.objects.to_script(pk = self.kwargs['key'])
+        return initial
     
-    
-    def form_valid(self, form):
-        '''
-        
-        '''
-        
-        form.instance.user = self.request.user
-        form.instance.instrument = self.request.user.profile.instrument
-        
-        form.instance.content_type = self.request.session['content_type']
-        form.instance.object_id = self.request.session['object_id']
-                
-        logger.debug(self.request.POST.items());
-        logger.debug(form.clean())
-        
-        
-        return CreateView.form_valid(self, form)
 
+class JobsMixin(object):
 
-class JobList(LoginRequiredMixin, ListView):
+    def get_queryset(self):
+        '''
+        Make sure the user only accesses its Jobs
+        '''
+        return Job.objects.filter(user = self.request.user)
+
+class JobList(LoginRequiredMixin, JobsMixin, ListView):
     '''
     List
     '''
     template_name = 'jobs/job_list.html'
-    model = Job
+    #model = Job
+    def get_queryset(self):
+        return super(JobList, self).get_queryset()
 
 class JobDetail(LoginRequiredMixin, DetailView):
     '''
@@ -51,13 +55,13 @@ class JobDetail(LoginRequiredMixin, DetailView):
     '''
     template_name = 'jobs/job_detail.html'
     model = Job
-
-
+    
 
 class JobUpdate(LoginRequiredMixin, UpdateView):
     '''
     Update
     '''
     template_name = 'jobs/job_form.html'
-    #form_class = JobForm
     model = Job
+    fields = '__all__'
+    

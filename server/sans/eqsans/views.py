@@ -11,7 +11,7 @@ from django.contrib.contenttypes.models import ContentType
 from .models import EQSANSConfiguration, EQSANSReduction, EQSANSEntry
 from .forms import ConfigurationForm
 from server.catalog.models import Instrument
-from server.util.script import build_script
+
 
 from pprint import pformat
 import logging
@@ -21,7 +21,6 @@ import os
 logger = logging.getLogger('sans.eq-sans')
 
 instrument_name = "EQ-SANS"
-script_file = os.path.join(os.path.dirname(os.path.abspath(__file__)),"scripts","template.py")
 
 class ConfigurationMixin(object):
 
@@ -287,24 +286,23 @@ class ReductionClone(LoginRequiredMixin, ReductionMixin, RedirectView):
         return super(ReductionClone, self).get_redirect_url(*args, **kwargs)
 
 
-class ReductionScript(LoginRequiredMixin, ReductionMixin, RedirectView):
+class ReductionScript(LoginRequiredMixin, RedirectView):
     '''
-    Generates the script, puts in in the session and redirects to job form
+    Redirects to Job create.
+    It send the necessary info to create a generic relation to this object
     '''
     permanent = True
     query_string = False
-    # Pattern is not working!
     pattern_name = 'jobs:job_create'
-    url = '/jobs/create'
     
     def get_redirect_url(self, *args, **kwargs):
-        logger.debug("Redirecting to %s...."%reverse(self.pattern_name))
-        obj_json = EQSANSReduction.objects.to_json(kwargs['pk'])
-        self.request.session['script'] = build_script(script_file, obj_json)
-        self.request.session['content_type'] = ContentType.objects.get(app_label="sans", model="eqsansreduction")
-        self.request.session['object_id'] =  kwargs['pk']
-        return super(ReductionScript, self).get_redirect_url(*args, **kwargs)
-
+        # I need new kwargs as the above contains the pk and the reverse fails
+        my_kwargs = { "app_name" : "sans",
+                     "model_name" : "eqsansreduction",  
+                     "key" :kwargs['pk'] }
+        return super(ReductionScript, self).get_redirect_url(kwargs = my_kwargs)
+        
+    
 
     
     
