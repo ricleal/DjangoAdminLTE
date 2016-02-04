@@ -23,7 +23,7 @@ import logging
 import json
 
 from .models import UserProfile
-from server.jobs.remote.comunication import Fermi
+from server.jobs.remote.facade import Remote
 from server.util.dumper import DjangoDumper
 
 logger = logging.getLogger('users')
@@ -43,9 +43,8 @@ class LoginView(FormView):
         remote authentication to fermi
         Sets a cookie for fermi
         """
-        d = DjangoDumper(request)
-        f = Fermi(d)
-        cookie = f.authentication(username, password)
+        remote = Remote(request, username, password)
+        cookie = remote.get_cookie()
         if cookie:
             request.session['remote']=cookie
     
@@ -96,7 +95,9 @@ class LogoutView(RedirectView):
 
     def get(self, request, *args, **kwargs):
         auth_logout(request)
-        return super(LogoutView, self).get(request, *args, **kwargs)
+        response = super(LogoutView, self).get(request, *args, **kwargs)
+        response.delete_cookie('remote')
+        return response
 
 
 class ProfileUpdate(LoginRequiredMixin,SuccessMessageMixin,UpdateView):

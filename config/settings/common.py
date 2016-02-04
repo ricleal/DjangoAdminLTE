@@ -345,9 +345,8 @@ ADMIN_URL = r'^admin/'
 ICAT_DOMAIN = 'icat.sns.gov'
 ICAT_PORT = 2080
 
-REMOTE_DOMAIN = 'fermi.ornl.gov'
-REMOTE_PORT = 80
-
+# FERMI
+REMOTE_URL = "https://fermi.ornl.gov/MantidRemote"
 
 # USed in the configuration form when using the file tree browser
 SERVER_FILES_PREFIX = "/SNS/%(instrument)s/shared"
