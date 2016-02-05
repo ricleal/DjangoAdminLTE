@@ -12,12 +12,6 @@ from django.conf import settings
 from django.contrib import messages
 
 import requests
-
-
-from pprint import pformat, pprint
-from base64 import b64encode
-
-import httplib
 import logging
 
 logger = logging.getLogger('jobs.remote')
@@ -31,45 +25,59 @@ def authenticate(request, username,password):
     try :
         # Verify false, otherwise SSL certicate is invalid
         resp = requests.get(settings.REMOTE_URL +'/authenticate', auth=(username,password), verify=False)
-        if not resp.OK:
-            messages.error(request, resp.text)
+        if resp.ok:
+            return resp.cookies.get_dict()
         else:
-            return resp.cookies['sessionid']
+            logger.error(resp.reason)
+            logger.error(resp.text)
+            messages.error(request, resp.text)
     except Exception as e:
         logger.exception(e)
+        messages.error(request, "Error authenticating with Remote: %s"%str(e))
     return None
     
 def start_transaction(request, cookie):
     '''
     Need authentication!
-    Fermi returns:
+    
+    @return: None or
     {
         "Directory": "/lustre/snsfs/scratch/apache/rhf_535",
         "TransID": 535
     }
-    @return: http code, payload,
     '''
     try :
-        # Verify false, otherwise SSL certicate is invalid
-        resp = requests.get(settings.REMOTE_URL +'/transaction?Action=Start',  cookies=cookies)
-        if not resp.OK:
-            messages.error(request, resp.text)
+        payload = {'Action': 'Start'}
+        resp = requests.get(settings.REMOTE_URL +'/transaction', params=payload, verify=False, cookies=cookie)
+        if resp.ok:
+            logger.info("Started Transaction: %s"%(resp.text))
+            return resp.json()
         else:
-            return resp.cookies['sessionid']
+            logger.error(resp.reason)
+            messages.error(request, resp.text)
     except Exception as e:
         logger.exception(e)
+        messages.error(request, "Error starting transaction with Remote: %s"%str(e))
     return None
 
-    try:
-        request_str = '%s/transaction?Action=Start' % (PREFIX)
-        logger.debug("transaction: %s" % request_str)
-        self.conn.request('GET',
-                          request_str,
-                          headers=self.headers)
-        response = self.conn.getresponse()
-        return response.status, response.read()
+def end_transaction(request, cookie, transation_id):
+    '''
+    Need authentication!
+    @return: True if ended transaction
+    '''
+    try :
+        payload = {'Action': 'Stop', 'TransID' : transation_id}
+        resp = requests.get(settings.REMOTE_URL +'/transaction', params=payload, verify=False, cookies=cookie)
+        if resp.ok:
+            logger.info("Stopped Transaction %s."%(transation_id))
+            return True
+        else:
+            logger.error("Error Stopping Transaction: %s"%resp.reason)
+            messages.error(request, resp.text)
     except Exception as e:
-        self.dumper.dump_exception(e, "Communication with Fermi server failed.")
-        return None
-    
-        
+        logger.exception(e)
+        messages.error(request, "Error stopping transaction with Remote: %s"%str(e))
+    return False
+
+
+

@@ -23,8 +23,7 @@ import logging
 import json
 
 from .models import UserProfile
-from server.jobs.remote.facade import Remote
-from server.util.dumper import DjangoDumper
+from server.jobs.remote import communication as fermi
 
 logger = logging.getLogger('users')
 
@@ -43,8 +42,7 @@ class LoginView(FormView):
         remote authentication to fermi
         Sets a cookie for fermi
         """
-        remote = Remote(request, username, password)
-        cookie = remote.get_cookie()
+        cookie = fermi.authenticate(request, username, password)
         if cookie:
             request.session['remote']=cookie
     
