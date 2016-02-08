@@ -65,7 +65,7 @@ def start_transaction(request, cookie):
 def end_transaction(request, cookie, transation_id):
     '''
     Need authentication!
-    @return: True if ended transaction
+    @return: True if succeeded otherwise False
     '''
     try :
         payload = {'Action': 'Stop', 'TransID' : transation_id}
@@ -90,7 +90,7 @@ def upload(request, cookie, transation_id, files):
                                              'file_name3': ('report.xls', open('report.xls', 'rb'), 'application/vnd.ms-excel', {'Expires': '0'}),
                                              'file_name4': ('report.csv', 'some,data,to,send\nanother,row,to,send\n')
                                              }
-    @return: True if OK!
+    @return: True if succeeded otherwise False
     '''
     try :
         payload = {'TransID' : transation_id}
@@ -129,15 +129,14 @@ def download(request, cookie, transation_id, filename):
 def file_listing(request, cookie, transation_id):
     '''
     Need authentication! 
-    @return: [file1, file2, ...]
+    @return: { "Files" : [file1, file2, ...]}
     '''
     try :
         payload = {'TransID' : transation_id}
         resp = requests.get(settings.REMOTE_URL +'/files', params=payload, verify=False, cookies=cookie)
         if resp.ok:
-            logger.info("Listing files for Transaction %s."%(transation_id))
-            resp_json = resp.json()
-            return resp_json.get("Files",None)
+            logger.info("Listing files for Transaction %s:\n%s"%(transation_id, resp.text))
+            return resp.json()
         else:
             logger.error("Error Listing files for Transaction %s: %s"%(transation_id, resp.reason))
             messages.error(request, resp.text)
@@ -149,8 +148,7 @@ def file_listing(request, cookie, transation_id):
 def submit_job(request, cookie, transation_id, python_script_dic, job_name=None, number_of_nodes=1, cores_per_node=1):
     '''
     @param  python_script_dic: dictionary of the form:  {'file_name1': open('submit.py', 'r').read()}. Must be single entry!
-    (Fermi returns JobID : <job_id>)
-    @return: JobID 
+    @return: {JobID : <job_id> }
     '''
     try :
         script_name, script_content = python_script_dic.items()[0]
@@ -162,9 +160,8 @@ def submit_job(request, cookie, transation_id, python_script_dic, job_name=None,
         post_payload["CoresPerNode"] = cores_per_node
         resp = requests.post(settings.REMOTE_URL +'/submit', data=post_payload, verify=False, cookies=cookie)
         if resp.ok:
-            logger.info("Job Submission for Transaction %s."%(transation_id))
-            resp_json = resp.json()
-            return resp_json.get("JobID",None)
+            logger.info("Job Submission for Transaction %s:\n%s"%(transation_id,resp.text))
+            return resp.json()
         else:
             logger.error("Error Job Submission for Transaction %s: %s"%(transation_id, resp.reason))
             messages.error(request, resp.text)
@@ -214,10 +211,23 @@ def query_job(request, cookie, job_id=None):
         messages.error(request, "Error Query Job %s with Remote: %s"%(job_id,str(e)))
     return None
 
+
+def get_job_status(request, cookie, job_id):
+    '''
+    Facade for the method query_job
+    '''
+    resp =  query_job(request, cookie, job_id)
+    if resp is not None and len(resp.items()) == 1:
+        job_details =  resp.values()[0]
+        return job_details["JobStatus"]
+    else:
+        messages.error(request, "get_job_status did not get the expected result: %s"%resp)
+        return None
+        
+
 def abort_job(request, cookie, job_id):
     '''
-    @return:
-       
+    @return: True if succeeded otherwise False
     '''
     try :
         payload = {'JobID' : job_id}

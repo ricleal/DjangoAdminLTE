@@ -119,8 +119,9 @@ class TestRemote(TestCase):
         #list file
         resp = c.file_listing(self.request, self.cookie, transation_id)
         self.assertTrue(resp is not None)
-        self.assertIn("file1", resp)
-        self.assertIn("file2", resp)
+        self.assertIn("Files", resp.keys())
+        self.assertIn("file1", resp['Files'])
+        self.assertIn("file2", resp['Files'])
         
         ## End transaction
         resp = c.end_transaction(self.request, self.cookie,trans_info["TransID"])
@@ -135,15 +136,17 @@ class TestRemote(TestCase):
         transation_id = trans_info['TransID']
         filename = os.path.join(os.path.dirname(os.path.realpath(__file__)),'test_script.py') 
         python_script_dic = {"test_script.py" : str(open(filename,'r').read())}
-        job_id = c.submit_job(self.request, self.cookie, transation_id, python_script_dic)
+        resp = c.submit_job(self.request, self.cookie, transation_id, python_script_dic)
+        self.assertIn("JobID", resp.keys())
+        job_id = resp["JobID"]
         self.assertNotEqual(job_id, None)
         time.sleep(2)
         
         #list file
         resp = c.file_listing(self.request, self.cookie, transation_id)
         self.assertTrue(resp is not None)
-        self.assertIn("test_script.py", resp)
-        
+        self.assertIn("Files", resp.keys())
+        self.assertIn("test_script.py", resp['Files'])
         
         ## End transaction
         resp = c.end_transaction(self.request, self.cookie,trans_info["TransID"])
@@ -158,7 +161,9 @@ class TestRemote(TestCase):
         transation_id = trans_info['TransID']
         filename = os.path.join(os.path.dirname(os.path.realpath(__file__)),'test_script.py') 
         python_script_dic = {"test_script.py" : str(open(filename,'r').read())}
-        job_id = c.submit_job(self.request, self.cookie, transation_id, python_script_dic)
+        resp = c.submit_job(self.request, self.cookie, transation_id, python_script_dic)
+        self.assertIn("JobID", resp.keys())
+        job_id = resp["JobID"]
         self.assertNotEqual(job_id, None)
         time.sleep(2)
         # query this job:
@@ -182,12 +187,12 @@ class TestRemote(TestCase):
         transation_id = trans_info['TransID']
         filename = os.path.join(os.path.dirname(os.path.realpath(__file__)),'test_script.py') 
         python_script_dic = {"test_script.py" : str(open(filename,'r').read())}
-        job_id = c.submit_job(self.request, self.cookie, transation_id, python_script_dic)
-        self.assertNotEqual(job_id, None)
-        job_id = c.submit_job(self.request, self.cookie, transation_id, python_script_dic)
-        self.assertNotEqual(job_id, None)
-        job_id = c.submit_job(self.request, self.cookie, transation_id, python_script_dic)
-        self.assertNotEqual(job_id, None)
+        resp = c.submit_job(self.request, self.cookie, transation_id, python_script_dic)
+        self.assertIn("JobID", resp.keys())
+        resp = c.submit_job(self.request, self.cookie, transation_id, python_script_dic)
+        self.assertIn("JobID", resp.keys())
+        resp = c.submit_job(self.request, self.cookie, transation_id, python_script_dic)
+        self.assertIn("JobID", resp.keys())
 
         time.sleep(2)
         # query All jobs
@@ -207,7 +212,9 @@ class TestRemote(TestCase):
         transation_id = trans_info['TransID']
         filename = os.path.join(os.path.dirname(os.path.realpath(__file__)),'test_script.py') 
         python_script_dic = {"test_script.py" : str(open(filename,'r').read())}
-        job_id = c.submit_job(self.request, self.cookie, transation_id, python_script_dic)
+        resp = c.submit_job(self.request, self.cookie, transation_id, python_script_dic)
+        self.assertIn("JobID", resp.keys())
+        job_id = resp["JobID"]
         self.assertNotEqual(job_id, None)
         resp = c.abort_job(self.request, self.cookie, job_id)
         self.assertEqual(resp,True)
