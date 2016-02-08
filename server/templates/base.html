@@ -145,29 +145,27 @@ desired effect
 
       <!-- Sidebar user panel -->
       <div class="user-panel" >
-      	{% if request.session.remote %}      	
+      	{% if request.session.remote %}
       	<div class="pull-left image">
-          <i class="fa fa-circle text-success fa-3x"></i>
+          <i class="fa fa-circle text-success fa-lg"></i>
         </div>
         <div class="pull-left info">
-          <p>Cluster Status:</p>
-          <u>Connected</u>
+          <p>Cluster Status: <u>Connected</u></p>
         </div>
         {% else %}
-        <div class="pull-left image" data-toggle="tooltip" data-placement="right" title="Logoff and login again to reconnect to the cluster.">
-          <i class="fa fa-circle text-danger fa-3x"></i>
+      	<div class="pull-left image" data-toggle="tooltip" data-placement="right" title="Logoff and login again to reconnect to the cluster.">
+          <i class="fa fa-circle text-danger fa-lg"></i>
         </div>
         <div class="pull-left info">
-          <p>Cluster Status:</p>
-          <u>Offline</u>
+          <p>Cluster Status: <u>Offline</u></p>
         </div>
-        {% endif %}
+        {% endif %}  
       </div>
 
       <!-- Sidebar Menu -->
       <ul class="sidebar-menu">
         <!-- Optionally, you can add icons to the links -->
-        <li class="active"><a href="{% url 'catalog:list_instruments' %}"><i class="fa fa-book"></i> <span>Catalog</span></a></li>
+        <li><a href="{% url 'catalog:list_instruments' %}"><i class="fa fa-book"></i> <span>Catalog</span></a></li>
 
         {% if user.profile.instrument %}
     		{% with template_name=user.profile.instrument.type|lower|add:"/"|add:user.profile.instrument.name|lower|add:"/side_bar.html" %}

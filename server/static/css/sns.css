@@ -79,3 +79,16 @@
 table.dataTable tbody tr.selected {
   background-color: #B0BED9;
 }
+
+/**** overwrite for cluster status**/
+
+.user-panel > .info {
+  padding: 5px 5px 5px 15px;
+  line-height: 1;
+  position: absolute;
+  left: 25px;
+}
+.user-panel > .image  {
+  padding: 1px 0px 0px 8px;
+
+}
