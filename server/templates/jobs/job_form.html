@@ -3,7 +3,7 @@
 {% load humanize %}
 {% block head %}
 <style type="text/css" media="screen">
-    #editor { 
+    #editor {
 		height: 600px;
 		border-style: groove;
     }
@@ -41,9 +41,7 @@
 					<!-- /.box-header -->
 					<div class="box-body">
 						<div id="editor"></div>
-						<div class="form-group">
-						{{ form }} 
-						</div>
+						{{ form }}
 					</div>
 					<!-- /.box-body -->
 				</div>
@@ -69,19 +67,18 @@
     var editor = ace.edit("editor");
     editor.setTheme("ace/theme/github");
     editor.getSession().setMode("ace/mode/python");
-    
-    //hide all form fields!! Don't need to edit them!
-    $(".form-group").hide();
+
     var textarea = $('#id_script');
     editor.setValue(textarea.val(), 1);
-    
+
     $('#button_save').on('click', function() {
     	//event.preventDefault(); // To prevent following the link (optional)
         var editor_content = editor.getSession().getValue();
-    	// todo!
+    	// todo:
+      // if editor chanaged, put field script_changed to True
     	textarea.val(editor_content);
-    	
+
     });
-    
+
 </script>
 {% endblock body_end %}
