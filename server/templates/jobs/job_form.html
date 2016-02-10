@@ -40,15 +40,20 @@
 					</div>
 					<!-- /.box-header -->
 					<div class="box-body">
-						<div id="editor"></div>
 						{{ form }}
+					</div>
+					<div class="box-body">
+						<div id="editor"></div>
 					</div>
 					<!-- /.box-body -->
 				</div>
 				<!-- /.box -->
 				<p>
-					<button id="button_save" type="submit" class="btn btn-primary">Save</button>
-					<button type="submit" class="btn btn-primary">Submit</button>
+					<button id="button_save" name="button_save" type="submit" class="btn btn-primary"
+					data-toggle="tooltip" data-placement="top" title="Only saves the script if it was modified.">Save</button>
+					{% if not object %}
+					<button id="button_continue" name="button_continue" type="submit" class="btn btn-primary">Continue</button>
+					{% endif %}
 				</p>
 			</form>
 		</div>
@@ -64,21 +69,35 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.3/theme-github.js" type="text/javascript" charset="utf-8"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.3/mode-python.js" type="text/javascript" charset="utf-8"></script>
 <script>
+	$(function(){
+  		// Admin LTE requires these classes for better forms
+		$("input").addClass("form-control");
+	});
+	// set up Ace editor
     var editor = ace.edit("editor");
     editor.setTheme("ace/theme/github");
     editor.getSession().setMode("ace/mode/python");
-
+	
+    // set editor value to what I have in the form field script
     var textarea = $('#id_script');
-    editor.setValue(textarea.val(), 1);
-
+    editor.setValue(textarea.val(), -1); // -1 is at the document start
+    editor.session.getUndoManager().markClean();
+    
+    // if the editor content changes activates the save button
+  	editor.on("change", function() {
+	   	$('#button_save').prop('disabled', editor.getSession().getUndoManager().isClean());
+	});
+    
+  	//Disable save button (only save if the script was modified!) 
+	$('#button_save').prop('disabled', true);
+	    
     $('#button_save').on('click', function() {
-    	//event.preventDefault(); // To prevent following the link (optional)
+    	$("#id_script_changed").val("True"); // set form value to changed
         var editor_content = editor.getSession().getValue();
-    	// todo:
-      // if editor chanaged, put field script_changed to True
     	textarea.val(editor_content);
 
     });
 
+    	 
 </script>
 {% endblock body_end %}

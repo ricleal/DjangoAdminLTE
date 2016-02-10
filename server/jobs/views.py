@@ -1,10 +1,13 @@
 from django.views.generic import CreateView, ListView, DetailView, UpdateView, DeleteView, RedirectView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.contenttypes.models import ContentType
+from django.shortcuts import get_object_or_404
+from django.http import Http404
 
+from pprint import pformat
 from .models import Job, Transaction
 from .forms import JobForm
-from .remote.communication import start_transaction
+
 
 import logging
 
@@ -27,33 +30,29 @@ class JobCreate(LoginRequiredMixin, CreateView):
         initial['object_id'] = self.kwargs['key']
         # Let's make the script: get the Manager
         object_class = content_type.model_class()
+        object_ = object_class.objects.get(pk = self.kwargs['key'])
         initial['script'] = object_class.objects.to_script(pk = self.kwargs['key'])
+        initial['title'] = "Job for " + object_.title
         return initial
 
     def form_valid(self, form):
         """
         Sets initial values which are hidden in the form
         """
-        # create a transaction
-        cookie = self.request.session["remote"]
-        transaction_remote = start_transaction(self.request, cookie)
-        if transaction_remote:
-            #"To create and save an object in a single step, use the create() method."
-            transaction = Transaction.objects.create(
-                title = form.instance.title, # same title as the job!
-                remote_id = transaction_remote["TransID"],
-                remote_directory = transaction_remote["Directory"],
-                instrument = self.request.user.profile.instrument,
-                user = self.request.user
-            )
-            form.instance.transaction = transaction
-            # The job will be created automaticly
-            return CreateView.form_valid(self, form)
-        else:
-            #form.add_error
-            return CreateView.form_invalid(self, form)
-
-
+        #logger.debug(pformat(self.request.POST.items()))
+        
+        form.instance.user = self.request.user
+        form.instance.instrument = self.request.user.profile.instrument
+#         if 'button_reduce' in self.request.POST:
+#             logger.debug("Reducing... create transaction:")
+#             # create a transaction
+#             transaction = Transaction.objects.start_transaction(self.request, form.instance.title)
+#             if transaction:
+#                 form.instance.transaction = transaction
+#                 form.request = self.request
+#             else:
+#                 raise Http404
+        return CreateView.form_valid(self, form)
 
 
 class JobsMixin(object):
@@ -86,5 +85,7 @@ class JobUpdate(LoginRequiredMixin, UpdateView):
     Update
     '''
     template_name = 'jobs/job_form.html'
-    model = Job
-    fields = '__all__'
+    form_class = JobForm
+    
+    def get_object(self):
+        return get_object_or_404(Job, pk=self.kwargs['pk'])

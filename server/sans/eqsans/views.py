@@ -293,14 +293,16 @@ class ReductionScript(LoginRequiredMixin, RedirectView):
     '''
     permanent = True
     query_string = False
-    pattern_name = 'jobs:job_create'
+    pattern_name = "jobs:job_create"
     
     def get_redirect_url(self, *args, **kwargs):
         # I need new kwargs as the above contains the pk and the reverse fails
         my_kwargs = { "app_name" : "sans",
                      "model_name" : "eqsansreduction",  
-                     "key" :kwargs['pk'] }
-        return super(ReductionScript, self).get_redirect_url(kwargs = my_kwargs)
+                     "key" : kwargs['pk'] }
+        redirect_to = super(ReductionScript, self).get_redirect_url(**my_kwargs)
+        logger.debug("Redirecting to: %s"%redirect_to)
+        return redirect_to
         
     
 
