@@ -232,6 +232,9 @@ class Catalog(object):
 
         json_data_subset = [ {'value' : entry['@id'], 'label' : '%s - %s'%(entry['@id'],entry['title']) }
                             for entry in json_data]
+        
+        # sort list by key value!
+        json_data_subset = sorted(json_data_subset,key=lambda k: k['value'])
         return json_data_subset;
 
     def get_run_number_and_title(self, instrument, experiment):

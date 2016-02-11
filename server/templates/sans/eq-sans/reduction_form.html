@@ -270,11 +270,16 @@ $(function(){
       BootstrapDialog.show({
           title: 'Pick the runs',
           message: $("#catalog_wrapper"),
+          draggable: true,
+          //closable: true,
+          //closeByBackdrop: false,
+          //closeByKeyboard: false,
+          backdrop: 'static',
           onhidden: function() {
               $("#catalog_wrapper").appendTo('#catalog_container'); // Put the table back
           },
           buttons: [{
-              label: 'Cancel',
+              label: 'Close',
               action: function(dialogRef) {
                   dialogRef.close();
               }
