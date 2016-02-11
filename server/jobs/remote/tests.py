@@ -67,7 +67,7 @@ class TestRemote(TestCase):
     @classmethod
     def _authenticate(cls):
         password = getpass.getpass()
-        cookie = c.authenticate(cls.request, "rhf", password)
+        _, cookie = c.authenticate("rhf", password)
         return cookie
     
     def test_authentication(self):
@@ -76,155 +76,155 @@ class TestRemote(TestCase):
     
     def test_start_and_stop_transaction(self):
         
-        trans_info = c.start_transaction(self.request, self.cookie)
+        _, trans_info = c.start_transaction(self.cookie)
         self.assertIn("Directory", trans_info.keys())
         self.assertIn("TransID", trans_info.keys())    
         ## End transaction
-        resp = c.end_transaction(self.request, self.cookie,trans_info["TransID"])
-        self.assertTrue(resp)
+        success, _ = c.end_transaction(self.cookie,trans_info["TransID"])
+        self.assertTrue(success)
     
     def test_start_and_stop_transaction_upload_download_file(self):
         
-        trans_info = c.start_transaction(self.request, self.cookie)
+        _, trans_info = c.start_transaction(self.cookie)
         self.assertIn("Directory", trans_info.keys())
         self.assertIn("TransID", trans_info.keys())    
         # upload file
         transation_id = trans_info['TransID']
         filename = os.path.join(os.path.dirname(os.path.realpath(__file__)),'test_upload.txt')
         file_content = open(filename,'r')
-        resp = c.upload(self.request, self.cookie, transation_id, {"file1" : file_content})
-        self.assertTrue(resp)
+        success, _ = c.upload(self.cookie, transation_id, {"file1" : file_content})
+        self.assertTrue(success)
         
         # download (note the same file name
-        resp = c.download(self.request, self.cookie, transation_id, "file1")
+        _, resp = c.download(self.cookie, transation_id, "file1")
         self.assertTrue(resp is not None)
         self.assertEqual(resp, open(filename,'r').read())
         
         ## End transaction
-        resp = c.end_transaction(self.request, self.cookie,trans_info["TransID"])
-        self.assertTrue(resp)
+        success, resp = c.end_transaction(self.cookie,trans_info["TransID"])
+        self.assertTrue(success)
     
     def test_start_and_stop_transaction_upload_list_file(self):
         
-        trans_info = c.start_transaction(self.request, self.cookie)
+        _, trans_info = c.start_transaction(self.cookie)
         self.assertIn("Directory", trans_info.keys())
         self.assertIn("TransID", trans_info.keys())    
         # upload file
         transation_id = trans_info['TransID']
         filename = os.path.join(os.path.dirname(os.path.realpath(__file__)),'test_upload.txt')
         file_content = open(filename,'r')
-        resp = c.upload(self.request, self.cookie, transation_id, {"file1" : file_content,"file2" : file_content})
-        self.assertTrue(resp)
+        success, _ = c.upload(self.cookie, transation_id, {"file1" : file_content,"file2" : file_content})
+        self.assertTrue(success)
         
         #list file
-        resp = c.file_listing(self.request, self.cookie, transation_id)
+        _, resp = c.file_listing(self.cookie, transation_id)
         self.assertTrue(resp is not None)
         self.assertIn("Files", resp.keys())
         self.assertIn("file1", resp['Files'])
         self.assertIn("file2", resp['Files'])
         
         ## End transaction
-        resp = c.end_transaction(self.request, self.cookie,trans_info["TransID"])
-        self.assertTrue(resp)
+        success, _ = c.end_transaction(self.cookie,trans_info["TransID"])
+        self.assertTrue(success)
     
     def test_start_and_stop_transaction_submit_job(self):
         
-        trans_info = c.start_transaction(self.request, self.cookie)
+        _, trans_info = c.start_transaction(self.cookie)
         self.assertIn("Directory", trans_info.keys())
         self.assertIn("TransID", trans_info.keys())    
         #
         transation_id = trans_info['TransID']
         filename = os.path.join(os.path.dirname(os.path.realpath(__file__)),'test_script.py') 
         python_script_dic = {"test_script.py" : str(open(filename,'r').read())}
-        resp = c.submit_job(self.request, self.cookie, transation_id, python_script_dic)
+        _, resp = c.submit_job(self.cookie, transation_id, python_script_dic)
         self.assertIn("JobID", resp.keys())
         job_id = resp["JobID"]
         self.assertNotEqual(job_id, None)
         time.sleep(2)
         
         #list file
-        resp = c.file_listing(self.request, self.cookie, transation_id)
+        _, resp = c.file_listing(self.cookie, transation_id)
         self.assertTrue(resp is not None)
         self.assertIn("Files", resp.keys())
         self.assertIn("test_script.py", resp['Files'])
         
         ## End transaction
-        resp = c.end_transaction(self.request, self.cookie,trans_info["TransID"])
-        self.assertTrue(resp)
+        success, _ = c.end_transaction(self.cookie,trans_info["TransID"])
+        self.assertTrue(success)
     
     def test_start_and_stop_transaction_submit_query_job(self):
         
-        trans_info = c.start_transaction(self.request, self.cookie)
+        _, trans_info = c.start_transaction(self.cookie)
         self.assertIn("Directory", trans_info.keys())
         self.assertIn("TransID", trans_info.keys())    
         #
         transation_id = trans_info['TransID']
         filename = os.path.join(os.path.dirname(os.path.realpath(__file__)),'test_script.py') 
         python_script_dic = {"test_script.py" : str(open(filename,'r').read())}
-        resp = c.submit_job(self.request, self.cookie, transation_id, python_script_dic)
+        _, resp = c.submit_job(self.cookie, transation_id, python_script_dic)
         self.assertIn("JobID", resp.keys())
         job_id = resp["JobID"]
         self.assertNotEqual(job_id, None)
         time.sleep(2)
         # query this job:
-        resp = c.query_job(self.request, self.cookie, job_id)
+        _, resp = c.query_job(self.cookie, job_id)
         self.assertNotEqual(resp,None)
         
         # query all jobs:
-        resp = c.query_job(self.request, self.cookie)
+        _, resp = c.query_job(self.cookie)
         self.assertNotEqual(resp,None)
 
         ## End transaction
-        resp = c.end_transaction(self.request, self.cookie,transation_id)
-        self.assertTrue(resp)
+        success, _ = c.end_transaction(self.cookie,transation_id)
+        self.assertTrue(success)
     
     def test_start_and_stop_transaction_multiple_submit_query_job(self):
         
-        trans_info = c.start_transaction(self.request, self.cookie)
+        _, trans_info = c.start_transaction(self.cookie)
         self.assertIn("Directory", trans_info.keys())
         self.assertIn("TransID", trans_info.keys())    
         #
         transation_id = trans_info['TransID']
         filename = os.path.join(os.path.dirname(os.path.realpath(__file__)),'test_script.py') 
         python_script_dic = {"test_script.py" : str(open(filename,'r').read())}
-        resp = c.submit_job(self.request, self.cookie, transation_id, python_script_dic)
+        _, resp = c.submit_job(self.cookie, transation_id, python_script_dic)
         self.assertIn("JobID", resp.keys())
-        resp = c.submit_job(self.request, self.cookie, transation_id, python_script_dic)
+        _, resp = c.submit_job(self.cookie, transation_id, python_script_dic)
         self.assertIn("JobID", resp.keys())
-        resp = c.submit_job(self.request, self.cookie, transation_id, python_script_dic)
+        _, resp = c.submit_job(self.cookie, transation_id, python_script_dic)
         self.assertIn("JobID", resp.keys())
 
         time.sleep(2)
         # query All jobs
-        resp = c.query_job(self.request, self.cookie)
+        _, resp = c.query_job(self.cookie)
         self.assertNotEqual(resp,None)
 
         ## End transaction
-        resp = c.end_transaction(self.request, self.cookie,transation_id)
-        self.assertTrue(resp)
+        success, _ = c.end_transaction(self.cookie,transation_id)
+        self.assertTrue(success)
     
     def test_start_and_stop_transaction_submit_query_abort_job(self):
         
-        trans_info = c.start_transaction(self.request, self.cookie)
+        _, trans_info = c.start_transaction(self.cookie)
         self.assertIn("Directory", trans_info.keys())
         self.assertIn("TransID", trans_info.keys())    
         #
         transation_id = trans_info['TransID']
         filename = os.path.join(os.path.dirname(os.path.realpath(__file__)),'test_script.py') 
         python_script_dic = {"test_script.py" : str(open(filename,'r').read())}
-        resp = c.submit_job(self.request, self.cookie, transation_id, python_script_dic)
+        _, resp = c.submit_job(self.cookie, transation_id, python_script_dic)
         self.assertIn("JobID", resp.keys())
         job_id = resp["JobID"]
         self.assertNotEqual(job_id, None)
-        resp = c.abort_job(self.request, self.cookie, job_id)
-        self.assertEqual(resp,True)
+        success, _ = c.abort_job(self.cookie, job_id)
+        self.assertEqual(success,True)
         time.sleep(2)
         # query this job:
-        resp = c.query_job(self.request, self.cookie, job_id)
+        _, resp = c.query_job(self.cookie, job_id)
         self.assertNotEqual(resp,None)
-        resp = c.abort_job(self.request, self.cookie, job_id)
-        self.assertEqual(resp,False)
+        success, _ = c.abort_job(self.cookie, job_id)
+        self.assertEqual(success,False)
 
         ## End transaction
-        resp = c.end_transaction(self.request, self.cookie,transation_id)
-        self.assertTrue(resp)
+        success, _ = c.end_transaction(self.cookie,transation_id)
+        self.assertTrue(success)

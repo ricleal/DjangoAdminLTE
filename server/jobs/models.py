@@ -5,6 +5,7 @@ from django.db import models
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.utils.text import slugify
 
 from server.catalog.models import Instrument
 from .remote import communication as remote
@@ -25,7 +26,7 @@ class TransactionManager(models.Manager):
         start the transaction in remote and creates the transaction object in the DB
         '''
         cookie = request.session["remote"]
-        transaction_remote = remote.start_transaction(request, cookie)
+        _, transaction_remote = remote.start_transaction(cookie)
         if transaction_remote:
             #"To create and save an object in a single step, use the create() method."
             transaction = self.create(
@@ -69,15 +70,58 @@ class JobManager(models.Manager):
 
     use_for_related_fields = True
     
-    def clone(self, pk):
+    def clone(self, obj):
         '''
         Clone an object and returns 
         '''
-        obj = self.get(id = pk)
         obj.pk = None # setting to None, clones the object!
         obj.title = obj.title + " (copy)"
         obj.save() 
         return obj
+    
+    def submit_job(self, request, transaction, job):
+        '''
+        @param obj: Job instance
+        '''
+        if job.local_status > 0: #It was submitted already!
+            job = self.clone(job)
+        job.transaction = transaction
+        
+        cookie = request.session["remote"]
+        success, resp = remote.submit_job(cookie, transaction.remote_id, 
+                                 {'run.py': job.script}, slugify(job.title), 
+                                 job.number_of_nodes, job.cores_per_node)
+        if success:
+            job.remote_id = resp['JobID']
+            job.local_status = 1
+            job.save()
+            return job
+        else:
+            job.delete()
+            transaction.delete()
+            return None
+    
+    def query_job(self, request, job):
+        cookie = request.session["remote"]
+        success, resp = remote.query_job(cookie, job.remote_id)
+        if success:
+            try:
+                d = resp.values()[0]
+                job.remote_submit_date = d['SubmitDate']
+                job.remote_start_date = d['StartDate']
+                job.remote_complete_date = d['CompletionDate']
+                job.remote_status = job.assign_remote_status(d['JobStatus'])
+                job.save()
+                return job                
+            except Exception , e:
+                logger.exception(e)
+        return None
+    
+    def delete_job(self, request, job):
+        cookie = request.session["remote"]
+        success, _ = remote.abort_job(cookie, job.remote_id)
+        return success
+        
     
 class Job(models.Model):
     '''

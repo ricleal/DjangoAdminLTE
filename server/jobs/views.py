@@ -4,7 +4,6 @@ from django.contrib.contenttypes.models import ContentType
 from django.shortcuts import get_object_or_404
 from django.http import Http404
 from django.contrib import messages
-from django.utils.text import slugify
 from django.core.urlresolvers import reverse_lazy
 
 from pprint import pformat
@@ -93,31 +92,20 @@ class JobSubmission(LoginRequiredMixin, JobsMixin, DetailView):
     template_name = 'jobs/job_detail.html'
     model = Job
     
-    
     def get_object(self, queryset=None):
         obj = super(JobSubmission, self).get_object(queryset)
-        if obj.local_status > 0: #It was submitted already!
-            obj = Job.objects.clone(self.kwargs['pk'])
-            self.kwargs['pk'] = obj.pk
-            messages.success(self.request, 'Job %s cloned. New id = %s'%(obj, obj.pk))
         
-        # create a transaction
-        transaction = Transaction.objects.start_transaction(self.request, obj.title)
-        if transaction:
-            obj.transaction = transaction
-        else:
+        transaction = Transaction.objects.start_transaction(self.request, "Transaction for " + obj.title)
+        if not transaction:
             raise Http404
-        cookie = self.request.session["remote"]
-        resp = remote.submit_job(self.request, cookie, transaction.remote_id, 
-                                 {'run.py': obj.script}, 
-                                 slugify(obj.title), 
-                                 obj.number_of_nodes, obj.cores_per_node)
-        if resp:
-            obj.remote_id = resp['JobID']
-            obj.local_status = 1
-        obj.save()
-        messages.success(self.request, "Job '%s' successfully submitted to the cluster."%obj.title)
-        return obj
+        
+        submitted_obj = Job.objects.submit_job(self.request, transaction, obj)
+        if submitted_obj:
+            self.kwargs['pk'] = submitted_obj.pk
+            messages.success(self.request, "Job '%s' submitted to the cluster."%(submitted_obj))
+        else:
+            messages.error(self.request, "Job '%s' NOT submitted to the cluster."%(submitted_obj))
+        return submitted_obj
     
     
 
@@ -130,21 +118,11 @@ class JobQuery(LoginRequiredMixin, JobsMixin, DetailView):
     
     def get_object(self, queryset=None):
         obj = super(JobQuery, self).get_object(queryset)
-        logger.debug("Querying job")
-        cookie = self.request.session["remote"]
-        resp = remote.query_job(self.request, cookie, obj.remote_id)
-        if resp:
-            try:
-                d = resp.values()[0]
-                obj.remote_submit_date = d['SubmitDate']
-                obj.remote_start_date = d['StartDate']
-                obj.remote_complete_date = d['CompletionDate']
-                obj.remote_status = obj.assign_remote_status(d['JobStatus'])
-                obj.save()
-                messages.success(self.request, "Job '%s' successfully queried."%obj.title)
-            except Exception , e:
-                logger.exception(e)
-                messages.error(self.request, "Job '%s' NOT successfully queried: %s."%(obj.title,str(e)))
+        obj = Job.objects.query_job(self.request, obj)
+        if obj:
+            messages.success(self.request, "Job '%s' successfully queried."%obj.title)
+        else:
+            messages.error(self.request, "Job '%s' NOT successfully queried."%(obj.title))
         return obj
 
     
@@ -157,8 +135,7 @@ class JobDelete(LoginRequiredMixin, JobsMixin, DeleteView):
     
     def get_object(self, queryset=None):
         obj = super(JobDelete, self).get_object(queryset)
-        cookie = self.request.session["remote"]
-        resp = remote.abort_job(self.request, cookie, obj.remote_id)
-        if resp:
-            messages.success(self.request, "Remote Job '%s' successfully aborted."%obj.title)
+        success = Job.objects.delete_job(self.request, obj)
+        if success:
+            messages.success(self.request, "Remote Job '%s' successfully aborted."%obj)
         return obj
