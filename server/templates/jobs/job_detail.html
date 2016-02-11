@@ -3,6 +3,13 @@
 {% load humanize %}
 
 {% block head %}
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/github.min.css">
+<style type='text/css'>
+pre {
+        overflow: auto;
+        height: 600px;
+    }
+</style>
 {% endblock head %}
 
 {% block content %}
@@ -19,33 +26,57 @@
 </section>
 
 <!-- Main content -->
-<section class="invoice">
-  <!-- title row -->
-  <div class="row">
-    <div class="col-xs-12">
-      <h2 class="page-header">{{object.title}}</h2>
-    </div>
-    <!-- /.col -->
-  </div>
-  <!-- /.row -->
+<section class="content">
+	<div class="row">
+		<!-- left column -->
+		<div class="col-md-12">
+			<!-- general form elements -->
+			<div class="box box-primary">
+				<div class="box-header with-border">
+					<h3 class="box-title">{{object.title}}</h3>
+				</div>
+				<!-- /.box-header -->
+			
+				<div class="box-body">
+				<dl>
+					<dt>Script changed?</dt>
+					<dd>{{ object.script_changed }} </dd>
+					
+					<dt>Script</dt>
+					<dd><pre><code class="python">{{ object.script }}</code></pre></dd>
+					
+					<dt>Number Of Nodes</dt>
+					<dd>{{ object.number_of_nodes }}</dd>
+					
+					<dt>Cores Per Node</dt>
+					<dd>{{ object.cores_per_node }}</dd>
+					
+					<dt>Local Status</dt>
+					<dd><span class="label label-{% if object.local_status == 0 %}danger{%else%}success{%endif%}">{{ object.get_local_status_display }}</span></dd>
+					
+					{% if object.remote_status %}
+					<dt>Remote Status</dt>
+					<dd>{{ object.remote_status }}</dd>
+					
+					<dt></dt>
+					<dd>{{ object.remote_submit_date }}</dd>
+					
+					<dt></dt>
+					<dd>{{ object.remote_start_date }}</dd>
+					
+					<dt></dt>
+					<dd>{{ object.remote_complete_date }}</dd>
+					
+					{% endif %}
+					
+					
+				</dl>
+				</div>
+				<!-- /.box-body -->
 
-	<div class="row">
-		<div class="table-responsive">
-    	<table class="table">
-    		{% for name, value in object.get_field_titled_names_and_values %}
-				{% if value %}
-				<tr>
-					<th style="width:50%">{{ name }}</th>
-					<td>{{ value }} </td>
-				</tr>
-				{% endif %}
-				{% endfor %}
-			</table>
-		</div>
-	</div>
-	
-	<div class="row">
-		
+				
+
+				<div class="box-footer">
 					<a class="btn btn-primary" data-toggle="tooltip"
 					data-placement="bottom" href="{% url 'jobs:job_update' object.id  %}"
 					title="">Edit</a>
@@ -53,11 +84,20 @@
 					<a class="btn btn-primary" data-toggle="tooltip"
 					data-placement="bottom" href="#"
 					title="">Submit to the cluster</a>
+				</div>
+				<!-- /.box-footer -->		
+			</div>
+			<!-- /.box -->
+		</div>
 	</div>
-	
 </section>
+
 <!-- /.content -->
 {% endblock %}
 
 {% block body_end %}
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/highlight.min.js"></script>
+<script>
+	hljs.initHighlightingOnLoad();
+</script>
 {% endblock body_end %}
