@@ -201,68 +201,78 @@ $(function(){
   var rows_selected = new Array();
   var table_icat = null;
   
+  function create_catalog_table(ipts){
+	  var catalog_url = "{% url 'catalog:list_runs_json'  instrument=request.user.profile.instrument.icat_name ipts=12345 %}".replace(/12345/, ipts);
+	    
+	    // Destroys the table when the IPTS is changed!!
+	    if (table_icat != null){
+	      table_icat.destroy();
+	    }
+		// Creates datatable with the icat IPTSs
+	    table_icat = $('#catalog_table').DataTable({
+	        "ajax": catalog_url,
+	        "lengthMenu": [
+	            [20, 50, 100, -1],
+	            [20, 50, 100, "All"]
+	        ],
+	        "order": [
+	            [0, 'asc']
+	        ],
+	        "paging": true,
+	        "lengthChange": true,
+	        "searching": true,
+	        "ordering": true,
+	        "info": true,
+	        "autoWidth": true,
+	        "dom": 'C<"clear">lfrtipT',
+	        "tableTools": {
+	            "sRowSelect": "os",
+	            "aButtons": ["select_all", "select_none"],
+	            "fnRowSelected": function(nodes) {
+	                $(nodes).each(function(index, tr) { //for every row
+	                	var row = new Array();
+	                    $('td', tr).map(function(index, td) { //for every collumn
+	                      var v = $(td).text();
+	                      row.push(v)
+	                    });
+	                	rows_selected.push(row);
+	                	rows_selected = uniq(rows_selected, [].join); //remove duplicates!
+	                });
+	            },
+	            "fnRowDeselected": function(nodes) {
+	                $(nodes).each(function(index, tr) {
+	                	var row = new Array();
+	                    $('td', tr).map(function(index, td) { //for every collumn
+	                      var v = $(td).text();
+	                      row.push(v)
+	                    });
+	                    // remove deletected row from rows_selected
+	                    rows_selected.forEach(function(el,index){               		
+	               			if (el[0] == row[0]){
+	               				rows_selected.splice(index, 1);
+	               				//break; // does not work with foreach
+	               			}
+	               		});
+	                	
+	                });
+	            }
+	        }
+	    });
+  }
+  
+  
   // Called when the user enter the IPTS value in the IPTS form field:
   $( "#id_ipts" ).change(function() {
     var ipts = this.value;
-    var catalog_url = "{% url 'catalog:list_runs_json'  instrument=request.user.profile.instrument.icat_name ipts=12345 %}".replace(/12345/, ipts);
-    
-    // Destroys the table when the IPTS is changed!!
-    if (table_icat != null){
-      table_icat.destroy();
-    }
-	// Creates datatable with the icat IPTSs
-    table_icat = $('#catalog_table').DataTable({
-        "ajax": catalog_url,
-        "lengthMenu": [
-            [20, 50, 100, -1],
-            [20, 50, 100, "All"]
-        ],
-        "order": [
-            [0, 'asc']
-        ],
-        "paging": true,
-        "lengthChange": true,
-        "searching": true,
-        "ordering": true,
-        "info": true,
-        "autoWidth": true,
-        "dom": 'C<"clear">lfrtipT',
-        "tableTools": {
-            "sRowSelect": "os",
-            "aButtons": ["select_all", "select_none"],
-            "fnRowSelected": function(nodes) {
-                $(nodes).each(function(index, tr) { //for every row
-                	var row = new Array();
-                    $('td', tr).map(function(index, td) { //for every collumn
-                      var v = $(td).text();
-                      row.push(v)
-                    });
-                	rows_selected.push(row);
-                	rows_selected = uniq(rows_selected, [].join); //remove duplicates!
-                });
-            },
-            "fnRowDeselected": function(nodes) {
-                $(nodes).each(function(index, tr) {
-                	var row = new Array();
-                    $('td', tr).map(function(index, td) { //for every collumn
-                      var v = $(td).text();
-                      row.push(v)
-                    });
-                    // remove deletected row from rows_selected
-                    rows_selected.forEach(function(el,index){               		
-               			if (el[0] == row[0]){
-               				rows_selected.splice(index, 1);
-               				//break; // does not work with foreach
-               			}
-               		});
-                	
-                });
-            }
-        }
-    });
+    create_catalog_table(ipts);
   }); //$( "#id_ipts" ).change(function() {
-
 	  
+  $(function(){
+	 /* On load, if there is an ipts builds the catalog table. This happens when the editing form */
+	  if($("#id_ipts").val() ) {
+		  create_catalog_table($("#id_ipts").val() );
+	  }
+  });
 	  
   // Open modal dialog to populate the spreadsheet
   $('#button_populate').on('click', function(event) {
