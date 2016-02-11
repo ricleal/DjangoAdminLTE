@@ -53,6 +53,8 @@
 					data-toggle="tooltip" data-placement="top" title="Only saves the script if it was modified.">Save</button>
 					{% if not object %}
 					<button id="button_continue" name="button_continue" type="submit" class="btn btn-primary">Continue</button>
+					{% else %}
+					<a class="btn btn-default" href="{% url 'jobs:job_detail' object.id  %}">Cancel</a>
 					{% endif %}
 				</p>
 			</form>
@@ -88,15 +90,20 @@
 	   	$('#button_save').prop('disabled', editor.getSession().getUndoManager().isClean());
 	});
     
+    // this only makes sense for a new job, not for editing
+    
   	//Disable save button (only save if the script was modified!) 
-	$('#button_save').prop('disabled', true);
-	    
+	{%if not object%}
+    $('#button_save').prop('disabled', true);
+	{%endif%}
+	
     $('#button_save').on('click', function() {
     	$("#id_script_changed").val("True"); // set form value to changed
         var editor_content = editor.getSession().getValue();
     	textarea.val(editor_content);
 
     });
+    
 
     	 
 </script>

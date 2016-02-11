@@ -47,7 +47,9 @@
 							{% for object in object_list %}
 							<tr>
 								<td>{{object.id}}</td>
-								<td>{{object.get_status_display}}</td>
+								<td><span class="label label-{% if object.local_status == 0 %}danger{%else%}success{%endif%}">{{ object.get_local_status_display }}</span>
+									<span class="label label-{% if object.remote_status == 3 %}info{% elif object.remote_status == 4 %}primary{% elif object.remote_status == 5 %}success{% elif object.remote_status == 9 %}warning{% elif object.remote_status == 6 or object.remote_status == 7 or object.remote_status == 8 %}danger{%endif%}">{{ object.get_remote_status_display }}</span>
+									</td>
 								<td>{{object.created_date | date:"DATETIME_FORMAT" }}</td>
 								<td>{{object.modified_date | date:"DATETIME_FORMAT" }}</td>
 								<td><a class="btn btn-primary" data-toggle="tooltip"
@@ -92,7 +94,7 @@
 	$(function() {
 		$("#table_jobs").DataTable({
 			"lengthMenu" : [ [ 20, 50, 100, -1 ], [ 20, 50, 100, "All" ] ],
-			//"order": [[ 3, 'desc' ]],
+			"order": [[ 0, 'desc' ]],
 			"paging" : true,
 			"lengthChange" : true,
 			"searching" : true,

@@ -57,10 +57,10 @@ class Transaction(models.Model):
     objects = TransactionManager()
     
     class Meta:
-        ordering = ["id"]
+        ordering = ["-id"]
 
     def __unicode__(self):
-        return "%s" % (self.title)
+        return "Remote id: %8d :: %s" % (self.remote_id,self.title)
 
 class JobManager(models.Manager):
     '''
@@ -69,11 +69,26 @@ class JobManager(models.Manager):
 
     use_for_related_fields = True
     
+    def clone(self, pk):
+        '''
+        Clone an object and returns 
+        '''
+        obj = self.get(id = pk)
+        obj.pk = None # setting to None, clones the object!
+        obj.save() 
+        return obj
+    
 class Job(models.Model):
     '''
     Job will have a foreign key to here
     The same configuration can launch multiple jobs!
     '''
+    
+    def assign_remote_status(self,status):
+        for k,v in self.REMOTE_STATUS:
+            if v == status:
+                return k
+        return None
 
     # status when the job is created or sent to the cluster
     LOCAL_STATUS = ((0,'NOT_SUBMITTED'), (1, 'SUBMITTED'),)
@@ -136,13 +151,13 @@ class Job(models.Model):
                              related_query_name="job_user",)
     
     # Manager
-    objects = JobManager
+    objects = JobManager()
     
     class Meta:
-        ordering = ["id"]
+        ordering = ["-id"]
 
     def __unicode__(self):
-        return "%s: %s" % (self.title, self.get_local_status_display())
+        return "Remote Id: %s :: %s: %s" % (self.remote_id, self.title, self.get_local_status_display())
 
     @models.permalink
     def get_absolute_url(self):

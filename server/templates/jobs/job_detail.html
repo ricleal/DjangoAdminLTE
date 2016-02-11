@@ -7,7 +7,7 @@
 <style type='text/css'>
 pre {
         overflow: auto;
-        height: 600px;
+        max-height: 600px;
     }
 </style>
 {% endblock head %}
@@ -56,16 +56,16 @@ pre {
 					
 					{% if object.remote_status %}
 					<dt>Remote Status</dt>
-					<dd>{{ object.remote_status }}</dd>
+					<dd><span class="label label-{% if object.remote_status == 3 %}info{% elif object.remote_status == 4 %}primary{% elif object.remote_status == 5 %}success{% elif object.remote_status == 9 %}warning{% elif object.remote_status == 6 or object.remote_status == 7 or object.remote_status == 8 %}danger{%endif%}">{{ object.get_remote_status_display }}</span></dd>
 					
-					<dt></dt>
-					<dd>{{ object.remote_submit_date }}</dd>
+					<dt>Submit Date</dt>
+					<dd>{{ object.remote_submit_date | date:"DATETIME_FORMAT" }}</dd>
 					
-					<dt></dt>
-					<dd>{{ object.remote_start_date }}</dd>
+					<dt>Start Date</dt>
+					<dd>{{ object.remote_start_date | date:"DATETIME_FORMAT" }}</dd>
 					
-					<dt></dt>
-					<dd>{{ object.remote_complete_date }}</dd>
+					<dt>Completion Date</dt>
+					<dd>{{ object.remote_complete_date | date:"DATETIME_FORMAT" }}</dd>
 					
 					{% endif %}
 					
@@ -74,16 +74,22 @@ pre {
 				</div>
 				<!-- /.box-body -->
 
-				
-
 				<div class="box-footer">
+					
 					<a class="btn btn-primary" data-toggle="tooltip"
 					data-placement="bottom" href="{% url 'jobs:job_update' object.id  %}"
 					title="">Edit</a>
 					
-					<a class="btn btn-primary" data-toggle="tooltip"
-					data-placement="bottom" href="#"
-					title="">Submit to the cluster</a>
+					<a class="btn btn-primary" data-toggle="tooltip" data-placement="bottom"
+					title="If the job has been previouly submitted it will be cloned and re-submitted."
+					href="{% url 'jobs:job_submission' object.id  %}">Submit to the cluster</a>
+					
+					{% if object.remote_id %}
+					<a class="btn btn-primary" data-toggle="tooltip" data-placement="bottom"
+					title="It will fecth job information and status from the cluster." 
+					href="{% url 'jobs:job_query' object.id  %}">Query this job</a>
+					{% endif %}
+					
 				</div>
 				<!-- /.box-footer -->		
 			</div>
