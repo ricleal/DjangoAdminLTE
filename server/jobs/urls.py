@@ -10,4 +10,5 @@ urlpatterns = [
     url(r'^(?P<pk>\d+)/update$', views.JobUpdate.as_view(), name='job_update'),
     url(r'^(?P<pk>\d+)/submission', views.JobSubmission.as_view(), name='job_submission'),
     url(r'^(?P<pk>\d+)/query', views.JobQuery.as_view(), name='job_query'),
+    url(r'^(?P<pk>\d+)/delete', views.JobDelete.as_view(), name='job_delete'),
 ]

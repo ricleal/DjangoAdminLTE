@@ -75,6 +75,7 @@ class JobManager(models.Manager):
         '''
         obj = self.get(id = pk)
         obj.pk = None # setting to None, clones the object!
+        obj.title = obj.title + " (copy)"
         obj.save() 
         return obj
     

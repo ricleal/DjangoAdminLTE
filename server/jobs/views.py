@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404
 from django.http import Http404
 from django.contrib import messages
 from django.utils.text import slugify
+from django.core.urlresolvers import reverse_lazy
 
 from pprint import pformat
 from .models import Job, Transaction
@@ -144,4 +145,20 @@ class JobQuery(LoginRequiredMixin, JobsMixin, DetailView):
             except Exception , e:
                 logger.exception(e)
                 messages.error(self.request, "Job '%s' NOT successfully queried: %s."%(obj.title,str(e)))
+        return obj
+
+    
+class JobDelete(LoginRequiredMixin, JobsMixin, DeleteView):
+    '''
+    Detail
+    '''
+    success_url = reverse_lazy('jobs:job_list')
+    model = Job
+    
+    def get_object(self, queryset=None):
+        obj = super(JobDelete, self).get_object(queryset)
+        cookie = self.request.session["remote"]
+        resp = remote.abort_job(self.request, cookie, obj.remote_id)
+        if resp:
+            messages.success(self.request, "Remote Job '%s' successfully aborted."%obj.title)
         return obj

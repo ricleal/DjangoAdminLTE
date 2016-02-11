@@ -4,6 +4,9 @@
 
 {% block head %}
 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/styles/github.min.css">
+<!--  boostrap dialogs -->
+<link rel="stylesheet" href="{% static 'bootstrap3-dialog/css/bootstrap-dialog.min.css' %}">
+
 <style type='text/css'>
 pre {
         overflow: auto;
@@ -90,6 +93,10 @@ pre {
 					href="{% url 'jobs:job_query' object.id  %}">Query this job</a>
 					{% endif %}
 					
+					
+					<a id="button_delete" class="btn btn-warning" data-toggle="tooltip"
+					data-placement="top" href="{% url 'jobs:job_delete' object.id  %}" title="Delete...">Delete</a>
+					
 				</div>
 				<!-- /.box-footer -->		
 			</div>
@@ -102,8 +109,21 @@ pre {
 {% endblock %}
 
 {% block body_end %}
+<!--  boostrap dialogs -->
+<script src="{% static 'bootstrap3-dialog/js/bootstrap-dialog.min.js' %}"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.1.0/highlight.min.js"></script>
 <script>
+$(function() {
+	// Called when we call delete!
+	// It basically intercepts de get and makes the post that deletes the data
+	// django, by default, asks in a get if you want to delete the objects
+	// Since I want to show a modal I ignore the get and confirm by post
+	$('#button_delete').on('click', function(event) {
+		event.preventDefault(); // To prevent following the link (optional)
+		delete_object("{% url 'jobs:job_delete' object.id %}", 
+				"<strong>{{object.title}}</strong>", "{{ csrf_token }}");	
+	});
+});
 	hljs.initHighlightingOnLoad();
 </script>
 {% endblock body_end %}
