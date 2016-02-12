@@ -42,8 +42,7 @@ class JobCreate(LoginRequiredMixin, CreateView):
         """
         Sets initial values which are hidden in the form
         """
-        #logger.debug(pformat(self.request.POST.items()))
-        
+        #logger.debug(pformat(self.request.POST.items()))        
         form.instance.user = self.request.user
         form.instance.instrument = self.request.user.profile.instrument
         return CreateView.form_valid(self, form)
@@ -87,7 +86,9 @@ class JobUpdate(LoginRequiredMixin, UpdateView):
 
 class JobSubmission(LoginRequiredMixin, JobsMixin, DetailView):
     '''
-    If the job exists, clones it!
+    It assumes that there is a 1 job per transaction
+    If the has been previously submitted, clones it and re-submit it
+    The idea is to keep track of what is happening, even if it failed we keep an history.
     '''
     template_name = 'jobs/job_detail.html'
     model = Job
@@ -111,7 +112,8 @@ class JobSubmission(LoginRequiredMixin, JobsMixin, DetailView):
 
 class JobQuery(LoginRequiredMixin, JobsMixin, DetailView):
     '''
-    Detail
+    Queries the remote to check the status of this job and populate
+    the fields remote_*
     '''
     template_name = 'jobs/job_detail.html'
     model = Job
@@ -128,7 +130,7 @@ class JobQuery(LoginRequiredMixin, JobsMixin, DetailView):
     
 class JobDelete(LoginRequiredMixin, JobsMixin, DeleteView):
     '''
-    Detail
+    Deletes the job object and aborts the transaction remotely just in case
     '''
     success_url = reverse_lazy('jobs:job_list')
     model = Job
