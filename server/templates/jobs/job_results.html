@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load humanize %}
+
+{% block head %}
+<!-- DataTables -->
+<link rel="stylesheet" href="{% static 'AdminLTE_plugins/datatables/dataTables.bootstrap.css' %}">
+<link rel="stylesheet" href="{% static 'AdminLTE_plugins/datatables/extensions/TableTools/css/dataTables.tableTools.min.css' %}">
+
+
+{% endblock head %}
+
+{% block content %}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+	<h1>
+		Job detail
+	</h1>
+	<ol class="breadcrumb">
+		<li class="active">Jobs</li>
+		<li>{{ instrument|default:request.user.profile.instrument }}</li>
+		<li>{{ object.id }}</li>
+	</ol>
+</section>
+
+<!-- Main content -->
+<section class="content">
+	<div class="row">
+		<!-- left column -->
+		<div class="col-md-12">
+			<!-- general form elements -->
+			<div class="box box-primary">
+				<div class="box-header with-border">
+					<h3 class="box-title">{{object.title}}</h3>
+				</div>
+				<!-- /.box-header -->
+			
+				<div class="box-body">
+				<table id="file_table" class="table table-bordered table-hover">
+				</table>
+				</div>
+				<!-- /.box-body -->
+
+				<div class="box-footer">
+					
+					<a class="btn btn-primary" data-toggle="tooltip"
+								data-placement="bottom" href="{% url 'jobs:job_detail' object.id %}"
+								title="Click to see the details of this job.">Go back to Job Details</a>
+					
+				</div>
+				<!-- /.box-footer -->		
+			</div>
+			<!-- /.box -->
+		</div>
+	</div>
+</section>
+
+<!-- /.content -->
+{% endblock %}
+
+{% block body_end %}
+<!-- DataTables -->
+<script src="{% static 'AdminLTE_plugins/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'AdminLTE_plugins/datatables/dataTables.bootstrap.min.js' %}"></script>
+<script src="{% static 'AdminLTE_plugins/datatables/extensions/TableTools/js/dataTables.tableTools.min.js' %}"></script>
+
+<!-- page script -->
+<script>
+var dataSet = {{file_list|safe}};
+
+var rows_selected = new Array();
+
+$(document).ready(function() {
+    var table = $('#file_table').DataTable( {
+        data: dataSet,
+        columns: [
+            { title: "File" }
+        ],
+        "columnDefs": [
+  		],
+  		//"lengthMenu" : [ [ 20, 50, 100, -1 ], [ 20, 50, 100, "All" ] ],
+		//"order": [[ 0, 'desc' ]], //default sort
+		"paging" : true,
+		"lengthChange" : true,
+		"searching" : true,
+		"ordering" : true,
+		"info" : true,
+		"autoWidth" : true,
+		"dom": 'C<"clear">lfrtipT',
+        "tableTools": {
+            "sRowSelect": "os",
+            "aButtons": ["select_all", "select_none"],
+            "fnRowSelected": function(nodes) {
+                $(nodes).each(function(index, tr) { //for every row
+                	var row = new Array();
+                    $('td', tr).map(function(index, td) { //for every collumn
+                      var v = $(td).text();
+                      row.push(v)
+                    });
+                	rows_selected.push(row);
+                	rows_selected = uniq(rows_selected, [].join); //remove duplicates!
+                });
+            },
+            "fnRowDeselected": function(nodes) {
+                $(nodes).each(function(index, tr) {
+                	var row = new Array();
+                    $('td', tr).map(function(index, td) { //for every collumn
+                      var v = $(td).text();
+                      row.push(v)
+                    });
+                    // remove deletected row from rows_selected
+                    rows_selected.forEach(function(el,index){               		
+               			if (el[0] == row[0]){
+               				rows_selected.splice(index, 1);
+               				//break; // does not work with foreach
+               			}
+               		});
+                	
+                });
+            }
+        }
+    })
+    
+});
+
+</script>
+{% endblock body_end %}

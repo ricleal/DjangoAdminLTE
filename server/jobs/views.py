@@ -141,3 +141,25 @@ class JobDelete(LoginRequiredMixin, JobsMixin, DeleteView):
         if success:
             messages.success(self.request, "Remote Job '%s' successfully aborted."%obj)
         return obj
+
+class JobResults(LoginRequiredMixin, JobsMixin, DetailView):
+    
+    template_name = 'jobs/job_results.html'
+    model = Job
+    
+    def get_object(self, queryset=None):
+        obj = super(JobResults, self).get_object(queryset)
+        self.file_list = Transaction.objects.file_listing(self.request, obj.transaction)
+        return obj
+    
+    def get_context_data(self, **kwargs):
+        '''
+        Set file list. It's called after get_object
+        '''
+        context = super(JobResults, self).get_context_data(**kwargs)
+        if self.file_list:
+            context["file_list"] = [[str(i)] for i in self.file_list] # remove unicode and make list of lists
+        else:
+            messages.error(self.request, "There was a problem getting the file list from the cluster.")
+        return context
+    

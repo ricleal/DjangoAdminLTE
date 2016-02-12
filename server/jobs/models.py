@@ -36,6 +36,14 @@ class TransactionManager(models.Manager):
             )
             return transaction
         return None
+    
+    def file_listing(self, request, transaction):
+        cookie = request.session["remote"]
+        success, files_json = remote.file_listing(cookie, transaction.remote_id)
+        if success:
+            return files_json["Files"]
+        else:
+            return None
         
         
 class Transaction(models.Model):
@@ -122,7 +130,6 @@ class JobManager(models.Manager):
         success, _ = remote.abort_job(cookie, job.remote_id)
         return success
         
-    
 class Job(models.Model):
     '''
     Job will have a foreign key to here

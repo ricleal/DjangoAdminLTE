@@ -93,6 +93,11 @@ pre {
 					href="{% url 'jobs:job_query' object.id  %}">Query this job</a>
 					{% endif %}
 					
+					{% if object.remote_status == 5 %}
+					<a class="btn btn-primary" data-toggle="tooltip" data-placement="bottom"
+					title="" 
+					href="{% url 'jobs:job_results' object.id  %}">Job Results...</a>
+					{% endif %}
 					
 					<a id="button_delete" class="btn btn-warning" data-toggle="tooltip"
 					data-placement="top" href="{% url 'jobs:job_delete' object.id  %}" title="Delete...">Delete</a>
