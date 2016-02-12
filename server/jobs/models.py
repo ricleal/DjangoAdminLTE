@@ -44,6 +44,17 @@ class TransactionManager(models.Manager):
             return files_json["Files"]
         else:
             return None
+    
+    def download(self, request, transaction, filename):
+        logger.debug("Downloading %s."%filename)
+        cookie = request.session["remote"]
+        success, file_content = remote.download(cookie, transaction.remote_id, filename)
+        if success:
+            return file_content
+        else:
+            return None
+    
+    
         
         
 class Transaction(models.Model):

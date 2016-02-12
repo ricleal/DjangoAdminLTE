@@ -11,6 +11,7 @@ from .models import Job, Transaction
 from .forms import JobForm
 from .remote import communication as remote
 
+import json 
 import logging
 
 logger = logging.getLogger('jobs.views')
@@ -162,4 +163,35 @@ class JobResults(LoginRequiredMixin, JobsMixin, DetailView):
         else:
             messages.error(self.request, "There was a problem getting the file list from the cluster.")
         return context
+
+
+from .plotting.data import iq_string_to_plot_format
+from .plotting.plot_1d import plot1d
+from django.http import HttpResponse
+
+def plot1d_multiple_ajax(request,job_id):
     
+    logger.debug(pformat(request.POST.items()))
+    plot_anchor  = ""
+    job = get_object_or_404(Job, pk=job_id)
+    try:
+        files = request.POST['files']
+        logger.debug(files)
+        files = json.loads(files)
+    except Exception, e:
+        messages.error(request,"Error getting the files posted...")
+    else:
+        plot_data = []
+        for filename in files:
+            filename = filename[0] # it comes in an array
+            logger.debug("Making plot for %s."%filename)
+            file_content = Transaction.objects.download(request, job.transaction, filename)
+            plot_data.append(iq_string_to_plot_format(file_content, filename))
+        
+        plot_anchor  = plot1d(plot_data)
+                             
+    
+        
+
+    return HttpResponse(plot_anchor)
+

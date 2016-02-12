@@ -10,6 +10,7 @@ import logging
 import getpass
 import os
 import time
+from pprint import pprint
 
 '''
 Run as:
@@ -228,3 +229,20 @@ class TestRemote(TestCase):
         ## End transaction
         success, _ = c.end_transaction(self.cookie,transation_id)
         self.assertTrue(success)
+    
+    
+    def test_download_file_transaction_570(self):
+        
+        transation_id = "570"
+        #list file
+        _, resp = c.file_listing(self.cookie, transation_id)
+        self.assertTrue(resp is not None)
+        pprint(resp)
+        
+        filename = "57624_frame2_Iq_sub.txt"   
+        # download (note the same file name
+        _, resp = c.download(self.cookie, transation_id, filename)
+        self.assertTrue(resp is not None)
+        
+        print resp
+        

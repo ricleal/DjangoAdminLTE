@@ -12,4 +12,5 @@ urlpatterns = [
     url(r'^(?P<pk>\d+)/query', views.JobQuery.as_view(), name='job_query'),
     url(r'^(?P<pk>\d+)/delete', views.JobDelete.as_view(), name='job_delete'),
     url(r'^(?P<pk>\d+)/results', views.JobResults.as_view(), name='job_results'),
+    url(r'^plot/(?P<job_id>\d+)/$', views.plot1d_multiple_ajax, name='plot1d_multiple_ajax'),
 ]

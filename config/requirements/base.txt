@@ -10,11 +10,14 @@ django-environ
 uwsgi>=2.0
 
 # other
-# numpy
 simplejson>=3.3.1
 
 # For h5py: cython needs to be first for h5py in RHEL7
 # cython
 # h5py
 
+# For fermi remote queries
 requests>=2.9.1
+
+# For plotting
+plotly>=1.9.5

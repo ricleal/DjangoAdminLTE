@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="{% static 'AdminLTE_plugins/datatables/dataTables.bootstrap.css' %}">
 <link rel="stylesheet" href="{% static 'AdminLTE_plugins/datatables/extensions/TableTools/css/dataTables.tableTools.min.css' %}">
 
-
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 {% endblock head %}
 
 {% block content %}
@@ -36,8 +36,20 @@
 				<!-- /.box-header -->
 			
 				<div class="box-body">
-				<table id="file_table" class="table table-bordered table-hover">
-				</table>
+					<table id="file_table" class="table table-bordered table-hover">
+					</table>
+					<div class="container">
+					  <div class="row">
+					    <div class="col-md-8 col-md-offset-4">
+					      <button id="button_plot" type="button" class="btn btn-primary" data-loading-text="Loading..." >Plot selected</button>
+					    </div>
+					  </div>
+					</div>
+					<div class="container">
+					  <div class="row">
+					    <div class="col-md-8"><div id="plot">{{plot|safe}}</div></div>
+					  </div>
+					</div>
 				</div>
 				<!-- /.box-body -->
 
@@ -100,6 +112,7 @@ $(document).ready(function() {
                 	rows_selected.push(row);
                 	rows_selected = uniq(rows_selected, [].join); //remove duplicates!
                 });
+                console.log(rows_selected);
             },
             "fnRowDeselected": function(nodes) {
                 $(nodes).each(function(index, tr) {
@@ -117,11 +130,34 @@ $(document).ready(function() {
                		});
                 	
                 });
+                console.log(rows_selected);
             }
         }
-    })
-    
+    })    
 });
 
+$("#button_plot").click(function() {
+	  var btn = $(this);
+	  btn.button('loading');
+	  // Then whatever you actually want to do i.e. submit form
+	  // After that has finished, reset the button state using
+	  $.ajax({
+	    url: "{% url 'jobs:plot1d_multiple_ajax' object.id %}",
+	    type: 'post', // This is the default though, you don't actually need to always mention it
+	    data : {
+			csrfmiddlewaretoken : "{{ csrf_token }}",
+			files : JSON.stringify(rows_selected)
+		},
+	    success: function(data) {
+	        $('#plot').empty().append(data);
+	        btn.button('reset');
+	    },
+	    failure: function(data) {
+	        alert('Got an error dude');
+	        btn.button('reset');
+	    }
+	  });
+	});
+	
 </script>
 {% endblock body_end %}
