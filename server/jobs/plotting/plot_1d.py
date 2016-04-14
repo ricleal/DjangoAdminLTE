@@ -19,8 +19,12 @@ def plot1d(list_plot_data):
             name=dataset['name']
         )
         traces.append(trace)
-    
+
     layout = go.Layout(
+        showlegend=True,
+        autosize=False,
+        width=900,
+        height=600,
         xaxis=dict(
             type='log',
             autorange=True

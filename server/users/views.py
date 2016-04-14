@@ -29,23 +29,26 @@ logger = logging.getLogger('users')
 
 class LoginView(FormView):
     """
-    
+
     """
     form_class = AuthenticationForm
     template_name = 'users/login.html'
     redirect_field_name = REDIRECT_FIELD_NAME
     success_url = reverse_lazy('index')
     create_profile_url = reverse_lazy('users:profile_create')
-    
+
     def _remote_authentication(self, request, username, password):
         """
         remote authentication to fermi
         Sets a cookie for fermi
         """
-        cookie = fermi.authenticate(request, username, password)
-        if cookie:
+        success, cookie = fermi.authenticate(username, password)
+        if success and cookie :
             request.session['remote']=cookie
-    
+        else:
+            messages.error(self.request, "Could not authenticate with the Cluster.")
+
+
     @method_decorator(sensitive_post_parameters('password'))
     @method_decorator(csrf_protect)
     @method_decorator(never_cache)
@@ -61,12 +64,12 @@ class LoginView(FormView):
 #             auth_login(self.request, user)
 #         else:
 #             messages.error(self.request, "Django Authenticate Failed. Invalid username or password!")
-        
+
         # Default authentication
         auth_login(self.request, form.get_user())
         # Fermi
         self._remote_authentication(self.request, username, password)
-        
+
         return super(LoginView, self).form_valid(form)
 
     def get_success_url(self):
@@ -80,7 +83,7 @@ class LoginView(FormView):
         if not is_safe_url(url=redirect_to, host=self.request.get_host()):
             redirect_to = self.success_url
         return redirect_to
-    
+
     def form_invalid(self, form):
         messages.error(self.request, "Invalid username or password!")
         return super(LoginView, self).form_invalid(form)
@@ -103,13 +106,13 @@ class ProfileUpdate(LoginRequiredMixin,SuccessMessageMixin,UpdateView):
     fields = ['instrument','home_institution']
     success_url = reverse_lazy('index')
     success_message = "Your profile was updated successfully."
-    
+
 class ProfileCreate(LoginRequiredMixin,SuccessMessageMixin,CreateView):
     model = UserProfile
     fields = ['instrument','home_institution']
     success_url = reverse_lazy('index')
     success_message = "Your profile was created successfully."
-    
+
     def form_valid(self, form):
         '''
         Add user to the form as it is not shown to the user
@@ -117,7 +120,7 @@ class ProfileCreate(LoginRequiredMixin,SuccessMessageMixin,CreateView):
         user = self.request.user
         form.instance.user = user
         return super(ProfileCreate, self).form_valid(form)
-     
+
 @login_required
 def get_users_json(request):
     """
@@ -130,7 +133,7 @@ def get_users_json(request):
       "col 2 row 1",
       ],[...]
       ] }
-    
+
     """
     users_queryset = get_user_model().objects.all()
     users_json = {"data" : [ [user.username,user.fullname] for user in users_queryset] }
