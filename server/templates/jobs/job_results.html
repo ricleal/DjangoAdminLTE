@@ -34,7 +34,7 @@
 					<h3 class="box-title">{{object.title}}</h3>
 				</div>
 				<!-- /.box-header -->
-			
+
 				<div class="box-body">
 					<table id="file_table" class="table table-bordered table-hover">
 					</table>
@@ -54,13 +54,13 @@
 				<!-- /.box-body -->
 
 				<div class="box-footer">
-					
+
 					<a class="btn btn-primary" data-toggle="tooltip"
 								data-placement="bottom" href="{% url 'jobs:job_detail' object.id %}"
 								title="Click to see the details of this job.">Go back to Job Details</a>
-					
+
 				</div>
-				<!-- /.box-footer -->		
+				<!-- /.box-footer -->
 			</div>
 			<!-- /.box -->
 		</div>
@@ -78,6 +78,7 @@
 
 <!-- page script -->
 <script>
+
 var dataSet = {{file_list|safe}};
 
 var rows_selected = new Array();
@@ -122,18 +123,18 @@ $(document).ready(function() {
                       row.push(v)
                     });
                     // remove deletected row from rows_selected
-                    rows_selected.forEach(function(el,index){               		
+                    rows_selected.forEach(function(el,index){
                			if (el[0] == row[0]){
                				rows_selected.splice(index, 1);
                				//break; // does not work with foreach
                			}
                		});
-                	
+
                 });
                 console.log(rows_selected);
             }
         }
-    })    
+    })
 });
 
 $("#button_plot").click(function() {
@@ -158,6 +159,11 @@ $("#button_plot").click(function() {
 	    }
 	  });
 	});
-	
+
+/* workaround for plotly >= 1.9.8**/
+function require(dummy,f){
+	f(Plotly);
+}
+
 </script>
 {% endblock body_end %}
