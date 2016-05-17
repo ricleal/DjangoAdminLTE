@@ -144,7 +144,8 @@ SITE_ID = 1
 USE_I18N = True
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#use-l10n
-USE_L10N = True
+# DATE_TIME takes effect, since the localization of l10n overrides DATETIME_FORMAT and DATE_FORMAT as documented at: https://docs.djangoproject.com/en/1.9/ref/settings/#date-format
+USE_L10N = False
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#use-tz
 USE_TZ = True
@@ -351,9 +352,13 @@ REMOTE_URL = "https://fermi.ornl.gov/MantidRemote"
 # USed in the configuration form when using the file tree browser
 SERVER_FILES_PREFIX = "/SNS/%(instrument)s/shared"
 
-# 
+#
 USER_OUTPUT_FOLDER = "/SNS/%(instrument)s/%(ipts)s/shared"
 #
 
 # because otherwise: TypeError: <EQSANSReduction: Reduction 15> is not JSON serializable
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
+
+# DATE_FORMAT = "Y-m-d"
+# DATETIME_FORMAT = "Y-m-d H:M:S"
+SHORT_DATETIME_FORMAT = 'Y-m-d H:i:s'

@@ -58,7 +58,7 @@
 					<!-- /.box-body -->
 
 					<div class="box-body">
-						<button id="button_populate" type="button" class="btn btn-primary">Populate Table below with Icat Data</button>
+						<button id="button_populate" type="button" class="btn btn-primary">Populate Table below with Icat Data (Ctrl+p)</button>
 					</div>
 
           <!-- Handsontable will be placed here -->
@@ -132,7 +132,7 @@ $(function(){
 }); //$(function(){
 
 	/******************* Spreadsheet *************************/
-	
+
 	//Initial data: populated from what comes from django context variables
 	var headers = {{entry_headers | safe}};
 	{% if entries %}
@@ -200,10 +200,10 @@ $(function(){
   /******************* Created and Populates the catalog modal dialog *************************/
   var rows_selected = new Array();
   var table_icat = null;
-  
+
   function create_catalog_table(ipts){
 	  var catalog_url = "{% url 'catalog:list_runs_json'  instrument=request.user.profile.instrument.icat_name ipts=12345 %}".replace(/12345/, ipts);
-	    
+
 	    // Destroys the table when the IPTS is changed!!
 	    if (table_icat != null){
 	      table_icat.destroy();
@@ -247,37 +247,45 @@ $(function(){
 	                      row.push(v)
 	                    });
 	                    // remove deletected row from rows_selected
-	                    rows_selected.forEach(function(el,index){               		
+	                    rows_selected.forEach(function(el,index){
 	               			if (el[0] == row[0]){
 	               				rows_selected.splice(index, 1);
 	               				//break; // does not work with foreach
 	               			}
 	               		});
-	                	
+
 	                });
 	            }
 	        }
 	    });
   }
-  
-  
+
+
   // Called when the user enter the IPTS value in the IPTS form field:
   $( "#id_ipts" ).change(function() {
     var ipts = this.value;
     create_catalog_table(ipts);
   }); //$( "#id_ipts" ).change(function() {
-	  
+
   $(function(){
 	 /* On load, if there is an ipts builds the catalog table. This happens when the editing form */
 	  if($("#id_ipts").val() ) {
 		  create_catalog_table($("#id_ipts").val() );
 	  }
   });
-	  
+
   // Open modal dialog to populate the spreadsheet
   $('#button_populate').on('click', function(event) {
-      event.preventDefault(); // To prevent following the link (optional)
-      BootstrapDialog.show({
+    event.preventDefault(); // To prevent following the link (optional)
+    populate_icat();
+  });
+
+  function populate_icat(){
+      //event.stopPropagation(); //to prevent enter
+      // event.stopImmediatePropagation();
+      // define a handler
+
+      var dialog = new BootstrapDialog({
           title: 'Pick the runs',
           message: $("#catalog_wrapper"),
           draggable: true,
@@ -295,15 +303,36 @@ $(function(){
               }
             },{
               label: 'Populate',
+              id: 'btn-populate',
+              cssClass: 'btn-primary',
+              //hotkey: 13, // Enter.
+              onhide: function(dialogRef){
+
+                // Button hotkey
+                            this.on('keypress', function (event) {
+                                event.preventDefault();
+                                event.stopPropagation();
+                            });
+
+                // function closeDialog(e) {
+                //     // this would test for whichever key is 40 and the ctrl key at the same time
+                //     if (e.keyCode == 13) {
+                //         // call your function to do the thing
+                //         e.preventDefault();
+                //         dialogRef.close();
+                //     }
+                // };
+                // document.addEventListener('keyup', closeDialog, false);
+              },
               action: function(dialogRef) {
             	  // rows_selected has 2 columns: run number, run title
-            	             	              	  
+
             	  // Let's fill the spreadsheet
                   var instance = hot.getInstance();
                   var selection = instance.getSelected();
                   // If there's not rows selected on the spreadsheets let's assume [0,0]
                   if (selection == null) selection = [0,0];
-                  
+
                   // Make an array of arrays to populate a collumn:[[row1],[row2],[row3]]
                   var collumn_to_populate = new Array();
                   for (var i=rows_selected.length;i--;){ //array into array of arrays
@@ -311,21 +340,40 @@ $(function(){
                   };
                   hot.populateFromArray(selection[0],selection[1], collumn_to_populate);
                	  // if populating first collumn, polulates last with names of the run
-                  if (selection[1] == 0){ 
+                  if (selection[1] == 0){
                 	  var collumn_to_populate = new Array();
                       for (var i=rows_selected.length;i--;){ //array into array of arrays
                         collumn_to_populate.push([rows_selected[i][1]]);
                       };
                     hot.populateFromArray(selection[0], instance.countCols()-1, collumn_to_populate);
-                  }                  
-                  rows_selected = new Array();
+                  }
+                  //rows_selected = new Array();
+                  hot.render();
                   dialogRef.close();
               }
           }]
       });
-  });
+      dialog.realize();
+        // var btn = dialog.getButton('btn-populate');
+        // btn.click(function(event){
+        //   event.preventDefault();
+        //   event.stopPropagation();
+        // });
+
+        dialog.open();
+    };
 
 
+  // define a handler
+  function populateICatKeyUp(e) {
+      // this would test for whichever key is 40 and the ctrl key at the same time
+      if (e.ctrlKey && e.keyCode == 80) {
+          // call your function to do the thing
+          populate_icat();
+      }
+  }
+  // register the handler
+  document.addEventListener('keyup', populateICatKeyUp, false);
 
 </script>
 {% endblock body_end %}

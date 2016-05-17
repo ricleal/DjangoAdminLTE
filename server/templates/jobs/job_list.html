@@ -51,8 +51,8 @@
 								<td><span class="label label-{% if object.local_status == 0 %}danger{%else%}success{%endif%}">{{ object.get_local_status_display }}</span>
 									<span class="label label-{% if object.remote_status == 3 %}info{% elif object.remote_status == 4 %}primary{% elif object.remote_status == 5 %}success{% elif object.remote_status == 9 %}warning{% elif object.remote_status == 6 or object.remote_status == 7 or object.remote_status == 8 %}danger{%endif%}">{{ object.get_remote_status_display }}</span>
 									</td>
-								<td>{{object.created_date | date:"DATETIME_FORMAT" }}</td>
-								<td>{{object.modified_date | date:"DATETIME_FORMAT" }}</td>
+								<td>{{object.created_date | date:'SHORT_DATETIME_FORMAT' }}</td>
+								<td>{{object.modified_date | date:'SHORT_DATETIME_FORMAT' }}</td>
 								<td><a class="btn btn-primary" data-toggle="tooltip"
 								data-placement="bottom" href="{% url 'jobs:job_detail' object.id %}"
 								title="Click to see the details of this job.">View</a></td>

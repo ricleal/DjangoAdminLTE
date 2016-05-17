@@ -39,71 +39,71 @@ pre {
 					<h3 class="box-title">{{object.title}}</h3>
 				</div>
 				<!-- /.box-header -->
-			
+
 				<div class="box-body">
 				<dl>
 					<dt>Script changed?</dt>
 					<dd>{{ object.script_changed }} </dd>
-					
+
 					<dt>Script</dt>
 					<dd><pre><code class="python">{{ object.script }}</code></pre></dd>
-					
+
 					<dt>Number Of Nodes</dt>
 					<dd>{{ object.number_of_nodes }}</dd>
-					
+
 					<dt>Cores Per Node</dt>
 					<dd>{{ object.cores_per_node }}</dd>
-					
+
 					<dt>Local Status</dt>
 					<dd><span class="label label-{% if object.local_status == 0 %}danger{%else%}success{%endif%}">{{ object.get_local_status_display }}</span></dd>
-					
+
 					{% if object.remote_status %}
 					<dt>Remote Status</dt>
 					<dd><span class="label label-{% if object.remote_status == 3 %}info{% elif object.remote_status == 4 %}primary{% elif object.remote_status == 5 %}success{% elif object.remote_status == 9 %}warning{% elif object.remote_status == 6 or object.remote_status == 7 or object.remote_status == 8 %}danger{%endif%}">{{ object.get_remote_status_display }}</span></dd>
-					
+
 					<dt>Submit Date</dt>
-					<dd>{{ object.remote_submit_date | date:"DATETIME_FORMAT" }}</dd>
-					
+					<dd>{{ object.remote_submit_date | date:'SHORT_DATETIME_FORMAT' }}</dd>
+
 					<dt>Start Date</dt>
-					<dd>{{ object.remote_start_date | date:"DATETIME_FORMAT" }}</dd>
-					
+					<dd>{{ object.remote_start_date | date:'SHORT_DATETIME_FORMAT' }}</dd>
+
 					<dt>Completion Date</dt>
-					<dd>{{ object.remote_complete_date | date:"DATETIME_FORMAT" }}</dd>
-					
+					<dd>{{ object.remote_complete_date | date:'SHORT_DATETIME_FORMAT' }}</dd>
+
 					{% endif %}
-					
-					
+
+
 				</dl>
 				</div>
 				<!-- /.box-body -->
 
 				<div class="box-footer">
-					
+
 					<a class="btn btn-primary" data-toggle="tooltip"
 					data-placement="bottom" href="{% url 'jobs:job_update' object.id  %}"
 					title="">Edit</a>
-					
+
 					<a class="btn btn-primary" data-toggle="tooltip" data-placement="bottom"
 					title="If the job has been previouly submitted it will be cloned and re-submitted."
 					href="{% url 'jobs:job_submission' object.id  %}">Submit to the cluster</a>
-					
+
 					{% if object.remote_id %}
 					<a class="btn btn-primary" data-toggle="tooltip" data-placement="bottom"
-					title="It will fecth job information and status from the cluster." 
+					title="It will fecth job information and status from the cluster."
 					href="{% url 'jobs:job_query' object.id  %}">Query this job</a>
 					{% endif %}
-					
+
 					{% if object.remote_status == 5 %}
 					<a class="btn btn-primary" data-toggle="tooltip" data-placement="bottom"
-					title="" 
+					title=""
 					href="{% url 'jobs:job_results' object.id  %}">Job Results...</a>
 					{% endif %}
-					
+
 					<a id="button_delete" class="btn btn-warning" data-toggle="tooltip"
 					data-placement="top" href="{% url 'jobs:job_delete' object.id  %}" title="Delete...">Delete</a>
-					
+
 				</div>
-				<!-- /.box-footer -->		
+				<!-- /.box-footer -->
 			</div>
 			<!-- /.box -->
 		</div>
@@ -125,8 +125,8 @@ $(function() {
 	// Since I want to show a modal I ignore the get and confirm by post
 	$('#button_delete').on('click', function(event) {
 		event.preventDefault(); // To prevent following the link (optional)
-		delete_object("{% url 'jobs:job_delete' object.id %}", 
-				"<strong>{{object.title}}</strong>", "{{ csrf_token }}");	
+		delete_object("{% url 'jobs:job_delete' object.id %}",
+				"<strong>{{object.title}}</strong>", "{{ csrf_token }}");
 	});
 });
 	hljs.initHighlightingOnLoad();

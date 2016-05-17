@@ -48,8 +48,8 @@
 							<tr>
 								<td>{{object.id}}</td>
 								<td>{{object.title}}</td>
-								<td>{{object.created_date | date:"DATETIME_FORMAT" }}</td>
-								<td>{{object.modified_date | date:"DATETIME_FORMAT" }}</td>
+								<td>{{object.created_date | date:'SHORT_DATETIME_FORMAT' }}</td>
+								<td>{{object.modified_date | date:'SHORT_DATETIME_FORMAT'}}</td>
 								<td><a class="btn btn-primary" data-toggle="tooltip"
 								data-placement="bottom" href="{% url 'sans:eq-sans_configuration_detail' object.id %}"
 								title="Click to see the details of this configuration.">View</a></td>
