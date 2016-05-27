@@ -1,0 +1,19 @@
+[{
+        "model": "catalog.facility",
+        "pk": 1,
+        "fields": {
+            "short_name": "SNS",
+            "name": "Spallation Neutron Source",
+            "visible": true
+        }
+    },
+    {
+        "model": "catalog.facility",
+        "pk": 2,
+        "fields": {
+            "short_name": "HFIR",
+            "name": "High Flux Isotope Reactor",
+            "visible": true
+        }
+    }
+]

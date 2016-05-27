@@ -53,10 +53,10 @@
 								<td>{{object.created_date | date:'SHORT_DATETIME_FORMAT' }}</td>
 								<td>{{object.modified_date | date:'SHORT_DATETIME_FORMAT' }}</td>
 								<td><a class="btn btn-primary btn-sm" data-toggle="tooltip"
-									data-placement="bottom" href="{% url 'sans:eqsans:reduction_detail' object.id %}"
+									data-placement="bottom" href="{% url 'sans:biosans:reduction_detail' object.id %}"
 									title="Click to see the details of this reduction.">View</a></td>
 								<td><a class="btn btn-primary btn-sm" data-toggle="tooltip"
-									data-placement="bottom" href="{% url 'sans:eqsans:reduction_update' object.id %}"
+									data-placement="bottom" href="{% url 'sans:biosans:reduction_update' object.id %}"
 									title="Click to see the details of this reduction.">Edit</a></td>
 							</tr>
 							{% endfor %}

@@ -23,6 +23,7 @@ Reduction - 1 to many - Entries
 
 '''
 
+
 class ConfigurationManager(models.Manager):
     '''
     Configuration go here!!
@@ -32,24 +33,22 @@ class ConfigurationManager(models.Manager):
 
     def clone(self, pk):
         '''
-        Clone an object and returns 
+        Clone an object and returns
         '''
-        obj = self.get(id = pk)
-        obj.pk = None # setting to None, clones the object!
-        obj.save() 
+        obj = self.get(id=pk)
+        obj.pk = None  # setting to None, clones the object!
+        obj.save()
         return obj
-    
-    def clone_and_assign_new_user(self,pk,new_user):
+
+    def clone_and_assign_new_user(self, pk, new_user):
         '''
         '''
-        obj = self.get(id = pk)
-        obj.pk = None # setting to None, clones the object!
-        obj.user = get_user_model().objects.get(username= new_user)
-        obj.save() 
+        obj = self.get(id=pk)
+        obj.pk = None  # setting to None, clones the object!
+        obj.user = get_user_model().objects.get(username=new_user)
+        obj.save()
         return obj
-        
-        
-        
+
 
 class Configuration(models.Model):
     '''
@@ -58,17 +57,17 @@ class Configuration(models.Model):
     '''
 
     title = models.CharField(max_length=256, blank=True)
-    
+
     created_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
 
     instrument = models.ForeignKey(Instrument, on_delete=models.CASCADE,
-                                   related_name="instruments",
-                                   related_query_name="instrument",)  # , blank=True, null=True)
+                                   related_name="%(class)s_instruments",
+                                   related_query_name="%(class)s_instrument",)  # , blank=True, null=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
-                             related_name="users",
-                             related_query_name="user",)  # , blank=True, null=True)
-    
+                             related_name="%(class)s_users",
+                             related_query_name="%(class)s_user",)  # , blank=True, null=True)
+
     # Manager
     objects = ConfigurationManager()
 
@@ -90,7 +89,8 @@ class Configuration(models.Model):
         Does not display related fields (i.e. FK)
         @return: field names as title and values for web display no unicode
         '''
-        return [ (str(field.verbose_name.title()), field.value_to_string(self)) for field in self._meta.fields if not field.is_relation]
+        return [(str(field.verbose_name.title()), field.value_to_string(self)) for field in self._meta.fields if not field.is_relation]
+
 
 class ReductionManager(models.Manager):
     '''
@@ -103,43 +103,46 @@ class ReductionManager(models.Manager):
         '''
         Clones the Reduction object and related entries
         '''
-        obj = self.get(id = pk)
+        obj = self.get(id=pk)
         old_title = obj.title
         # Let's clone the related entries
-        new_entries =[]
+        new_entries = []
         for e in obj.entries.all():
             e.pk = None
             e.save()
             new_entries.append(e)
-            
-        obj.pk = None # setting to None, clones the object!
+
+        obj.pk = None  # setting to None, clones the object!
         obj.save()
         obj.entries = new_entries
-        obj.title = "%s (copy)"%old_title
+        obj.title = "%s (copy)" % old_title
         obj.save()
         return obj
-    
+
     def to_script(self, pk):
         '''
         Gets this reduction object in json format and builds a script
         Note that the children object must have a script_file variable
         Is it the right way to serialise to JSON????
         '''
-        obj = self.select_related().get(pk = pk)
+        obj = self.select_related().get(pk=pk)
         d = model_to_dict(obj)
         d["entries"] = [model_to_dict(entry) for entry in obj.entries.all()]
         d["configuration"] = model_to_dict(obj.configuration)
         return build_script(obj.script_file, d)
-    
+
+
 class Reduction(models.Model):
     '''
     '''
     title = models.CharField(max_length=256, blank=True)
-    ipts = models.CharField(max_length=16, blank=True)
-    
+    ipts = models.CharField(max_length=16, blank=True,
+                            verbose_name="Integrated Proposal Tracking System (IPTS)")
+    empty_beam = models.CharField(max_length=256)
+
     created_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
-    
+
     # Generic relation to Job
     # To access this from jobs, do:
     # job_for_this_reduction = Job.objects.get(reductions__title = "XXXX")
@@ -148,7 +151,7 @@ class Reduction(models.Model):
 
     # Manager
     objects = ReductionManager()
-    
+
     class Meta:
         abstract = True
         ordering = ["id"]
@@ -177,15 +180,15 @@ class EntryManager(models.Manager):
         @param reduction: reduction object to associate with the created entries
         '''
         for row in handsontable:
-            if any(row): #Row has some data
-                keywords_args = { field : elem for elem,field in zip(row,Entry.get_field_names()) }
-                logger.debug("Creating Entry object with: %s"%keywords_args)
-                keywords_args['reduction']=reduction
+            if any(row):  # Row has some data
+                keywords_args = {field: elem for elem,
+                                 field in zip(row, Entry.get_field_names())}
+                logger.debug("Creating Entry object with: %s" % keywords_args)
+                keywords_args['reduction'] = reduction
                 # The following is the same as:
                 # entry = Entry(**keywords_args)
                 # entry.save(force_insert=True)
                 self.create(**keywords_args)
-
 
 
 class Entry(models.Model):
@@ -196,7 +199,6 @@ class Entry(models.Model):
     sample_transmission = models.CharField(max_length=256)
     background_scattering = models.CharField(max_length=256)
     background_transmission = models.CharField(max_length=256)
-    empty_beam = models.CharField(max_length=256)
     save_name = models.CharField(max_length=256, blank=True)
 
     # Manager
@@ -229,11 +231,10 @@ class Entry(models.Model):
         @return: field names no unicode
         '''
         return [str(field.name) for field in Entry._meta.fields]
-    
+
     def get_field_titled_names_and_values(self):
         '''
         Does not display related fields (i.e. FK)
         @return: field names as title and values for web display no unicode
         '''
-        return [ (str(field.verbose_name.title()), field.value_to_string(self)) for field in self._meta.fields if not field.is_relation]
-
+        return [(str(field.verbose_name.title()), field.value_to_string(self)) for field in self._meta.fields if not field.is_relation]

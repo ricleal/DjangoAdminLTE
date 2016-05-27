@@ -2,18 +2,58 @@ from __future__ import unicode_literals
 
 from django.db import models
 
-from ..models import Configuration, Scan
+from ..models import Configuration, Reduction, Entry
+
+import os.path
 
 #
 # BIOSANS
 #
-class BioSANSCommon(Configuration):
-    empty_transmission_run = models.CharField(max_length=256, blank=True, null=True,)
-    flood_field_run = models.CharField(max_length=256, blank=True, null=True,)
-    
-class BioSANSScan(Scan):
+
+class BIOSANSConfiguration(Configuration):
+
+    absolute_scale_factor = models.DecimalField(
+        max_digits=10, decimal_places=2, default=1.0)
+    sample_thickness = models.DecimalField(
+        max_digits=10, decimal_places=2, default=1.0)
+    sample_aperture_diameter = models.DecimalField(
+        max_digits=10, decimal_places=2, default=10.0)
+
+    direct_beam_file = models.CharField(max_length=256, blank=True, help_text="File path")
+    mask_file = models.CharField(max_length=256, blank=True, help_text="File path")
+    dark_current_file = models.CharField(max_length=256, blank=True, help_text="File path")
+    sensitivity_file = models.CharField(max_length=256, blank=True, help_text="File path")
+
+    sensitivity_min = models.DecimalField(
+        max_digits=10, decimal_places=2, default=0.4)
+    sensitivity_max = models.DecimalField(
+        max_digits=10, decimal_places=2, default=2.0)
+
+
+    @models.permalink
+    def get_absolute_url(self):
+        return ('sans:eq-sans_configuration_detail', [self.pk])
+
+class BIOSANSReduction(Reduction):
+    configuration = models.ForeignKey(BIOSANSConfiguration, on_delete=models.CASCADE,
+                                      related_name="reductions",
+                                      related_query_name="reduction",
+                                      blank=True, null=True,)
+
+    @models.permalink
+    def get_absolute_url(self):
+        return ('sans:eq-sans_reduction_detail', [self.pk])
+
+    # Needed to generate the script from this object
+    script_file = os.path.join(os.path.dirname(os.path.abspath(__file__)),"scripts","template.py")
+
+
+class BIOSANSEntry(Entry):
     # We can not have ForeignKey for abstract models. It has to be here!!
-    configuration = models.ForeignKey(BioSANSCommon,
-                on_delete=models.CASCADE,
-                related_name="scan",
-                related_query_name="scan",)
+    reduction = models.ForeignKey(BIOSANSReduction,
+                                      on_delete=models.CASCADE,
+                                      related_name="entries",
+                                      related_query_name="entry",)
+
+    def __unicode__(self):
+        return "Entry: %s :: Reduction: %s" % (self.save_name, self.reduction.title)

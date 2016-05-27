@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load humanize %}
+{% block head %}
+
+<!-- jQueryFileTree -->
+<link rel="stylesheet" href="{% static "jQueryFileTree/jQueryFileTree.min.css" %}">
+<!-- DataTables -->
+<link rel="stylesheet" href="{% static 'AdminLTE_plugins/datatables/dataTables.bootstrap.css' %}">
+<!--  boostrap dialogs -->
+<link rel="stylesheet" href="{% static 'bootstrap3-dialog/css/bootstrap-dialog.min.css' %}">
+
+{% endblock head %}
+
+{% block content %}
+<!-- Content Header (Page header) -->
+<section class="content-header">
+  <h1>
+    Configuration  <small>{{ object.id }}</small>
+  </h1>
+  <ol class="breadcrumb">
+    <li class="active">Configuration</li>
+    <li>{{ instrument|default:request.user.profile.instrument }}</li>
+    <li>{%if not object %}New Configuration{% else %}{{object}}{% endif %}</li>
+  </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+  <div class="row">
+		<!-- form start -->
+		<form role="form" action="" method="post">
+			{% csrf_token %}
+    <!-- left column -->
+    <div class="col-md-8 col-md-offset-2">
+      <!-- general form elements -->
+      <div class="box box-primary">
+        <div class="box-header with-border">
+          <h3 class="box-title">Configuration form</h3>
+        </div>
+        <!-- /.box-header -->
+
+          <div class="box-body">
+            {{ form.as_p }}
+          </div>
+          <!-- /.box-body -->
+
+
+      </div>
+      <!-- /.box -->
+    </div>
+
+		<div class="col-md-8 col-md-offset-2">
+			<div class="box box-primary collapsed-box">
+        <div class="box-header with-border">
+          <h3 class="box-title">Advanced...</h3>
+					<div class="box-tools pull-right">
+						<button type="button" class="btn btn-box-tool" data-widget="collapse">
+							<i class="fa fa-plus" data-toggle="tooltip" title="Click for advanced options..."></i>
+						</button>
+					</div>
+        </div>
+				<div class="box-body" style="display:none">
+					<p>Advanced parameters will be here</p>
+					<p>Advanced parameters will be here</p>
+					<p>Advanced parameters will be here</p>
+					<p>Advanced parameters will be here</p>
+					<p>Advanced parameters will be here</p>
+					<p>Advanced parameters will be here</p>
+
+				</div>
+			</div>
+		</div>
+
+		<div class="col-md-8 col-md-offset-2">
+      <!-- general form elements -->
+      <div class="box box-primary">
+          <!-- /.box-body -->
+          <div class="box-footer">
+            <button type="button" class="btn btn-default"  onclick="goBack()">Cancel</button>
+            {% if form.instance.pk %}
+            <button type="submit" class="btn btn-primary">Update</button>
+            {% else %}
+            <button type="submit" class="btn btn-primary">Save</button>
+            {% endif %}
+          </div>
+      </div>
+      <!-- /.box -->
+    </div>
+		</form>
+  </div>
+</section>
+<!-- The tree modal form will be here (invisble) -->
+<div id="dirlist_container" style="display: none;">
+  <div id="dirlist_wrapper" class="dirlist"></div>
+</div>
+<!-- /.content -->
+{% endblock %}
+
+{% block body_end %}
+
+<!-- jQueryFileTree -->
+<script src="{% static "jQueryFileTree/jQueryFileTree.min.js" %}"></script>
+<!--  boostrap dialogs -->
+<script src="{% static 'bootstrap3-dialog/js/bootstrap-dialog.min.js' %}"></script>
+
+<!-- page script -->
+<script>
+	//Admin LTE requires these classes for better forms
+	$("input").addClass("form-control");
+	$("select").addClass("form-control");
+
+	// keeps the selector to assign the selected file
+	var selector;
+	// Setting up jQuery to pass csrf tokens to Django when using ajax.
+	$.ajaxSetup({
+	  data: {
+	    csrfmiddlewaretoken: '{{ csrf_token }}'
+	  }
+	});
+
+	// Create the modal dialog to show the browser
+	var dialog = new BootstrapDialog({
+	    title: 'Pick a file',
+	    message: $("#dirlist_wrapper"),
+	    onhidden: function() {
+	      $("#dirlist_wrapper").appendTo('#dirlist_container'); // Put the dirlist back
+	    },
+	    buttons: [{
+	      label: 'Close',
+	      action: function(dialogRef) {
+	        dialogRef.close();
+	      }
+	    }]
+	  });
+
+	// Loads the file browser
+	$(document)
+	  .ready(
+	    function() {
+	      $('.dirlist')
+	        .fileTree({
+	          script: "{% url 'util:dirlist' instrument=request.user.profile.instrument.drive_name %}",
+	          expandSpeed: 100,
+	          collapseSpeed: 100,
+	          multiFolder: false
+	        }, function(file) {
+	          $(selector).val(file);
+	          // When the file is selected, close the modal
+	          dialog.close();
+	        }).on('filetreeclicked',
+	          function(e, data) {
+	            console.log(data);
+	          });
+	    });
+
+	//All input fields ending in file will open the dialog:
+	$("input[name$='file']").on('click', function(event) {
+	  selector = this;
+	  dialog.open();
+	});
+
+</script>
+{% endblock body_end %}

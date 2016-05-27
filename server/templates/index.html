@@ -1,4 +1,5 @@
-{% extends "base.html" %} {% block content %}
+{% extends "base.html" %}
+{% block content %}
 
 <!-- Content Header (Page header) -->
 <section class="content-header">
@@ -13,37 +14,48 @@
 <!-- Main content -->
 <section class="content">
 	<!-- Your Page Content Here -->
+	<!-- Default box -->
+	<div class="box">
+		<div class="box-header with-border">
+			<h3 class="box-title">SNS Reduction Service</h3>
+		</div>
+		<div class="box-body">
+			<p>Hello <strong>{{ user.fullname }}</strong>!</p>
+			<p> From the LDAP server we have the following information:</p>
+			<ul>
+				<li> <strong>Email: </strong> {{ user.email }} </li>
+				<li> <strong>Address: </strong> {{ user.address }} </li>
+			</ul>
+			<p>Your default instrument is: <strong>{{ user.profile.instrument }}</strong>. </p>
+		</div>
+		<!-- /.box-body -->
+		<div class="box-footer">
+			{% if user.profile %} Go to <a href="{% url 'users:profile_update' user.profile.pk %}">your profile</a> to change this. {% endif %}
+		</div>
+		<!-- /.box-footer-->
 
-
-
-      <!-- Default box -->
-      <div class="box">
-        <div class="box-header with-border">
-          <h3 class="box-title">SNS Reduction Service</h3>
-
-          
-        </div>
-        <div class="box-body">
-          <p>Hello <strong>{{ user.fullname }}</strong>!</p>
-          <p> From the LDAP server we have the following information:</p>
-          <ul>
-          <li> <strong>Email: </strong> {{ user.email }} </li>
-          <li> <strong>Address: </strong> {{ user.address }} </li>
-          </ul>
-          <p>Your default instrument is: <strong>{{ user.profile.instrument }}</strong>. </p>
-        </div>
-        <!-- /.box-body -->
-        <div class="box-footer">
-        {% if user.profile %}
-          Go to <a href="{% url 'users:profile_update' user.profile.pk %}">your profile</a> to change this.
-        {% endif %}
-        </div>
-        <!-- /.box-footer-->
-      </div>
-      <!-- /.box -->
-      
-      
-
+		<!-- Default box -->
+		<div class="box">
+			<div class="box-header with-border">
+				<h3 class="box-title">Quick Start:</h3>
+			</div>
+			<div class="box-body">
+				<ul>
+					<li>If the beamline scientist created a configuration for you, go to
+						<a href="{% url 'sans:eqsans:reduction_create' %}"
+							data-toggle="tooltip" title="Create a new Reduction from scratch.">Create a new Reduction</a>.</li>
+					<li>If you are an advanced user, feel free to <a href="{% url 'sans:eqsans:configuration_create' %}"
+						data-toggle="tooltip" title="Create a new configuration from scratch.">Create a new configuration</a>
+						(ask the beamline scientist for help is needed).
+						Then, go to <a href="{% url 'sans:eqsans:reduction_create' %}" data-toggle="tooltip" title="Create a new Reduction from scratch.">Create a new Reduction</a> and submit your reduction jobs to the cluster.</li>
+				</ul>
+			</div>
+			<!-- /.box-body -->
+			<div class="box-footer">
+			</div>
+			<!-- /.box-footer-->
+		</div>
+		<!-- /.box -->
 </section>
 <!-- /.content -->
 {% endblock %}

@@ -41,7 +41,7 @@
       <h3 class="page-header">
         Configuration:
 				<a class="btn-link pull-right" data-toggle="tooltip"
-				data-placement="bottom" href="{% url 'sans:eqsans:configuration_detail' object.configuration.id %}"
+				data-placement="bottom" href="{% url 'sans:biosans:configuration_detail' object.configuration.id %}"
 				title="Click to see the details of this configuration.">{{object.configuration}}</a>
       </h3>
     </div>
@@ -86,7 +86,7 @@
 
 <p>
 	<a class="btn btn-default" data-toggle="tooltip"
-	data-placement="top" href="{% url 'sans:eqsans:reduction_update' object.id %}"
+	data-placement="top" href="{% url 'sans:biosans:reduction_update' object.id %}"
 	title="Click to edit the details of this reduction.">Edit</a>
 
 	<a id="button_delete" class="btn btn-warning" data-toggle="tooltip"
@@ -94,11 +94,11 @@
 	title="Delete...">Delete</a>
 
 	<a class="btn btn-default" data-toggle="tooltip"
-	data-placement="top" href="{% url 'sans:eqsans:reduction_clone' object.id %}"
+	data-placement="top" href="{% url 'sans:biosans:reduction_clone' object.id %}"
 	title="Creates a copy of this reduction as you might need a few different parameters.">Duplicate</a>
 
 	<a id="button_reduce" class="btn btn-primary" data-toggle="tooltip"
-	data-placement="top" href="{% url 'sans:eqsans:reduction_script' object.id %}"
+	data-placement="top" href="{% url 'sans:biosans:reduction_script' object.id %}"
 	title="Submit this configuration to the cluster. Keep an eye on the results.">Reduce...</a>
 </p>
 <!-- /.row -->
@@ -106,7 +106,7 @@
 
 <div class="box-body">
 	<p>
-	<a class="btn btn-primary" href="{% url 'sans:eqsans:reduction_list' %}">Back to the Reduction list</a>
+	<a class="btn btn-primary" href="{% url 'sans:biosans:reduction_list' %}">Back to the Reduction list</a>
 	</p>
 </div>
 
@@ -131,7 +131,7 @@
 		// Since I want to show a modal I ignore the get and confirm by post
 		$('#button_delete').on('click', function(event) {
 			event.preventDefault(); // To prevent following the link (optional)
-			delete_object("{% url 'sans:eqsans:reduction_delete' object.id %}", "<strong>{{object.title}}</strong>", "{{ csrf_token }}");
+			delete_object("{% url 'sans:biosans:reduction_delete' object.id %}", "<strong>{{object.title}}</strong>", "{{ csrf_token }}");
 		});
 	});
 	$(function() {

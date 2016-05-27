@@ -12,14 +12,14 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
+        ('jobs', '0001_initial'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('sans', '0001_initial'),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='eqsansconfiguration',
+            model_name='job',
             name='user',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='users', related_query_name='user', to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='job_users', related_query_name='job_user', to=settings.AUTH_USER_MODEL),
         ),
     ]

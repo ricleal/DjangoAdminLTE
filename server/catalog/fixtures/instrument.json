@@ -1,235 +1,331 @@
 [{
-  "model": "catalog.instrument",
-  "pk": 1,
-  "fields": {
-    "beamline": "BL-1A",
-    "name": "USANS",
-    "description": "Ultra-Small-Angle Neutron Scattering Instrument",
-    "visible": true,
-    "facility": "SNS",
-    "reduction_available": false,
-    "icat_name": "USANS",
-    "ldap_name" : "usans",
-    "drive_name" : "USANS",
-    "type" : "SANS"
-  }
+    "model": "catalog.instrument",
+    "pk": 1,
+    "fields": {
+        "beamline": "BL-1A",
+        "name": "USANS",
+        "type": "SANS",
+        "description": "Ultra-Small-Angle Neutron Scattering Instrument",
+        "icat_name": "USANS",
+        "ldap_name": "usans",
+        "drive_name": "USANS",
+        "visible": true,
+        "reduction_available": false,
+        "facility": 1
+    }
 }, {
-  "model": "catalog.instrument",
-  "pk": 2,
-  "fields": {
-    "beamline": "BL-1B",
-    "name": "NOMAD",
-    "description": "Nanoscale-Ordered Materials Diffractometer",
-    "visible": true,
-    "facility": "SNS",
-    "reduction_available": false,
-    "icat_name": "NOM"
-  }
+    "model": "catalog.instrument",
+    "pk": 2,
+    "fields": {
+        "beamline": "BL-1B",
+        "name": "NOMAD",
+        "type": "",
+        "description": "Nanoscale-Ordered Materials Diffractometer",
+        "icat_name": "NOM",
+        "ldap_name": "",
+        "drive_name": "",
+        "visible": true,
+        "reduction_available": false,
+        "facility": 1
+    }
 }, {
-  "model": "catalog.instrument",
-  "pk": 3,
-  "fields": {
-    "beamline": "BL-2",
-    "name": "BASIS",
-    "description": "Backscattering Spectrometer",
-    "visible": true,
-    "facility": "SNS",
-    "reduction_available": false,
-    "icat_name": "NOM"
-  }
+    "model": "catalog.instrument",
+    "pk": 3,
+    "fields": {
+        "beamline": "BL-2",
+        "name": "BASIS",
+        "type": "",
+        "description": "Backscattering Spectrometer",
+        "icat_name": "NOM",
+        "ldap_name": "",
+        "drive_name": "",
+        "visible": true,
+        "reduction_available": false,
+        "facility": 1
+    }
 }, {
-  "model": "catalog.instrument",
-  "pk": 4,
-  "fields": {
-    "beamline": "BL-3",
-    "name": "SNAP",
-    "description": "Spallation Neutrons and Pressure Diffractometer",
-    "visible": true,
-    "facility": "SNS",
-    "reduction_available": false,
-    "icat_name": "SNAP"
-  }
+    "model": "catalog.instrument",
+    "pk": 4,
+    "fields": {
+        "beamline": "BL-3",
+        "name": "SNAP",
+        "type": "",
+        "description": "Spallation Neutrons and Pressure Diffractometer",
+        "icat_name": "SNAP",
+        "ldap_name": "",
+        "drive_name": "",
+        "visible": true,
+        "reduction_available": false,
+        "facility": 1
+    }
 }, {
-  "model": "catalog.instrument",
-  "pk": 5,
-  "fields": {
-    "beamline": "BL-4A",
-    "name": "MR",
-    "description": "Magnetism Reflectometer",
-    "visible": false,
-    "icat_name": ""
-  }
+    "model": "catalog.instrument",
+    "pk": 5,
+    "fields": {
+        "beamline": "BL-4A",
+        "name": "MR",
+        "type": "",
+        "description": "Magnetism Reflectometer",
+        "icat_name": "",
+        "ldap_name": "",
+        "drive_name": "",
+        "visible": false,
+        "reduction_available": false,
+        "facility": 1
+    }
 }, {
-  "model": "catalog.instrument",
-  "pk": 6,
-  "fields": {
-    "beamline": "BL-4B",
-    "name": "LR",
-    "description": "Liquids Reflectometer",
-    "visible": false,
-    "icat_name": ""
-  }
+    "model": "catalog.instrument",
+    "pk": 6,
+    "fields": {
+        "beamline": "BL-4B",
+        "name": "LR",
+        "type": "",
+        "description": "Liquids Reflectometer",
+        "icat_name": "",
+        "ldap_name": "",
+        "drive_name": "",
+        "visible": false,
+        "reduction_available": false,
+        "facility": 1
+    }
 }, {
-  "model": "catalog.instrument",
-  "pk": 7,
-  "fields": {
-    "beamline": "BL-5",
-    "name": "CNCS",
-    "description": "Cold Neutron Chopper Spectrometer",
-    "visible": true,
-    "facility": "SNS",
-    "reduction_available": false,
-    "icat_name": "CNCS"
-  }
+    "model": "catalog.instrument",
+    "pk": 7,
+    "fields": {
+        "beamline": "BL-5",
+        "name": "CNCS",
+        "type": "",
+        "description": "Cold Neutron Chopper Spectrometer",
+        "icat_name": "CNCS",
+        "ldap_name": "",
+        "drive_name": "",
+        "visible": true,
+        "reduction_available": false,
+        "facility": 1
+    }
 }, {
-  "model": "catalog.instrument",
-  "pk": 8,
-  "fields": {
-    "beamline": "BL-6",
-    "name": "EQ-SANS",
-    "description": "Extended Q-Range Small-Angle Neutron Scattering Diffractometer",
-    "visible": true,
-    "facility": "SNS",
-    "reduction_available": true,
-    "icat_name": "EQSANS",
-    "ldap_name" : "eqsans",
-    "drive_name" : "EQSANS",
-    "type" : "SANS"
-  }
+    "model": "catalog.instrument",
+    "pk": 8,
+    "fields": {
+        "beamline": "BL-6",
+        "name": "EQ-SANS",
+        "type": "SANS",
+        "description": "Extended Q-Range Small-Angle Neutron Scattering Diffractometer",
+        "icat_name": "EQSANS",
+        "ldap_name": "eqsans",
+        "drive_name": "EQSANS",
+        "visible": true,
+        "reduction_available": true,
+        "facility": 1
+    }
 }, {
-  "model": "catalog.instrument",
-  "pk": 9,
-  "fields": {
-    "beamline": "BL-7",
-    "name": "VULCAN",
-    "description": "Engineering Materials Diffractometer",
-    "visible": true,
-    "facility": "SNS",
-    "reduction_available": false,
-    "icat_name": "VULCAN"
-  }
+    "model": "catalog.instrument",
+    "pk": 9,
+    "fields": {
+        "beamline": "BL-7",
+        "name": "VULCAN",
+        "type": "",
+        "description": "Engineering Materials Diffractometer",
+        "icat_name": "VULCAN",
+        "ldap_name": "",
+        "drive_name": "",
+        "visible": true,
+        "reduction_available": false,
+        "facility": 1
+    }
 }, {
-  "model": "catalog.instrument",
-  "pk": 10,
-  "fields": {
-    "beamline": "BL-9",
-    "name": "CORELLI",
-    "description": "Elastic Diffuse Scattering Spectrometer",
-    "visible": true,
-    "facility": "SNS",
-    "reduction_available": false,
-    "icat_name": "CORELLI"
-  }
+    "model": "catalog.instrument",
+    "pk": 10,
+    "fields": {
+        "beamline": "BL-9",
+        "name": "CORELLI",
+        "type": "",
+        "description": "Elastic Diffuse Scattering Spectrometer",
+        "icat_name": "CORELLI",
+        "ldap_name": "",
+        "drive_name": "",
+        "visible": true,
+        "reduction_available": false,
+        "facility": 1
+    }
 }, {
-  "model": "catalog.instrument",
-  "pk": 11,
-  "fields": {
-    "beamline": "BL-10",
-    "name": "VENUS",
-    "description": "Versatile Neutron Imaging Instrument",
-    "visible": false,
-    "icat_name": ""
-  }
+    "model": "catalog.instrument",
+    "pk": 11,
+    "fields": {
+        "beamline": "BL-10",
+        "name": "VENUS",
+        "type": "",
+        "description": "Versatile Neutron Imaging Instrument",
+        "icat_name": "",
+        "ldap_name": "",
+        "drive_name": "",
+        "visible": false,
+        "reduction_available": false,
+        "facility": 1
+    }
 }, {
-  "model": "catalog.instrument",
-  "pk": 12,
-  "fields": {
-    "beamline": "BL-11A",
-    "name": "POWGEN",
-    "description": "Powder Diffractometer",
-    "visible": false,
-    "icat_name": ""
-  }
+    "model": "catalog.instrument",
+    "pk": 12,
+    "fields": {
+        "beamline": "BL-11A",
+        "name": "POWGEN",
+        "type": "",
+        "description": "Powder Diffractometer",
+        "icat_name": "",
+        "ldap_name": "",
+        "drive_name": "",
+        "visible": false,
+        "reduction_available": false,
+        "facility": 1
+    }
 }, {
-  "model": "catalog.instrument",
-  "pk": 13,
-  "fields": {
-    "beamline": "BL-11B",
-    "name": "MANDI",
-    "description": "Macromolecular Neutron Diffractometer",
-    "visible": true,
-    "facility": "SNS",
-    "reduction_available": false,
-    "icat_name": "MANDI"
-  }
+    "model": "catalog.instrument",
+    "pk": 13,
+    "fields": {
+        "beamline": "BL-11B",
+        "name": "MANDI",
+        "type": "",
+        "description": "Macromolecular Neutron Diffractometer",
+        "icat_name": "MANDI",
+        "ldap_name": "",
+        "drive_name": "",
+        "visible": true,
+        "reduction_available": false,
+        "facility": 1
+    }
 }, {
-  "model": "catalog.instrument",
-  "pk": 14,
-  "fields": {
-    "beamline": "BL-12",
-    "name": "TOPAZ",
-    "description": "Single-Crystal Diffractometer",
-    "visible": true,
-    "facility": "SNS",
-    "reduction_available": false,
-    "icat_name": "TOPAZ"
-  }
+    "model": "catalog.instrument",
+    "pk": 14,
+    "fields": {
+        "beamline": "BL-12",
+        "name": "TOPAZ",
+        "type": "",
+        "description": "Single-Crystal Diffractometer",
+        "icat_name": "TOPAZ",
+        "ldap_name": "",
+        "drive_name": "",
+        "visible": true,
+        "reduction_available": false,
+        "facility": 1
+    }
 }, {
-  "model": "catalog.instrument",
-  "pk": 15,
-  "fields": {
-    "beamline": "BL-13",
-    "name": "FNPB",
-    "description": "Fundamental Neutron Physics Beam Line",
-    "visible": true,
-    "facility": "SNS",
-    "reduction_available": false,
-    "icat_name": "FNPB"
-  }
+    "model": "catalog.instrument",
+    "pk": 15,
+    "fields": {
+        "beamline": "BL-13",
+        "name": "FNPB",
+        "type": "",
+        "description": "Fundamental Neutron Physics Beam Line",
+        "icat_name": "FNPB",
+        "ldap_name": "",
+        "drive_name": "",
+        "visible": true,
+        "reduction_available": false,
+        "facility": 1
+    }
 }, {
-  "model": "catalog.instrument",
-  "pk": 16,
-  "fields": {
-    "beamline": "BL-14B",
-    "name": "HYSPEC",
-    "description": "Hybrid Spectrometer",
-    "visible": true,
-    "facility": "SNS",
-    "reduction_available": false,
-    "icat_name": "HYS"
-  }
+    "model": "catalog.instrument",
+    "pk": 16,
+    "fields": {
+        "beamline": "BL-14B",
+        "name": "HYSPEC",
+        "type": "",
+        "description": "Hybrid Spectrometer",
+        "icat_name": "HYS",
+        "ldap_name": "",
+        "drive_name": "",
+        "visible": true,
+        "reduction_available": false,
+        "facility": 1
+    }
 }, {
-  "model": "catalog.instrument",
-  "pk": 17,
-  "fields": {
-    "beamline": "BL-15",
-    "name": "NSE",
-    "description": "Neutron Spin Echo Spectrometer",
-    "visible": true,
-    "facility": "SNS",
-    "reduction_available": false,
-    "icat_name": "NSE"
-  }
+    "model": "catalog.instrument",
+    "pk": 17,
+    "fields": {
+        "beamline": "BL-15",
+        "name": "NSE",
+        "type": "",
+        "description": "Neutron Spin Echo Spectrometer",
+        "icat_name": "NSE",
+        "ldap_name": "",
+        "drive_name": "",
+        "visible": true,
+        "reduction_available": false,
+        "facility": 1
+    }
 }, {
-  "model": "catalog.instrument",
-  "pk": 18,
-  "fields": {
-    "beamline": "BL-16B",
-    "name": "VISION",
-    "description": "Vibrational Spectrometer",
-    "visible": false,
-    "icat_name": ""
-  }
+    "model": "catalog.instrument",
+    "pk": 18,
+    "fields": {
+        "beamline": "BL-16B",
+        "name": "VISION",
+        "type": "",
+        "description": "Vibrational Spectrometer",
+        "icat_name": "",
+        "ldap_name": "",
+        "drive_name": "",
+        "visible": false,
+        "reduction_available": false,
+        "facility": 1
+    }
 }, {
-  "model": "catalog.instrument",
-  "pk": 19,
-  "fields": {
-    "beamline": "BL-17",
-    "name": "SEQUOIA",
-    "description": "Fine-Resolution Fermi Chopper Spectrometer",
-    "visible": true,
-    "facility": "SNS",
-    "reduction_available": false,
-    "icat_name": "SEQ"
-  }
+    "model": "catalog.instrument",
+    "pk": 19,
+    "fields": {
+        "beamline": "BL-17",
+        "name": "SEQUOIA",
+        "type": "",
+        "description": "Fine-Resolution Fermi Chopper Spectrometer",
+        "icat_name": "SEQ",
+        "ldap_name": "",
+        "drive_name": "",
+        "visible": true,
+        "reduction_available": false,
+        "facility": 1
+    }
 }, {
-  "model": "catalog.instrument",
-  "pk": 20,
-  "fields": {
-    "beamline": "BL-18",
-    "name": "ARCS",
-    "description": "Wide Angular-Range Chopper Spectrometer",
-    "visible": false,
-    "icat_name": ""
-  }
+    "model": "catalog.instrument",
+    "pk": 20,
+    "fields": {
+        "beamline": "BL-18",
+        "name": "ARCS",
+        "type": "",
+        "description": "Wide Angular-Range Chopper Spectrometer",
+        "icat_name": "",
+        "ldap_name": "",
+        "drive_name": "",
+        "visible": false,
+        "reduction_available": false,
+        "facility": 1
+    }
+}, {
+    "model": "catalog.instrument",
+    "pk": 21,
+    "fields": {
+        "beamline": "CG-3",
+        "name": "BIO-SANS",
+        "type": "SANS",
+        "description": "Biological Small-Angle Neutron Scattering Instrument",
+        "icat_name": "BIOSANS",
+        "ldap_name": "biosans",
+        "drive_name": "CG3",
+        "visible": true,
+        "reduction_available": true,
+        "facility": 2
+    }
+}, {
+    "model": "catalog.instrument",
+    "pk": 22,
+    "fields": {
+        "beamline": "CG-2",
+        "name": "GP-SANS",
+        "type": "SANS",
+        "description": "General-Purpose Small-Angle Neutron Scattering Diffractometer",
+        "icat_name": "GPSANS",
+        "ldap_name": "gpsans",
+        "drive_name": "CG2",
+        "visible": true,
+        "reduction_available": true,
+        "facility": 2
+    }
 }]

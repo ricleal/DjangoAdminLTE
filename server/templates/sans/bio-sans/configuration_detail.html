@@ -67,10 +67,10 @@
 				<tr>
 					<th style="width:70%">{{reduction.title}}</th>
 					<td><a class="btn btn-primary" data-toggle="tooltip"
-					data-placement="bottom" href="{% url 'sans:eqsans:reduction_detail' reduction.id %}"
+					data-placement="bottom" href="{% url 'sans:biosans:reduction_detail' reduction.id %}"
 					title="Click to see the details of this reduction.">View</a></td>
 					<td><a class="btn btn-primary" data-toggle="tooltip"
-					data-placement="bottom" href="{% url 'sans:eqsans:reduction_update' reduction.id %}"
+					data-placement="bottom" href="{% url 'sans:biosans:reduction_update' reduction.id %}"
 					title="Click to see the details of this reduction.">Edit</a></td>
 				</tr>
 				{% endfor %}
@@ -83,14 +83,14 @@
 			<hr/>
 			<p>
 				<a class="btn btn-default" data-toggle="tooltip"
-				data-placement="top" href="{% url 'sans:eqsans:configuration_update' object.id %}"
+				data-placement="top" href="{% url 'sans:biosans:configuration_update' object.id %}"
 				title="Click to edit the details of this configuration.">Edit</a>
 
 				<a id="button_delete" class="btn btn-warning" data-toggle="tooltip"
 				data-placement="top" href="#" title="Delete...">Delete</a>
 
 				<a class="btn btn-default" data-toggle="tooltip"
-				data-placement="top" href="{% url 'sans:eqsans:configuration_clone' object.id %}"
+				data-placement="top" href="{% url 'sans:biosans:configuration_clone' object.id %}"
 				title="Creates a copy of this configuration as you might need a few different parameters.">Duplicate</a>
 
 				<a id="button_assign_user" class="btn btn-primary" data-toggle="tooltip"
@@ -103,7 +103,7 @@
 
 <div class="box-body">
 	<p>
-	<a class="btn btn-primary" href="{% url 'sans:eqsans:configuration_list' %}">Back to the Configuration list</a>
+	<a class="btn btn-primary" href="{% url 'sans:biosans:configuration_list' %}">Back to the Configuration list</a>
 	</p>
 </div>
 
@@ -147,7 +147,7 @@
 		// Since I want to show a modal I ignore the get and confirm by post
 		$('#button_delete').on('click', function(event) {
 			event.preventDefault(); // To prevent following the link (optional)
-			delete_object("{% url 'sans:eqsans:configuration_delete' object.id %}",
+			delete_object("{% url 'sans:biosans:configuration_delete' object.id %}",
 					"<strong>{{object.title}}</strong> and all associated reductions", "{{ csrf_token }}");
 		});
 	});
@@ -208,7 +208,7 @@
 	                		// And clones it!
 							$.ajax({
 								type : "GET",
-								url : "{% url 'sans:eqsans:configuration_assign'  object.id 'XXX' %}".replace(/XXX/, uid),
+								url : "{% url 'sans:biosans:configuration_assign'  object.id 'XXX' %}".replace(/XXX/, uid),
 								data : {},
 								success : function(result) {
 									document.open();
