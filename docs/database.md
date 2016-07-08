@@ -119,7 +119,7 @@ drop owned by reduction;
 
 # Ubuntu 16.04
 ```
-sudo apt-get install postgresql postgresql-contrib
+sudo apt-get install postgresql postgresql-contrib libpq-dev
 
 sudo service postgresql status
 
