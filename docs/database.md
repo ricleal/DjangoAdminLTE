@@ -116,3 +116,45 @@ Delete all tables owened by a user:
 ```
 drop owned by reduction;
 ```
+
+# Ubuntu 16.04
+```
+sudo apt-get install postgresql postgresql-contrib
+
+sudo service postgresql status
+
+sudo vi /etc/postgresql/9.5/main/pg_hba.conf 
+
+```
+
+Edit to make it like this:
+```
+# Database administrative login by Unix domain socket
+local   all             postgres                                ident
+
+# TYPE  DATABASE        USER            ADDRESS                 METHOD
+
+# "local" is for Unix domain socket connections only
+local   all             all                                     md5
+# IPv4 local connections:
+host    all             all             127.0.0.1/32            md5
+# IPv6 local connections:
+host    all             all             ::1/128                 md5
+
+```
+
+```
+sudo service postgresql restart
+
+```
+Test
+
+```
+sudo su - postgres
+psql
+
+```
+
+See above:
+
+Create database & Test
